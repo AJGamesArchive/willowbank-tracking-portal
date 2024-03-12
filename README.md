@@ -12,6 +12,8 @@ Website Development Assessment 2 - Group Development Project
 
 Assessment Due Date: **Tuesday 7th May**
 
+Final website link: https://willowbank-tracking-portal.web.app 
+
 ## Setup
 
 - Install [NodeJS](https://nodejs.org/dist/v18.14.1/node-v18.14.1-x64.msi)
@@ -44,7 +46,10 @@ Assessment Due Date: **Tuesday 7th May**
 - [Firestore Docs: Adding Data](https://cloud.google.com/firestore/docs/manage-data/add-data) - How To Write Data To Cloud Firestore
 - [Firestore Docs: Reading Data](https://cloud.google.com/firestore/docs/query-data/get-data) - How To Read Data From Cloud Firestore
 
-# Developer Notes on Web Tech
+Developer Notes on Web Tech
+-------
+
+<details>
 
 ## React + TypeScript + Vite
 
@@ -77,12 +82,12 @@ export default {
 - Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
 - Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
 
+</details>
+
 Backups
 -------
 
 <details>
-
-# Alex's Backups
 
 ## CMD Backup
 
