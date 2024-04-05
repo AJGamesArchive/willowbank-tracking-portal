@@ -1,12 +1,10 @@
 // Import core functions
-import { Divider } from 'primereact/divider';
+import { useState } from 'react';
+import { ConfirmDialog } from 'primereact/confirmdialog';
 
 // Import CSS
 import './LoginDesktop.css';
 import './LoginGlobal.css';
-
-// Import core UI components
-// ---
 
 // Import UI components
 import LoginOptionsMenu from '../../components/Login/LoginOptionsMenu';
@@ -15,19 +13,36 @@ import StudentCreationForm from '../../components/Login/StudentCreateAccount';
 
 // React function to render the login page for desktop devices
 const LoginDesktop: React.FC = () => {
+  // Variables to control the visibility of page components
+  const [visibleOptionsMenu, setVisibleOptionsMenu] = useState<boolean>(true);
+  const [visibleLoginForm, setVisibleLoginForm] = useState<boolean>(false);
+  const [visibleCreationForm, setVisibleCreationForm] = useState<boolean>(false);
+
+  // Variable to store the account type being logged into
+  const [accountType, setAccountType] = useState<string>("[ERROR]");
+
+  // Return JSX
   return (
     <>
-      <h1>Welcome!</h1>
-      <p className='login-subheader'>
-        Please login or create a new account.
-      </p>
-      <LoginOptionsMenu/>
-      <Divider/>
-      <LoginForm 
-        accountType='[Type]'
+      <ConfirmDialog />
+      <LoginOptionsMenu
+        setLoginType={setAccountType}
+        visible={visibleOptionsMenu}
+        setVisible={setVisibleOptionsMenu}
+        setLoginFormView={setVisibleLoginForm}
+        setCreationFormView={setVisibleCreationForm}
       />
-      <Divider/>
-      <StudentCreationForm/>
+      <LoginForm 
+        accountType={accountType}
+        visible={visibleLoginForm}
+        setVisible={setVisibleLoginForm}
+        setOptionMenuVisible={setVisibleOptionsMenu}
+      />
+      <StudentCreationForm
+        visible={visibleCreationForm}
+        setVisible={setVisibleCreationForm}
+        setOptionMenuVisible={setVisibleOptionsMenu}
+      />
     </>
   );
 };

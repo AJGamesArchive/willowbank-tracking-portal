@@ -1,0 +1,8 @@
+.login-footer {
+  color:dimgrey;
+  font-weight: bold;
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+}
