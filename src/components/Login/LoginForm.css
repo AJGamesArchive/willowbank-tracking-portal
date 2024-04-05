@@ -1,0 +1,15 @@
+.student-login-form-field {
+  margin-top: 25px;
+}
+
+.student-login-form-button-field {
+  margin-top: 25px;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+}
+
+.student-login-form-button {
+  margin-right: 10px;
+}

@@ -1,0 +1,15 @@
+.student-creation-form-field {
+  margin-top: 25px;
+}
+
+.student-creation-form-button-field {
+  margin-top: 25px;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+}
+
+.student-creation-form-button {
+  margin-right: 10px;
+}
