@@ -1,4 +1,4 @@
-import { Activities } from "../../types/Global/Activity"
+import { Activities } from "../types/Global/Activity"
 
 // Object storing all the fishing activity data provided by the client
 export const fishingActivities: Activities = {

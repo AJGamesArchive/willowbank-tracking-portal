@@ -69,6 +69,20 @@ const LoginForm: React.FC<LoginFormProps> = ({accountType, visible, setVisible, 
       reject
     });
   };
+  const confirmFormClose = () => {
+    confirmDialog({
+      message: "Are you sure you want to close the form? All the details you've added will be lost.",
+      header: 'Confirmation',
+      icon: 'pi pi-exclamation-triangle',
+      defaultFocus: 'accept',
+      position: 'top',
+      accept: () => {
+        setVisible(false);
+        setOptionMenuVisible(true);
+      },
+      reject: () => {}
+    });
+  };
 
   // Async function to handel the form submission
   async function loginHandler() {
@@ -138,8 +152,12 @@ const LoginForm: React.FC<LoginFormProps> = ({accountType, visible, setVisible, 
           </div>
           <div className="student-login-form-button">
             <Button label="Back" icon="pi pi-arrow-left" onClick={() => {
-              setVisible(false);
-              setOptionMenuVisible(true);
+              if (username !== "" || password !== "") {
+                confirmFormClose();
+              } else {
+                setVisible(false);
+                setOptionMenuVisible(true);
+              };
             }} severity="secondary"/>
           </div>
         </div>

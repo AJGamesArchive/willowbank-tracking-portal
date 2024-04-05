@@ -7,6 +7,7 @@ import { InputMask, InputMaskChangeEvent } from 'primereact/inputmask';
 import { Toast } from 'primereact/toast';
 import { BlockUI } from 'primereact/blockui';
 import { confirmDialog } from 'primereact/confirmdialog';
+import { Messages } from 'primereact/messages';
 
 // Import CSS
 import './StudentCreateAccount.css';
@@ -14,6 +15,7 @@ import './StudentCreateAccount.css';
 // Import functions
 import { schoolSearcher } from '../../functions/Login/SchoolSearcher';
 import { generateUsername } from '../../functions/Login/GenerateUsername';
+import { generatePassword } from '../../functions/Login/GeneratePassword';
 
 // Import types
 import { SchoolSearch } from '../../types/Login/SchoolSearch';
@@ -36,6 +38,7 @@ const StudentCreationForm: React.FC<StudentAccountCreationProps> = ({accountType
   const [surnameInitial, setSurnameInitial] = useState<any>(null);
   const [username, setUsername] = useState<string>("");
   const [password, setPassword] = useState<string>("");
+  const [confirmPassword, setConfirmPassword] = useState<string>("");
 
   // Variables to control the loading state of the form buttons
   const [loadingCreation, setLoadingCreation] = useState<boolean>(false);
@@ -51,6 +54,10 @@ const StudentCreationForm: React.FC<StudentAccountCreationProps> = ({accountType
   const [surnameStyle, setSurnameStyle] = useState<string>("");
   const [usernameStyle, setUsernameStyle] = useState<string>("");
   const [passwordStyle, setPasswordStyle] = useState<string>("");
+  const [confirmPasswordStyle, setConfirmPasswordStyle] = useState<string>("");
+
+  // Variable to store password generated message
+  const msg = useRef<Messages>(null);
 
   // Variable to control blocking certain sections of the UI
   const [blockForm, setBlockForm] = useState<boolean>(false);
@@ -64,7 +71,7 @@ const StudentCreationForm: React.FC<StudentAccountCreationProps> = ({accountType
       summary: 'Success',
       detail: 'Form cleared successfully.',
       closeIcon: 'pi pi-times',
-      life: 10000,
+      life: 7000,
     });
   };
   const reject = () => {
@@ -73,7 +80,7 @@ const StudentCreationForm: React.FC<StudentAccountCreationProps> = ({accountType
       summary: 'Operation Cancelled',
       detail: 'The form has not been cleared.',
       closeIcon: 'pi pi-times',
-      life: 10000,
+      life: 7000,
     });
   };
 
@@ -89,6 +96,22 @@ const StudentCreationForm: React.FC<StudentAccountCreationProps> = ({accountType
       reject
     });
   };
+  const confirmFormClose = () => {
+    confirmDialog({
+      message: "Are you sure you want to close the form? All the details you've added will be lost.",
+      header: 'Confirmation',
+      icon: 'pi pi-exclamation-triangle',
+      defaultFocus: 'accept',
+      position: 'top',
+      accept: () => {
+        setVisible(false);
+        clearHighlighting();
+        clearForm();
+        setOptionMenuVisible(true);
+      },
+      reject: () => {}
+    });
+  };
 
   // Async function to handel the form submission
   async function creationHandler() {
@@ -100,6 +123,7 @@ const StudentCreationForm: React.FC<StudentAccountCreationProps> = ({accountType
     setSurnameStyle("p-invalid");
     setUsernameStyle("p-invalid");
     setPasswordStyle("p-invalid");
+    setConfirmPasswordStyle("p-invalid");
     setTimeout(() => {
       setLoadingCreation(false);
       setBlockForm(false);
@@ -109,7 +133,7 @@ const StudentCreationForm: React.FC<StudentAccountCreationProps> = ({accountType
   };
 
   // Function to clear the form
-  function clearForm() {
+  function clearForm(): void {
     setLoadingClear(true);
     setSchoolCode(null);
     setSchoolName("");
@@ -117,9 +141,10 @@ const StudentCreationForm: React.FC<StudentAccountCreationProps> = ({accountType
     setSurnameInitial("");
     setUsername("");
     setPassword("");
+    setConfirmPassword("");
     setLoadingClear(false);
     return;
-  }
+  };
 
   // Async function to handle searching for a school based on a given school code
   async function schoolSearchHandler(): Promise<void> {
@@ -134,7 +159,7 @@ const StudentCreationForm: React.FC<StudentAccountCreationProps> = ({accountType
           summary: `${results.errorMessage.header}`,
           detail: `${results.errorMessage.message}`,
           closeIcon: 'pi pi-times',
-          life: 10000,
+          life: 7000,
         });
       };
       errorDialogue();
@@ -152,7 +177,7 @@ const StudentCreationForm: React.FC<StudentAccountCreationProps> = ({accountType
         summary: `School Name Retrieved`,
         detail: `The given school code was valid and '${results.schoolName}' has been detected as your school.`,
         closeIcon: 'pi pi-times',
-        life: 10000,
+        life: 7000,
       });
     };
     confirmationDialogue();
@@ -165,21 +190,21 @@ const StudentCreationForm: React.FC<StudentAccountCreationProps> = ({accountType
     setLoadingUsernameGen(true);
 
     // Ensure the user has provided their first name and surname initial
-    if (firstName === "" || surnameInitial === null) {
+    if (firstName === "" || surnameInitial === null || surnameInitial === "") {
       const errorDialogue = () => {
         toast.current?.show({
           severity: `error`,
           summary: `Missing Details`,
           detail: `Please ensure you enter your first name and surname initial before trying to generate a username.`,
           closeIcon: 'pi pi-times',
-          life: 10000,
+          life: 7000,
         });
       };
       errorDialogue();
       if (firstName === "") {
         setFirstNameStyle("p-invalid");
       };
-      if (surnameInitial === null) {
+      if (surnameInitial === null || surnameInitial === "") {
         setSurnameStyle("p-invalid");
       };
       setLoadingUsernameGen(false);
@@ -195,7 +220,7 @@ const StudentCreationForm: React.FC<StudentAccountCreationProps> = ({accountType
           summary: `Unexpected Error Occurred`,
           detail: `An unexpected error occurred while validating if the generated usernames is unique.`,
           closeIcon: 'pi pi-times',
-          life: 10000,
+          life: 7000,
         });
       };
       errorDialogue();
@@ -211,7 +236,7 @@ const StudentCreationForm: React.FC<StudentAccountCreationProps> = ({accountType
         summary: `Username Generated`,
         detail: `The username '${genUsername.name}' was generated successfully.`,
         closeIcon: 'pi pi-times',
-        life: 10000,
+        life: 7000,
       });
     };
     confirmationDialogue();
@@ -223,9 +248,57 @@ const StudentCreationForm: React.FC<StudentAccountCreationProps> = ({accountType
   // Function to handle password generation
   function passwordGenerationHandler() {
     setLoadingPasswordGen(true);
-    setTimeout(() => {
+    
+    // Ensure the user has provided their first name and surname initial
+    if (firstName === "" || surnameInitial === null || surnameInitial === "") {
+      const errorDialogue = () => {
+        toast.current?.show({
+          severity: `error`,
+          summary: `Missing Details`,
+          detail: `Please ensure you enter your first name and surname initial before trying to generate a password.`,
+          closeIcon: 'pi pi-times',
+          life: 7000,
+        });
+      };
+      errorDialogue();
+      if (firstName === "") {
+        setFirstNameStyle("p-invalid");
+      };
+      if (surnameInitial === null || surnameInitial === "") {
+        setSurnameStyle("p-invalid");
+      };
       setLoadingPasswordGen(false);
-    }, 2000);
+      return;
+    };
+
+    // Generate a password and output it to the user
+    const genPassword: string = generatePassword(firstName, surnameInitial);
+    setPassword(genPassword);
+    const confirmationDialogue = () => {
+      toast.current?.show({
+        severity: `success`,
+        summary: `Password Generated`,
+        detail: `The password '${genPassword}' was generated successfully.`,
+        closeIcon: 'pi pi-times',
+        life: 7000,
+      });
+    };
+    confirmationDialogue();
+    const showPassword = () => {
+      msg.current?.show([
+        {
+          severity: 'info',
+          summary: 'Generated Password:',
+          detail: `${genPassword}`,
+          sticky: true,
+          closable: true,
+          closeIcon: 'pi pi-times'
+        }
+      ]);
+    };
+    showPassword();
+
+    setLoadingPasswordGen(false);
     return;
   };
 
@@ -237,12 +310,14 @@ const StudentCreationForm: React.FC<StudentAccountCreationProps> = ({accountType
     setSurnameStyle("");
     setUsernameStyle("");
     setPasswordStyle("");
+    setConfirmPasswordStyle("");
     return;
   };
 
   // Return JSX
   return (
     <BlockUI blocked={blockForm}>
+    <Toast ref={toast} />
     <Card title={`Create New ${accountType} Account`} subTitle='Enter your details:' style={{ display: visible ? 'block' : 'none' }}>
       <div className="p-inputgroup flex-1">
         <span className="p-float-label">
@@ -384,7 +459,27 @@ const StudentCreationForm: React.FC<StudentAccountCreationProps> = ({accountType
         </small>
       </div>
 
-      <Toast ref={toast} />
+      <Messages ref={msg}/>
+
+      <div className="student-creation-form-field">
+        <div className="p-inputgroup flex-1">
+          <span className="p-float-label">
+            <InputText
+              id="confirm-password"
+              type="password"
+              value={confirmPassword}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => setConfirmPassword(e.target.value)}
+              required
+              className={confirmPasswordStyle}
+              aria-describedby='confirm-password-help'
+            />
+            <label htmlFor="confirm-password">Confirm Password</label>
+          </span>
+        </div>
+        <small id="confirm-password-help" className='creation-form-help-text'>
+          Re-enter your password to confirm it's correct.
+        </small>
+      </div>
 
       <div className="student-creation-form-button-field">
         <div className="student-creation-form-button">
@@ -401,10 +496,14 @@ const StudentCreationForm: React.FC<StudentAccountCreationProps> = ({accountType
         </div>
         <div className="student-login-form-button">
           <Button label="Back" icon="pi pi-arrow-left" onClick={() => {
-            setVisible(false);
-            clearHighlighting();
-            clearForm();
-            setOptionMenuVisible(true);
+            if (schoolCode !== null || firstName !== "" || surnameInitial !== "" || username !== "" || password !== "" || confirmPassword !== "") {
+              confirmFormClose();
+            } else {
+              setVisible(false);
+              clearHighlighting();
+              clearForm();
+              setOptionMenuVisible(true);
+            }
           }} severity="secondary"/>
         </div>
       </div>
