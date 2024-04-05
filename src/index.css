@@ -1,3 +1,7 @@
+@import 'primereact/resources/themes/lara-dark-teal/theme.css'; /* Import PrimeReact theme */
+@import 'primereact/resources/primereact.min.css'; /* Import PrimeReact core styles */
+@import 'primeicons/primeicons.css'; /* Import PrimeIcons */
+
 :root {
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
@@ -5,7 +9,7 @@
 
   color-scheme: light dark;
   color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
+  background-color: #0b1018;
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -42,7 +46,9 @@ button {
   font-size: 1em;
   font-weight: 500;
   font-family: inherit;
+  /*
   background-color: #1a1a1a;
+  */
   cursor: pointer;
   transition: border-color 0.25s;
 }
@@ -62,7 +68,9 @@ button:focus-visible {
   a:hover {
     color: #747bff;
   }
+  /*
   button {
     background-color: #f9f9f9;
   }
+  */
 }
