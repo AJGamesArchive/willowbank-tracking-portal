@@ -17,7 +17,7 @@ const LoginDesktop: React.FC = () => {
   const [visibleOptionsMenu, setVisibleOptionsMenu] = useState<boolean>(true);
   const [visibleLoginForm, setVisibleLoginForm] = useState<boolean>(false);
   const [visibleCreationForm, setVisibleCreationForm] = useState<boolean>(false);
-
+  
   // Variable to store the account type being logged into
   const [accountType, setAccountType] = useState<string>("[ERROR]");
 
@@ -39,6 +39,7 @@ const LoginDesktop: React.FC = () => {
         setOptionMenuVisible={setVisibleOptionsMenu}
       />
       <StudentCreationForm
+        accountType={accountType}
         visible={visibleCreationForm}
         setVisible={setVisibleCreationForm}
         setOptionMenuVisible={setVisibleOptionsMenu}

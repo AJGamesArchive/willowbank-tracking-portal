@@ -11,15 +11,22 @@ import { confirmDialog } from 'primereact/confirmdialog';
 // Import CSS
 import './StudentCreateAccount.css';
 
+// Import functions
+import { schoolSearcher } from '../../functions/Login/SchoolSearcher';
+
+// Import types
+import { SchoolSearch } from '../../types/Login/SchoolSearch';
+
 // Interfacing forcing certain props on the Student Account Creation form
 interface StudentAccountCreationProps {
+  accountType: string;
   visible: boolean;
   setVisible: (value: boolean) => void;
   setOptionMenuVisible: (value: boolean) => void;
 };
 
 // React function to render the student login form
-const StudentCreationForm: React.FC<StudentAccountCreationProps> = ({visible, setVisible, setOptionMenuVisible}) => {
+const StudentCreationForm: React.FC<StudentAccountCreationProps> = ({accountType, visible, setVisible, setOptionMenuVisible}) => {
   // Variables to store the required login credentials
   const [schoolCode, setSchoolCode] = useState<any>();
   const [schoolName, setSchoolName] = useState<string>("");
@@ -55,7 +62,7 @@ const StudentCreationForm: React.FC<StudentAccountCreationProps> = ({visible, se
       summary: 'Success',
       detail: 'Form cleared successfully.',
       closeIcon: 'pi pi-times',
-      life: 5000,
+      life: 10000,
     });
   };
   const reject = () => {
@@ -64,7 +71,7 @@ const StudentCreationForm: React.FC<StudentAccountCreationProps> = ({visible, se
       summary: 'Operation Cancelled',
       detail: 'The form has not been cleared.',
       closeIcon: 'pi pi-times',
-      life: 5000,
+      life: 10000,
     });
   };
 
@@ -94,12 +101,7 @@ const StudentCreationForm: React.FC<StudentAccountCreationProps> = ({visible, se
     setTimeout(() => {
       setLoadingCreation(false);
       setBlockForm(false);
-      setSchoolCodeStyle("");
-      setSchoolNameStyle("");
-      setFirstNameStyle("");
-      setSurnameStyle("");
-      setUsernameStyle("");
-      setPasswordStyle("");
+      clearHighlighting();
     }, 2000);
     return;
   };
@@ -118,13 +120,43 @@ const StudentCreationForm: React.FC<StudentAccountCreationProps> = ({visible, se
   }
 
   // Async function to handle searching for a school based on a given school code
-  async function schoolSearchHandler() {
+  async function schoolSearchHandler(): Promise<void> {
     setLoadingSchoolSearch(true);
-    setTimeout(() => {
+
+    // Attempt to retrieve the name of the school that matches the given ID
+    const results: SchoolSearch = await schoolSearcher(schoolCode);
+    if (results.errored) {
+      const errorDialogue = () => {
+        toast.current?.show({
+          severity: `error`,
+          summary: `${results.errorMessage.header}`,
+          detail: `${results.errorMessage.message}`,
+          closeIcon: 'pi pi-times',
+          life: 10000,
+        });
+      };
+      errorDialogue();
+      setSchoolCode(null);
+      setSchoolCodeStyle("p-invalid");
       setLoadingSchoolSearch(false);
-    }, 2000);
+      return;
+    };
+
+    // Update the school name field on the creation form
+    setSchoolName(results.schoolName);
+    const confirmationDialogue = () => {
+      toast.current?.show({
+        severity: `success`,
+        summary: `School Name Retrieved`,
+        detail: `The given school code was valid and '${results.schoolName}' has been detected as your school.`,
+        closeIcon: 'pi pi-times',
+        life: 10000,
+      });
+    };
+    confirmationDialogue();
+    setLoadingSchoolSearch(false);
     return;
-  }
+  };
 
   // Function to handle username generation
   function usernameGenerationHandler() {
@@ -144,23 +176,40 @@ const StudentCreationForm: React.FC<StudentAccountCreationProps> = ({visible, se
     return;
   }
 
+  // Function to clear all the error highlighting
+  function clearHighlighting(): void {
+    setSchoolCodeStyle("");
+    setSchoolNameStyle("");
+    setFirstNameStyle("");
+    setSurnameStyle("");
+    setUsernameStyle("");
+    setPasswordStyle("");
+    return;
+  }
+
   // Return JSX
   return (
     <BlockUI blocked={blockForm}>
-    <Card title='Create New Account' subTitle='Enter your details:' style={{ display: visible ? 'block' : 'none' }}>
+    <Card title={`Create New ${accountType} Account`} subTitle='Enter your details:' style={{ display: visible ? 'block' : 'none' }}>
       <div className="p-inputgroup flex-1">
         <span className="p-float-label">
           <InputMask 
             id="school_code_input"
             value={schoolCode} 
-            onChange={(e: InputMaskChangeEvent) => setSchoolCode(e.target.value)}
+            onChange={(e: InputMaskChangeEvent) => {
+              setSchoolName("");
+              setSchoolCode(e.target.value);
+            }}
             mask="99-99-99"
             slotChar="00-00-00"
             className={schoolCodeStyle}
             aria-describedby='school-code-help'
           />
           <label htmlFor="school_code_input">School Code</label>
-          <Button label='Search' icon="pi pi-search" loading={loadingSchoolSearch} onClick={schoolSearchHandler} severity="info"/>
+          <Button label='Search' icon="pi pi-search" loading={loadingSchoolSearch} onClick={() => {
+            setSchoolCodeStyle("");
+            schoolSearchHandler();
+          }} severity="info"/>
         </span>
       </div>
       <small id="school-code-help" className='creation-form-help-text'>
@@ -180,7 +229,10 @@ const StudentCreationForm: React.FC<StudentAccountCreationProps> = ({visible, se
               aria-describedby='school-name-help'
             />
             <label htmlFor="school-name">School Name</label>
-            <Button label="Clear" icon="pi pi-times" onClick={() => {setSchoolName("")}} severity="secondary"/>
+            <Button label="Clear" icon="pi pi-times" onClick={() => {
+              setSchoolName("");
+              setSchoolNameStyle("");
+            }} severity="secondary"/>
           </span>
         </div>
         <small id="school-name-help" className='creation-form-help-text'>
@@ -238,7 +290,10 @@ const StudentCreationForm: React.FC<StudentAccountCreationProps> = ({visible, se
               aria-describedby='username-help'
             />
             <label htmlFor="creation-username">Username</label>
-            <Button label='Generate' icon="pi pi-sync" loading={loadingUsernameGen} onClick={usernameGenerationHandler} severity="info"/>
+            <Button label='Generate' icon="pi pi-sync" loading={loadingUsernameGen} onClick={() => {
+              setUsernameStyle("");
+              usernameGenerationHandler();
+            }} severity="info"/>
           </span>
         </div>
         <small id="username-help" className='creation-form-help-text'>
@@ -259,7 +314,10 @@ const StudentCreationForm: React.FC<StudentAccountCreationProps> = ({visible, se
               aria-describedby='password-help'
             />
             <label htmlFor="creation-password">Password</label>
-            <Button label='Generate' icon="pi pi-sync" loading={loadingPasswordGen} onClick={passwordGenerationHandler} severity="info"/>
+            <Button label='Generate' icon="pi pi-sync" loading={loadingPasswordGen} onClick={() => {
+              setPasswordStyle("");
+              passwordGenerationHandler();
+            }} severity="info"/>
           </span>
         </div>
         <small id="password-help" className='creation-form-help-text'>
@@ -271,14 +329,22 @@ const StudentCreationForm: React.FC<StudentAccountCreationProps> = ({visible, se
 
       <div className="student-creation-form-button-field">
         <div className="student-creation-form-button">
-          <Button label="Login" icon="pi pi-check" loading={loadingCreation} onClick={creationHandler} raised severity="info"/>
+          <Button label="Login" icon="pi pi-check" loading={loadingCreation} onClick={() => {
+            clearHighlighting();
+            creationHandler();
+          }} raised severity="info"/>
         </div>
         <div className="student-creation-form-button">
-          <Button label="Clear" icon="pi pi-exclamation-triangle" loading={loadingClear} onClick={confirmFormClear} raised severity="warning"/>
+          <Button label="Clear" icon="pi pi-exclamation-triangle" loading={loadingClear} onClick={() => {
+            clearHighlighting();
+            confirmFormClear();
+          }} raised severity="warning"/>
         </div>
         <div className="student-login-form-button">
           <Button label="Back" icon="pi pi-arrow-left" onClick={() => {
             setVisible(false);
+            clearHighlighting();
+            clearForm();
             setOptionMenuVisible(true);
           }} severity="secondary"/>
         </div>

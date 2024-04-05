@@ -1,5 +1,9 @@
+// Import types
+import { Error } from "../Global/Error";
+
 // Type declaration for validating login credentials
 export type CredentialValidation = {
   valid: boolean;
-  message: string;
+  errored: boolean;
+  errorMessage: Error;
 };
