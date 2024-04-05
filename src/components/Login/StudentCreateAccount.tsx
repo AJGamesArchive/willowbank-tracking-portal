@@ -13,9 +13,11 @@ import './StudentCreateAccount.css';
 
 // Import functions
 import { schoolSearcher } from '../../functions/Login/SchoolSearcher';
+import { generateUsername } from '../../functions/Login/GenerateUsername';
 
 // Import types
 import { SchoolSearch } from '../../types/Login/SchoolSearch';
+import { UsernameGen } from '../../types/Login/UsernameGen';
 
 // Interfacing forcing certain props on the Student Account Creation form
 interface StudentAccountCreationProps {
@@ -28,10 +30,10 @@ interface StudentAccountCreationProps {
 // React function to render the student login form
 const StudentCreationForm: React.FC<StudentAccountCreationProps> = ({accountType, visible, setVisible, setOptionMenuVisible}) => {
   // Variables to store the required login credentials
-  const [schoolCode, setSchoolCode] = useState<any>();
+  const [schoolCode, setSchoolCode] = useState<any>(null);
   const [schoolName, setSchoolName] = useState<string>("");
   const [firstName, setFirstName] = useState<string>("");
-  const [surnameInitial, setSurnameInitial] = useState<any>();
+  const [surnameInitial, setSurnameInitial] = useState<any>(null);
   const [username, setUsername] = useState<string>("");
   const [password, setPassword] = useState<string>("");
 
@@ -158,14 +160,65 @@ const StudentCreationForm: React.FC<StudentAccountCreationProps> = ({accountType
     return;
   };
 
-  // Function to handle username generation
-  function usernameGenerationHandler() {
+  // async function to handle username generation
+  async function usernameGenerationHandler(): Promise<void> {
     setLoadingUsernameGen(true);
-    setTimeout(() => {
+
+    // Ensure the user has provided their first name and surname initial
+    if (firstName === "" || surnameInitial === null) {
+      const errorDialogue = () => {
+        toast.current?.show({
+          severity: `error`,
+          summary: `Missing Details`,
+          detail: `Please ensure you enter your first name and surname initial before trying to generate a username.`,
+          closeIcon: 'pi pi-times',
+          life: 10000,
+        });
+      };
+      errorDialogue();
+      if (firstName === "") {
+        setFirstNameStyle("p-invalid");
+      };
+      if (surnameInitial === null) {
+        setSurnameStyle("p-invalid");
+      };
       setLoadingUsernameGen(false);
-    }, 2000);
+      return;
+    };
+
+    // Generate username and ensure it's unique
+    const genUsername: UsernameGen = await generateUsername(firstName, surnameInitial);
+    if (!genUsername.success) {
+      const errorDialogue = () => {
+        toast.current?.show({
+          severity: `error`,
+          summary: `Unexpected Error Occurred`,
+          detail: `An unexpected error occurred while validating if the generated usernames is unique.`,
+          closeIcon: 'pi pi-times',
+          life: 10000,
+        });
+      };
+      errorDialogue();
+      setLoadingUsernameGen(false);
+      return;
+    };
+
+    // Save and output the generated username
+    setUsername(genUsername.name);
+    const confirmationDialogue = () => {
+      toast.current?.show({
+        severity: `success`,
+        summary: `Username Generated`,
+        detail: `The username '${genUsername.name}' was generated successfully.`,
+        closeIcon: 'pi pi-times',
+        life: 10000,
+      });
+    };
+    confirmationDialogue();
+
+    setLoadingUsernameGen(false);
     return;
-  }
+  };
 
   // Function to handle password generation
   function passwordGenerationHandler() {
@@ -174,7 +227,7 @@ const StudentCreationForm: React.FC<StudentAccountCreationProps> = ({accountType
       setLoadingPasswordGen(false);
     }, 2000);
     return;
-  }
+  };
 
   // Function to clear all the error highlighting
   function clearHighlighting(): void {
@@ -185,7 +238,7 @@ const StudentCreationForm: React.FC<StudentAccountCreationProps> = ({accountType
     setUsernameStyle("");
     setPasswordStyle("");
     return;
-  }
+  };
 
   // Return JSX
   return (
@@ -232,6 +285,8 @@ const StudentCreationForm: React.FC<StudentAccountCreationProps> = ({accountType
             <Button label="Clear" icon="pi pi-times" onClick={() => {
               setSchoolName("");
               setSchoolNameStyle("");
+              setSchoolCode(null);
+              setSchoolCodeStyle("");
             }} severity="secondary"/>
           </span>
         </div>
@@ -292,6 +347,8 @@ const StudentCreationForm: React.FC<StudentAccountCreationProps> = ({accountType
             <label htmlFor="creation-username">Username</label>
             <Button label='Generate' icon="pi pi-sync" loading={loadingUsernameGen} onClick={() => {
               setUsernameStyle("");
+              setFirstNameStyle("");
+              setSurnameStyle("");
               usernameGenerationHandler();
             }} severity="info"/>
           </span>
@@ -316,6 +373,8 @@ const StudentCreationForm: React.FC<StudentAccountCreationProps> = ({accountType
             <label htmlFor="creation-password">Password</label>
             <Button label='Generate' icon="pi pi-sync" loading={loadingPasswordGen} onClick={() => {
               setPasswordStyle("");
+              setFirstNameStyle("");
+              setSurnameStyle("");
               passwordGenerationHandler();
             }} severity="info"/>
           </span>
