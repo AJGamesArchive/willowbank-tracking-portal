@@ -2,9 +2,9 @@
 // import { db } from "../database/Initalise";
 
 // Importing types
-import { CredentialValidation } from "../../types/Login/CredentialValidation";
+import { AccountLogin } from "../../types/Login/AccountLogin";
 
 // Async Function that takes the entered account credentials and handles the login process and validation
-export async function login(): Promise<CredentialValidation> {
+export async function login(): Promise<AccountLogin> {
   throw new NotImplementedError;
 };

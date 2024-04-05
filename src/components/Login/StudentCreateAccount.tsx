@@ -13,9 +13,11 @@ import { Messages } from 'primereact/messages';
 import './StudentCreateAccount.css';
 
 // Import functions
+import { createStudentAccount } from '../../functions/Login/CreateStudentAccount';
 import { schoolSearcher } from '../../functions/Login/SchoolSearcher';
 import { generateUsername } from '../../functions/Login/GenerateUsername';
 import { generatePassword } from '../../functions/Login/GeneratePassword';
+import { retrieveDocumentIDs } from '../../functions/Global/RetrieveDocumentIDs';
 
 // Import types
 import { SchoolSearch } from '../../types/Login/SchoolSearch';
@@ -117,18 +119,123 @@ const StudentCreationForm: React.FC<StudentAccountCreationProps> = ({accountType
   async function creationHandler() {
     setLoadingCreation(true);
     setBlockForm(true);
-    setSchoolCodeStyle("p-invalid");
-    setSchoolNameStyle("p-invalid");
-    setFirstNameStyle("p-invalid");
-    setSurnameStyle("p-invalid");
-    setUsernameStyle("p-invalid");
-    setPasswordStyle("p-invalid");
-    setConfirmPasswordStyle("p-invalid");
-    setTimeout(() => {
+    
+    // Declaring base error for overall credential validation
+    const detailValidationError = (title: string, message: string) => {
+      toast.current?.show({
+        severity: `error`,
+        summary: `${title}`,
+        detail: `${message}`,
+        closeIcon: 'pi pi-times',
+        life: 7000,
+      });
+    };
+
+    // Ensure the entered school code is valid
+    const results: SchoolSearch = await schoolSearcher(schoolCode);
+    if (results.errored) {
+      detailValidationError("Invalid School Code", "The school code you entered is invalid. Please check your code is correct and try again.");
+      setSchoolCode(null);
+      setSchoolCodeStyle("p-invalid");
       setLoadingCreation(false);
       setBlockForm(false);
-      clearHighlighting();
-    }, 2000);
+      return;
+    };
+
+    // Ensure a valid school has been detected and assigned
+    if (schoolName === "") {
+      detailValidationError("No School Detected", "Ensure you detect your school by searching with a school code before creating your account.");
+      setSchoolNameStyle("p-invalid");
+      setLoadingCreation(false);
+      setBlockForm(false);
+      return;
+    };
+
+    // Ensure a first name has been provided
+    if (firstName === "") {
+      detailValidationError("Invalid First Name", "You have not entered a first name. Please provide a first name and try again.");
+      setFirstNameStyle("p-invalid");
+      setLoadingCreation(false);
+      setBlockForm(false);
+      return;
+    };
+
+    // Ensure a surname initial has been provided
+    if (surnameInitial === "" || surnameInitial === null) {
+      detailValidationError("Invalid Surname Initial", "You have not entered a surname initial. Please enter a surname initial and try again.");
+      setSurnameStyle("p-invalid");
+      setLoadingCreation(false);
+      setBlockForm(false);
+      return;
+    };
+
+    // Ensure a unique username has been entered
+    if (username === "") {
+      detailValidationError("Invalid Username", "You have not entered a username. Please enter a username and try again.");
+      setUsernameStyle("p-invalid");
+      setLoadingCreation(false);
+      setBlockForm(false);
+      return;
+    };
+    const allUsernames: string | string[] = await retrieveDocumentIDs("students");
+    if (typeof allUsernames === "string") {
+      detailValidationError("An Unexpected Error Occurred", "An unexpected error occurred while validating the username uniques. Please try again.");
+      setUsernameStyle("p-invalid");
+      setLoadingCreation(false);
+      setBlockForm(false);
+      return;
+    };
+    allUsernames.forEach((n) => {
+      if (n === username) {
+        detailValidationError("Invalid Username", "The username you have entered is not unique. Please enter a different username and try again.");
+        setUsernameStyle("p-invalid");
+        setLoadingCreation(false);
+        setBlockForm(false);
+        return;
+      };
+    });
+
+    // Ensure that a password has been provided and ensure it matches the confirmation password
+    if (password === "" || confirmPassword === "") {
+      detailValidationError("Invalid Password", "You have not entered and/or confirmed a password. Please enter and confirm your password and try again.");
+      (password === "") ? setPasswordStyle("p-invalid") : setConfirmPasswordStyle("p-invalid");
+      setLoadingCreation(false);
+      setBlockForm(false);
+      return;
+    };
+    if (password !== confirmPassword) {
+      detailValidationError("Invalid Password", "You did not enter the same password twice. Please ensure you enter the same password twice.");
+      setPasswordStyle("p-invalid");
+      setConfirmPasswordStyle("p-invalid");
+      setLoadingCreation(false);
+      setBlockForm(false);
+      return;
+    };
+
+    // Create the student account
+    const creationResults: boolean = await createStudentAccount(schoolCode, schoolName, firstName, surnameInitial, username, password);
+    if (!creationResults) {
+      detailValidationError("Something Went Wrong", "An unexpected error occurred and the account was not able to be created. Please try again.");
+      setLoadingCreation(false);
+      setBlockForm(false);
+      return;
+    };
+
+    // Output confirmation message
+    const accountCreatedConfirm = () => {
+      toast.current?.show({
+        severity: `success`,
+        summary: `Account Creation Successful`,
+        detail: `The account '${username}' was created successfully. You should now be able to login from the student login page.`,
+        closeIcon: 'pi pi-times',
+        life: 7000,
+      });
+    };
+    accountCreatedConfirm();
+    clearForm();
+    
+    setLoadingCreation(false);
+    setBlockForm(false);
     return;
   };
 
@@ -201,12 +308,7 @@ const StudentCreationForm: React.FC<StudentAccountCreationProps> = ({accountType
         });
       };
       errorDialogue();
-      if (firstName === "") {
-        setFirstNameStyle("p-invalid");
-      };
-      if (surnameInitial === null || surnameInitial === "") {
-        setSurnameStyle("p-invalid");
-      };
+      (firstName === "") ? setFirstNameStyle("p-invalid") : setSurnameStyle("p-invalid");
       setLoadingUsernameGen(false);
       return;
     };
@@ -261,12 +363,7 @@ const StudentCreationForm: React.FC<StudentAccountCreationProps> = ({accountType
         });
       };
       errorDialogue();
-      if (firstName === "") {
-        setFirstNameStyle("p-invalid");
-      };
-      if (surnameInitial === null || surnameInitial === "") {
-        setSurnameStyle("p-invalid");
-      };
+      (firstName === "") ? setFirstNameStyle("p-invalid") : setSurnameStyle("p-invalid");
       setLoadingPasswordGen(false);
       return;
     };
@@ -285,6 +382,7 @@ const StudentCreationForm: React.FC<StudentAccountCreationProps> = ({accountType
     };
     confirmationDialogue();
     const showPassword = () => {
+      msg.current?.clear();
       msg.current?.show([
         {
           severity: 'info',
@@ -503,7 +601,7 @@ const StudentCreationForm: React.FC<StudentAccountCreationProps> = ({accountType
               clearHighlighting();
               clearForm();
               setOptionMenuVisible(true);
-            }
+            };
           }} severity="secondary"/>
         </div>
       </div>
