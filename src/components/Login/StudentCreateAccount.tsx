@@ -169,9 +169,16 @@ const StudentCreationForm: React.FC<StudentAccountCreationProps> = ({accountType
       return;
     };
 
-    // Ensure a unique username has been entered
+    // Ensure a unique username has been entered and ensure the username contains no spaces
     if (username === "") {
       detailValidationError("Invalid Username", "You have not entered a username. Please enter a username and try again.");
+      setUsernameStyle("p-invalid");
+      setLoadingCreation(false);
+      setBlockForm(false);
+      return;
+    };
+    if (/\s/.test(username)) {
+      detailValidationError("Invalid Username", "Usernames must not contain a space. Please remove any spaces from your username.");
       setUsernameStyle("p-invalid");
       setLoadingCreation(false);
       setBlockForm(false);
