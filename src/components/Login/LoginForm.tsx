@@ -6,9 +6,16 @@ import { InputText } from 'primereact/inputtext';
 import { Toast } from 'primereact/toast';
 import { BlockUI } from 'primereact/blockui';
 import { confirmDialog } from 'primereact/confirmdialog';
+import { Messages } from 'primereact/messages';
 
 // Import CSS
 import './LoginForm.css';
+
+// Import types
+import { AccountLogin } from '../../types/Login/AccountLogin';
+
+// Import functions
+import { login } from '../../functions/Login/Login';
 
 // Interfacing forcing certain props on the login form
 interface LoginFormProps {
@@ -32,6 +39,10 @@ const LoginForm: React.FC<LoginFormProps> = ({accountType, visible, setVisible, 
   const [usernameStyle, setUsernameStyle] = useState<string>("");
   const [passwordStyle, setPasswordStyle] = useState<string>("");
 
+  // Variable to store section specific error messages
+  const msgUsername = useRef<Messages>(null);
+  const msgPassword = useRef<Messages>(null);
+
   // Variable to control blocking certain sections of the UI
   const [blockForm, setBlockForm] = useState<boolean>(false);
 
@@ -39,6 +50,7 @@ const LoginForm: React.FC<LoginFormProps> = ({accountType, visible, setVisible, 
   const toast = useRef<Toast>(null);
   const accept = () => {
     clearForm();
+    clearHighlighting();
     toast.current?.show({
       severity: 'success',
       summary: 'Success',
@@ -77,6 +89,7 @@ const LoginForm: React.FC<LoginFormProps> = ({accountType, visible, setVisible, 
       defaultFocus: 'accept',
       position: 'top',
       accept: () => {
+        clearHighlighting();
         setVisible(false);
         setOptionMenuVisible(true);
       },
@@ -85,32 +98,98 @@ const LoginForm: React.FC<LoginFormProps> = ({accountType, visible, setVisible, 
   };
 
   // Async function to handel the form submission
-  async function loginHandler() {
+  async function loginHandler(): Promise<void> {
     setLoadingLogin(true);
     setBlockForm(true);
-    setUsernameStyle("p-invalid");
-    setPasswordStyle("p-invalid");
-    setTimeout(() => {
+
+    // Ensure a username has been entered
+    if (username === "") {
+      msgUsername.current?.show([
+        {
+          severity: 'warn',
+          summary: 'Invalid Username',
+          detail: ``,
+          sticky: true,
+          closable: true,
+          closeIcon: 'pi pi-times'
+        }
+      ]);
+      setUsernameStyle("p-invalid");
       setLoadingLogin(false);
       setBlockForm(false);
-      setUsernameStyle("");
-      setPasswordStyle("");
-    }, 2000);
+      return;
+    };
+
+    // Ensure a password has been entered
+    if (password === "") {
+      msgPassword.current?.show([
+        {
+          severity: 'warn',
+          summary: 'Invalid Password',
+          detail: ``,
+          sticky: true,
+          closable: true,
+          closeIcon: 'pi pi-times'
+        }
+      ]);
+      setPasswordStyle("p-invalid");
+      setLoadingLogin(false);
+      setBlockForm(false);
+      return;
+    };
+
+    // Login Handler - Ensure username and password match
+    const loginState: AccountLogin = await login(accountType, username, password);
+    if (!loginState.successful) {
+      msgPassword.current?.show([
+        {
+          severity: 'error',
+          summary: 'Invalid Credentials',
+          detail: ``,
+          sticky: true,
+          closable: true,
+          closeIcon: 'pi pi-times'
+        }
+      ]);
+      setUsernameStyle("p-invalid");
+      setPasswordStyle("p-invalid");
+      setLoadingLogin(false);
+      setBlockForm(false);
+      return;
+    };
+
+    // Successful login - Send user to their respective portal
+    setLoadingLogin(false);
+    setBlockForm(false);
+    clearForm();
+
+    window.location.href = `/home`; //! Testing programmatic navigation - update later
+
     return;
   };
 
   // Function to clear the form
-  function clearForm() {
+  function clearForm(): void {
     setLoadingClear(true);
     setUsername("");
     setPassword("");
     setLoadingClear(false);
     return;
-  }
+  };
+
+  // Function to clear all the error highlighting
+  function clearHighlighting(): void {
+    msgUsername.current?.clear();
+    msgPassword.current?.clear();
+    setUsernameStyle("");
+    setPasswordStyle("");
+    return;
+  };
 
   // Return JSX
   return (
     <BlockUI blocked={blockForm}>
+      <Toast ref={toast} />
       <Card title={`${accountType} Login`} subTitle='Enter your credentials:' style={{ display: visible ? 'block' : 'none' }}>
         <div className="p-inputgroup flex-1">
           <span className="p-float-label">
@@ -124,6 +203,8 @@ const LoginForm: React.FC<LoginFormProps> = ({accountType, visible, setVisible, 
             <label htmlFor="login-username">Username</label>
           </span>
         </div>
+
+        <Messages ref={msgUsername}/>
 
         <div className="student-login-form-field">
           <div className="p-inputgroup flex-1">
@@ -141,11 +222,14 @@ const LoginForm: React.FC<LoginFormProps> = ({accountType, visible, setVisible, 
           </div>
         </div>
 
-        <Toast ref={toast} />
+        <Messages ref={msgPassword}/>
 
         <div className="student-login-form-button-field">
           <div className="student-login-form-button">
-            <Button label="Login" icon="pi pi-check" loading={loadingLogin} onClick={loginHandler} raised severity="info"/>
+            <Button label="Login" icon="pi pi-check" loading={loadingLogin} onClick={() => {
+              clearHighlighting();
+              loginHandler();
+            }} raised severity="info"/>
           </div>
           <div className="student-login-form-button">
             <Button label="Clear" icon="pi pi-exclamation-triangle" loading={loadingClear} onClick={confirmFormClear} raised severity="warning"/>
@@ -155,6 +239,7 @@ const LoginForm: React.FC<LoginFormProps> = ({accountType, visible, setVisible, 
               if (username !== "" || password !== "") {
                 confirmFormClose();
               } else {
+                clearHighlighting();
                 setVisible(false);
                 setOptionMenuVisible(true);
               };
