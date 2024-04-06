@@ -56,7 +56,7 @@ const LoginForm: React.FC<LoginFormProps> = ({accountType, visible, setVisible, 
       summary: 'Success',
       detail: 'Form cleared successfully.',
       closeIcon: 'pi pi-times',
-      life: 5000,
+      life: 7000,
     });
   };
   const reject = () => {
@@ -65,7 +65,7 @@ const LoginForm: React.FC<LoginFormProps> = ({accountType, visible, setVisible, 
       summary: 'Operation Cancelled',
       detail: 'The form has not been cleared.',
       closeIcon: 'pi pi-times',
-      life: 5000,
+      life: 7000,
     });
   };
 
@@ -163,7 +163,24 @@ const LoginForm: React.FC<LoginFormProps> = ({accountType, visible, setVisible, 
     setBlockForm(false);
     clearForm();
 
-    window.location.href = `/home`; //! Testing programmatic navigation - update later
+    // Send the user to their respective portal
+    switch(accountType) {
+      case ("Admin"): // Send to admin portal
+        window.location.href = `/adminportal/${loginState.username}/${loginState.token}`;
+        break;
+      case ("Teacher"): // Send to teacher portal
+        window.location.href = `/teacherportal/${loginState.username}/${loginState.token}`;
+        break;
+      default: // Send to student portal
+        toast.current?.show({
+          severity: 'warn',
+          summary: "Page Doesn't Exist",
+          detail: 'The student portal page has not been implemented yet. Sorry.',
+          closeIcon: 'pi pi-times',
+          life: 7000,
+        });
+        break;
+    };
 
     return;
   };

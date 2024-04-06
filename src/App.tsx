@@ -14,6 +14,10 @@ import { detectWindowSize } from './functions/Global/DetectWindowSize';
 // Import pages
 import LoginDesktop from './pages/Login/LoginDesktop';
 import LoginMobile from './pages/Login/LoginMobile';
+import AdminPortalDesktop from './pages/Admin/AdminPortalDesktop';
+import AdminPortalMobile from './pages/Admin/AdminPortalMobile';
+import TeacherPortalDesktop from './pages/Teacher/TeacherPortalDesktop';
+import TeacherPortalMobile from './pages/Teacher/TeacherPortalMobile';
 
 // React function to handle core app navigation and UI code rendering based on given run time device screen size
 const App: React.FC = () => {
@@ -26,6 +30,8 @@ const App: React.FC = () => {
       <Routes>
         <Route path="/" Component={LoginMobile} />
         <Route path="/home" Component={LoginMobile} />
+        <Route path="/adminportal/:username/:token" Component={AdminPortalMobile} />
+        <Route path="/teacherportal/:username/:token" Component={TeacherPortalMobile} />
       </Routes>
     );
   } else if (windowSize.width >= 768 && windowSize.width <= 1024) {
@@ -35,6 +41,8 @@ const App: React.FC = () => {
       <Routes>
         <Route path="/" Component={LoginDesktop} />
         <Route path="/home" Component={LoginDesktop} />
+        <Route path="/adminportal/:username/:token" Component={AdminPortalDesktop} />
+        <Route path="/teacherportal/:username/:token" Component={TeacherPortalDesktop} />
       </Routes>
     );
   } else {
@@ -43,6 +51,8 @@ const App: React.FC = () => {
       <Routes>
         <Route path="/" Component={LoginDesktop} />
         <Route path="/home" Component={LoginDesktop} />
+        <Route path="/adminportal/:username/:token" Component={AdminPortalDesktop} />
+        <Route path="/teacherportal/:username/:token" Component={TeacherPortalDesktop} />
       </Routes>
     );
   };
