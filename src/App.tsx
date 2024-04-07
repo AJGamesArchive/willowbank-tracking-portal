@@ -14,6 +14,8 @@ import { detectWindowSize } from './functions/Global/DetectWindowSize';
 // Import pages
 import LoginDesktop from './pages/Login/LoginDesktop';
 import LoginMobile from './pages/Login/LoginMobile';
+import StudentDesktop from './pages/Student/HomeDesktop';
+import StudentMobile from './pages/Student/HomeMobile';
 import AdminPortalDesktop from './pages/Admin/AdminPortalDesktop';
 import AdminPortalMobile from './pages/Admin/AdminPortalMobile';
 import TeacherPortalDesktop from './pages/Teacher/TeacherPortalDesktop';
@@ -30,6 +32,7 @@ const App: React.FC = () => {
       <Routes>
         <Route path="/" Component={LoginMobile} />
         <Route path="/home" Component={LoginMobile} />
+        <Route path="/studenthome" Component={StudentMobile}></Route>
         <Route path="/adminportal/:username/:token" Component={AdminPortalMobile} />
         <Route path="/teacherportal/:username/:token" Component={TeacherPortalMobile} />
       </Routes>
@@ -41,6 +44,7 @@ const App: React.FC = () => {
       <Routes>
         <Route path="/" Component={LoginDesktop} />
         <Route path="/home" Component={LoginDesktop} />
+        <Route path="/studenthome" Component={StudentDesktop}></Route>
         <Route path="/adminportal/:username/:token" Component={AdminPortalDesktop} />
         <Route path="/teacherportal/:username/:token" Component={TeacherPortalDesktop} />
       </Routes>
@@ -51,6 +55,7 @@ const App: React.FC = () => {
       <Routes>
         <Route path="/" Component={LoginDesktop} />
         <Route path="/home" Component={LoginDesktop} />
+        <Route path="/studenthome" Component={StudentDesktop}></Route>
         <Route path="/adminportal/:username/:token" Component={AdminPortalDesktop} />
         <Route path="/teacherportal/:username/:token" Component={TeacherPortalDesktop} />
       </Routes>
