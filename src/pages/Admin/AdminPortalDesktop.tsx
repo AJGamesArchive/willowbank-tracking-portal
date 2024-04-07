@@ -10,9 +10,12 @@ import { useParams } from 'react-router';
 // Import CSS
 import './AdminPortalDesktop.css'
 import './AdminPortalGlobal.css'
+import '../../components/Admin/admin.css'
 
 // Import functions
 import { confirmLogin } from '../../functions/Global/ConfirmLogin';
+import { Divider } from 'primereact/divider';
+import AdminCard from '../../components/Admin/admin';
 
 // React function to render the Admin Portal page for desktop devices
 const AdminPortalDesktop: React.FC = () => {
@@ -37,10 +40,19 @@ const AdminPortalDesktop: React.FC = () => {
   if (isLoggedIn) {
     return (
       <>
-        <h1>Desktop UI Code</h1>
-        <h1>Admin Portal</h1>
-        <h2>{params.username}</h2>
-        <h2>{params.token}</h2>
+        <h1>Welcome {params.username}</h1>
+        <p>Please select from the following options.</p>
+        <br />
+        <AdminCard title="View password request resets" 
+        description="Reset passwords for teachers and students."
+        destinationPage="" />
+        <AdminCard title="Manage existing accounts"
+        description="Create, modify or delete accounts."
+        destinationPage=""/>  
+        <AdminCard title="Add a new school"
+        description="Add a new school to the system"
+        destinationPage=""/>
+        <Divider />
         <Button label="[DEV] Back" icon="pi pi-arrow-left" onClick={() => {
           window.location.href = `/home` //! DEV button to return to login page - remove later
         }} severity="secondary"/>
