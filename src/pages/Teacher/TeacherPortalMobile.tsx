@@ -47,9 +47,11 @@ const TeacherPortalMobile: React.FC = () => {
       </>
     );
   } else {
-    <>
-      <ProgressSpinner/>
-    </>
+    return (
+      <>
+        <ProgressSpinner/>
+      </>
+    );
   };
 };
 

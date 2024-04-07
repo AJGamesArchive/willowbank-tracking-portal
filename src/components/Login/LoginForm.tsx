@@ -173,13 +173,7 @@ const LoginForm: React.FC<LoginFormProps> = ({accountType, visible, setVisible, 
         window.location.href = `/teacherportal/${loginState.username}/${loginState.token}`;
         break;
       default: // Send to student portal
-        toast.current?.show({
-          severity: 'warn',
-          summary: "Page Doesn't Exist",
-          detail: 'The student portal page has not been implemented yet. Sorry.',
-          closeIcon: 'pi pi-times',
-          life: 7000,
-        });
+        window.location.href = `/studenthome/${loginState.username}/${loginState.token}`;
         break;
     };
 
