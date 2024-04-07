@@ -47,9 +47,11 @@ const TeacherPortalDesktop: React.FC = () => {
       </>
     );
   } else {
-    <>
-      <ProgressSpinner/>
-    </>
+    return (
+      <>
+        <ProgressSpinner/>
+      </>
+    );
   };
 };
 

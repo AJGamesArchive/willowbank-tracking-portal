@@ -47,9 +47,11 @@ const AdminPortalDesktop: React.FC = () => {
       </>
     );
   } else {
-    <>
-      <ProgressSpinner/>
-    </>
+    return (
+      <>
+        <ProgressSpinner/>
+      </>
+    );
   };
 };
 

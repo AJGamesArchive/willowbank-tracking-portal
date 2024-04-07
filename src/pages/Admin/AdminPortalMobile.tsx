@@ -47,9 +47,11 @@ const AdminPortalMobile: React.FC = () => {
       </>
     );
   } else {
-    <>
-      <ProgressSpinner/>
-    </>
+    return (
+      <>
+        <ProgressSpinner/>
+      </>
+    );
   };
 };
 

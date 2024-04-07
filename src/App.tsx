@@ -32,7 +32,7 @@ const App: React.FC = () => {
       <Routes>
         <Route path="/" Component={LoginMobile} />
         <Route path="/home" Component={LoginMobile} />
-        <Route path="/studenthome" Component={StudentMobile}></Route>
+        <Route path="/studenthome/:username/:token" Component={StudentMobile}></Route>
         <Route path="/adminportal/:username/:token" Component={AdminPortalMobile} />
         <Route path="/teacherportal/:username/:token" Component={TeacherPortalMobile} />
       </Routes>
@@ -44,7 +44,7 @@ const App: React.FC = () => {
       <Routes>
         <Route path="/" Component={LoginDesktop} />
         <Route path="/home" Component={LoginDesktop} />
-        <Route path="/studenthome" Component={StudentDesktop}></Route>
+        <Route path="/studenthome/:username/:token" Component={StudentDesktop}></Route>
         <Route path="/adminportal/:username/:token" Component={AdminPortalDesktop} />
         <Route path="/teacherportal/:username/:token" Component={TeacherPortalDesktop} />
       </Routes>
@@ -55,7 +55,7 @@ const App: React.FC = () => {
       <Routes>
         <Route path="/" Component={LoginDesktop} />
         <Route path="/home" Component={LoginDesktop} />
-        <Route path="/studenthome" Component={StudentDesktop}></Route>
+        <Route path="/studenthome/:username/:token" Component={StudentDesktop}></Route>
         <Route path="/adminportal/:username/:token" Component={AdminPortalDesktop} />
         <Route path="/teacherportal/:username/:token" Component={TeacherPortalDesktop} />
       </Routes>
