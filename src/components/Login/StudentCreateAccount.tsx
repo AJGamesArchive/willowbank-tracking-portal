@@ -588,7 +588,7 @@ const StudentCreationForm: React.FC<StudentAccountCreationProps> = ({accountType
 
       <div className="student-creation-form-button-field">
         <div className="student-creation-form-button">
-          <Button label="Login" icon="pi pi-check" loading={loadingCreation} onClick={() => {
+          <Button label="Create" icon="pi pi-check" loading={loadingCreation} onClick={() => {
             clearHighlighting();
             creationHandler();
           }} raised severity="info"/>
