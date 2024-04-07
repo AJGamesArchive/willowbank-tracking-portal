@@ -7,6 +7,7 @@ import { Toast } from 'primereact/toast';
 import { BlockUI } from 'primereact/blockui';
 import { confirmDialog } from 'primereact/confirmdialog';
 import { Messages } from 'primereact/messages';
+import { Divider } from 'primereact/divider';
 
 // Import CSS
 import './LoginForm.css';
@@ -206,6 +207,38 @@ const LoginForm: React.FC<LoginFormProps> = ({accountType, visible, setVisible, 
   // Return JSX
   return (
     <BlockUI blocked={blockForm}>
+      {
+        /*
+          ! --------------------------------------------
+          ! Here for development purposes - remove later
+        */
+      }
+      <div style={{ display: visible ? 'block' : 'none' }}>
+        <Button label={`[DEV] ${accountType} Details`} icon="pi pi-exclamation-triangle" onClick={() => {
+          switch (accountType) {
+            case ("Teacher"):
+              console.log("Username: TestTeacher\nPassword: teacher1");
+              setUsername("TestTeacher");
+              setPassword("teacher1");
+              break;
+            case ("Admin"):
+              console.log("Username: TestAdmin\nPassword: Admin");
+              setUsername("TestAdmin");
+              setPassword("Admin");
+              break;
+            default:
+              console.log("Make your own student account!!");
+              break;
+          };
+        }} raised severity="danger"/>
+        <Divider/>
+      </div>
+      {
+        /*
+          ! Here for development purposes - remove later
+          ! --------------------------------------------
+        */
+      }
       <Toast ref={toast} />
       <Card title={`${accountType} Login`} subTitle='Enter your credentials:' style={{ display: visible ? 'block' : 'none' }}>
         <div className="p-inputgroup flex-1">
