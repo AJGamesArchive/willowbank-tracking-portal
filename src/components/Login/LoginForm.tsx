@@ -6,9 +6,17 @@ import { InputText } from 'primereact/inputtext';
 import { Toast } from 'primereact/toast';
 import { BlockUI } from 'primereact/blockui';
 import { confirmDialog } from 'primereact/confirmdialog';
+import { Messages } from 'primereact/messages';
+import { Divider } from 'primereact/divider';
 
 // Import CSS
 import './LoginForm.css';
+
+// Import types
+import { AccountLogin } from '../../types/Login/AccountLogin';
+
+// Import functions
+import { login } from '../../functions/Login/Login';
 
 // Interfacing forcing certain props on the login form
 interface LoginFormProps {
@@ -32,6 +40,10 @@ const LoginForm: React.FC<LoginFormProps> = ({accountType, visible, setVisible, 
   const [usernameStyle, setUsernameStyle] = useState<string>("");
   const [passwordStyle, setPasswordStyle] = useState<string>("");
 
+  // Variable to store section specific error messages
+  const msgUsername = useRef<Messages>(null);
+  const msgPassword = useRef<Messages>(null);
+
   // Variable to control blocking certain sections of the UI
   const [blockForm, setBlockForm] = useState<boolean>(false);
 
@@ -39,12 +51,13 @@ const LoginForm: React.FC<LoginFormProps> = ({accountType, visible, setVisible, 
   const toast = useRef<Toast>(null);
   const accept = () => {
     clearForm();
+    clearHighlighting();
     toast.current?.show({
       severity: 'success',
       summary: 'Success',
       detail: 'Form cleared successfully.',
       closeIcon: 'pi pi-times',
-      life: 5000,
+      life: 7000,
     });
   };
   const reject = () => {
@@ -53,7 +66,7 @@ const LoginForm: React.FC<LoginFormProps> = ({accountType, visible, setVisible, 
       summary: 'Operation Cancelled',
       detail: 'The form has not been cleared.',
       closeIcon: 'pi pi-times',
-      life: 5000,
+      life: 7000,
     });
   };
 
@@ -69,34 +82,164 @@ const LoginForm: React.FC<LoginFormProps> = ({accountType, visible, setVisible, 
       reject
     });
   };
+  const confirmFormClose = () => {
+    confirmDialog({
+      message: "Are you sure you want to close the form? All the details you've added will be lost.",
+      header: 'Confirmation',
+      icon: 'pi pi-exclamation-triangle',
+      defaultFocus: 'accept',
+      position: 'top',
+      accept: () => {
+        clearHighlighting();
+        setVisible(false);
+        setOptionMenuVisible(true);
+      },
+      reject: () => {}
+    });
+  };
 
   // Async function to handel the form submission
-  async function loginHandler() {
+  async function loginHandler(): Promise<void> {
     setLoadingLogin(true);
     setBlockForm(true);
-    setUsernameStyle("p-invalid");
-    setPasswordStyle("p-invalid");
-    setTimeout(() => {
+
+    // Ensure a username has been entered
+    if (username === "") {
+      msgUsername.current?.show([
+        {
+          severity: 'warn',
+          summary: 'Invalid Username',
+          detail: ``,
+          sticky: true,
+          closable: true,
+          closeIcon: 'pi pi-times'
+        }
+      ]);
+      setUsernameStyle("p-invalid");
       setLoadingLogin(false);
       setBlockForm(false);
-      setUsernameStyle("");
-      setPasswordStyle("");
-    }, 2000);
+      return;
+    };
+
+    // Ensure a password has been entered
+    if (password === "") {
+      msgPassword.current?.show([
+        {
+          severity: 'warn',
+          summary: 'Invalid Password',
+          detail: ``,
+          sticky: true,
+          closable: true,
+          closeIcon: 'pi pi-times'
+        }
+      ]);
+      setPasswordStyle("p-invalid");
+      setLoadingLogin(false);
+      setBlockForm(false);
+      return;
+    };
+
+    // Login Handler - Ensure username and password match
+    const loginState: AccountLogin = await login(accountType, username, password);
+    if (!loginState.successful) {
+      msgPassword.current?.show([
+        {
+          severity: 'error',
+          summary: 'Invalid Credentials',
+          detail: ``,
+          sticky: true,
+          closable: true,
+          closeIcon: 'pi pi-times'
+        }
+      ]);
+      setUsernameStyle("p-invalid");
+      setPasswordStyle("p-invalid");
+      setLoadingLogin(false);
+      setBlockForm(false);
+      return;
+    };
+
+    // Successful login - Send user to their respective portal
+    setLoadingLogin(false);
+    setBlockForm(false);
+    clearForm();
+
+    // Send the user to their respective portal
+    switch(accountType) {
+      case ("Admin"): // Send to admin portal
+        window.location.href = `/adminportal/${loginState.username}/${loginState.token}`;
+        break;
+      case ("Teacher"): // Send to teacher portal
+        window.location.href = `/teacherportal/${loginState.username}/${loginState.token}`;
+        break;
+      default: // Send to student portal
+        toast.current?.show({
+          severity: 'warn',
+          summary: "Page Doesn't Exist",
+          detail: 'The student portal page has not been implemented yet. Sorry.',
+          closeIcon: 'pi pi-times',
+          life: 7000,
+        });
+        break;
+    };
+
     return;
   };
 
   // Function to clear the form
-  function clearForm() {
+  function clearForm(): void {
     setLoadingClear(true);
     setUsername("");
     setPassword("");
     setLoadingClear(false);
     return;
-  }
+  };
+
+  // Function to clear all the error highlighting
+  function clearHighlighting(): void {
+    msgUsername.current?.clear();
+    msgPassword.current?.clear();
+    setUsernameStyle("");
+    setPasswordStyle("");
+    return;
+  };
 
   // Return JSX
   return (
     <BlockUI blocked={blockForm}>
+      {
+        /*
+          ! --------------------------------------------
+          ! Here for development purposes - remove later
+        */
+      }
+      <div style={{ display: visible ? 'block' : 'none' }}>
+        <Button label={`[DEV] ${accountType} Details`} icon="pi pi-exclamation-triangle" onClick={() => {
+          switch (accountType) {
+            case ("Teacher"):
+              console.log("Username: TestTeacher\nPassword: teacher1");
+              setUsername("TestTeacher");
+              setPassword("teacher1");
+              break;
+            case ("Admin"):
+              console.log("Username: TestAdmin\nPassword: Admin");
+              setUsername("TestAdmin");
+              setPassword("Admin");
+              break;
+            default:
+              console.log("Make your own student account!!");
+              break;
+          };
+        }} raised severity="danger"/>
+        <Divider/>
+      </div>
+      {
+        /*
+          ! Here for development purposes - remove later
+          ! --------------------------------------------
+        */
+      }
+      <Toast ref={toast} />
       <Card title={`${accountType} Login`} subTitle='Enter your credentials:' style={{ display: visible ? 'block' : 'none' }}>
         <div className="p-inputgroup flex-1">
           <span className="p-float-label">
@@ -110,6 +253,8 @@ const LoginForm: React.FC<LoginFormProps> = ({accountType, visible, setVisible, 
             <label htmlFor="login-username">Username</label>
           </span>
         </div>
+
+        <Messages ref={msgUsername}/>
 
         <div className="student-login-form-field">
           <div className="p-inputgroup flex-1">
@@ -127,19 +272,27 @@ const LoginForm: React.FC<LoginFormProps> = ({accountType, visible, setVisible, 
           </div>
         </div>
 
-        <Toast ref={toast} />
+        <Messages ref={msgPassword}/>
 
         <div className="student-login-form-button-field">
           <div className="student-login-form-button">
-            <Button label="Login" icon="pi pi-check" loading={loadingLogin} onClick={loginHandler} raised severity="info"/>
+            <Button label="Login" icon="pi pi-check" loading={loadingLogin} onClick={() => {
+              clearHighlighting();
+              loginHandler();
+            }} raised severity="info"/>
           </div>
           <div className="student-login-form-button">
             <Button label="Clear" icon="pi pi-exclamation-triangle" loading={loadingClear} onClick={confirmFormClear} raised severity="warning"/>
           </div>
           <div className="student-login-form-button">
             <Button label="Back" icon="pi pi-arrow-left" onClick={() => {
-              setVisible(false);
-              setOptionMenuVisible(true);
+              if (username !== "" || password !== "") {
+                confirmFormClose();
+              } else {
+                clearHighlighting();
+                setVisible(false);
+                setOptionMenuVisible(true);
+              };
             }} severity="secondary"/>
           </div>
         </div>

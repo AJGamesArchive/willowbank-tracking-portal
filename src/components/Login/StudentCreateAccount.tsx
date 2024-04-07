@@ -7,26 +7,40 @@ import { InputMask, InputMaskChangeEvent } from 'primereact/inputmask';
 import { Toast } from 'primereact/toast';
 import { BlockUI } from 'primereact/blockui';
 import { confirmDialog } from 'primereact/confirmdialog';
+import { Messages } from 'primereact/messages';
 
 // Import CSS
 import './StudentCreateAccount.css';
 
+// Import functions
+import { createStudentAccount } from '../../functions/Login/CreateStudentAccount';
+import { schoolSearcher } from '../../functions/Login/SchoolSearcher';
+import { generateUsername } from '../../functions/Login/GenerateUsername';
+import { generatePassword } from '../../functions/Login/GeneratePassword';
+import { retrieveDocumentIDs } from '../../functions/Global/RetrieveDocumentIDs';
+
+// Import types
+import { SchoolSearch } from '../../types/Login/SchoolSearch';
+import { UsernameGen } from '../../types/Login/UsernameGen';
+
 // Interfacing forcing certain props on the Student Account Creation form
 interface StudentAccountCreationProps {
+  accountType: string;
   visible: boolean;
   setVisible: (value: boolean) => void;
   setOptionMenuVisible: (value: boolean) => void;
 };
 
 // React function to render the student login form
-const StudentCreationForm: React.FC<StudentAccountCreationProps> = ({visible, setVisible, setOptionMenuVisible}) => {
+const StudentCreationForm: React.FC<StudentAccountCreationProps> = ({accountType, visible, setVisible, setOptionMenuVisible}) => {
   // Variables to store the required login credentials
-  const [schoolCode, setSchoolCode] = useState<any>();
+  const [schoolCode, setSchoolCode] = useState<any>(null);
   const [schoolName, setSchoolName] = useState<string>("");
   const [firstName, setFirstName] = useState<string>("");
-  const [surnameInitial, setSurnameInitial] = useState<any>();
+  const [surnameInitial, setSurnameInitial] = useState<any>(null);
   const [username, setUsername] = useState<string>("");
   const [password, setPassword] = useState<string>("");
+  const [confirmPassword, setConfirmPassword] = useState<string>("");
 
   // Variables to control the loading state of the form buttons
   const [loadingCreation, setLoadingCreation] = useState<boolean>(false);
@@ -42,6 +56,10 @@ const StudentCreationForm: React.FC<StudentAccountCreationProps> = ({visible, se
   const [surnameStyle, setSurnameStyle] = useState<string>("");
   const [usernameStyle, setUsernameStyle] = useState<string>("");
   const [passwordStyle, setPasswordStyle] = useState<string>("");
+  const [confirmPasswordStyle, setConfirmPasswordStyle] = useState<string>("");
+
+  // Variable to store password generated message
+  const msg = useRef<Messages>(null);
 
   // Variable to control blocking certain sections of the UI
   const [blockForm, setBlockForm] = useState<boolean>(false);
@@ -55,7 +73,7 @@ const StudentCreationForm: React.FC<StudentAccountCreationProps> = ({visible, se
       summary: 'Success',
       detail: 'Form cleared successfully.',
       closeIcon: 'pi pi-times',
-      life: 5000,
+      life: 7000,
     });
   };
   const reject = () => {
@@ -64,7 +82,7 @@ const StudentCreationForm: React.FC<StudentAccountCreationProps> = ({visible, se
       summary: 'Operation Cancelled',
       detail: 'The form has not been cleared.',
       closeIcon: 'pi pi-times',
-      life: 5000,
+      life: 7000,
     });
   };
 
@@ -80,32 +98,156 @@ const StudentCreationForm: React.FC<StudentAccountCreationProps> = ({visible, se
       reject
     });
   };
+  const confirmFormClose = () => {
+    confirmDialog({
+      message: "Are you sure you want to close the form? All the details you've added will be lost.",
+      header: 'Confirmation',
+      icon: 'pi pi-exclamation-triangle',
+      defaultFocus: 'accept',
+      position: 'top',
+      accept: () => {
+        setVisible(false);
+        clearHighlighting();
+        clearForm();
+        setOptionMenuVisible(true);
+      },
+      reject: () => {}
+    });
+  };
 
   // Async function to handel the form submission
   async function creationHandler() {
     setLoadingCreation(true);
     setBlockForm(true);
-    setSchoolCodeStyle("p-invalid");
-    setSchoolNameStyle("p-invalid");
-    setFirstNameStyle("p-invalid");
-    setSurnameStyle("p-invalid");
-    setUsernameStyle("p-invalid");
-    setPasswordStyle("p-invalid");
-    setTimeout(() => {
+    
+    // Declaring base error for overall credential validation
+    const detailValidationError = (title: string, message: string) => {
+      toast.current?.show({
+        severity: `error`,
+        summary: `${title}`,
+        detail: `${message}`,
+        closeIcon: 'pi pi-times',
+        life: 7000,
+      });
+    };
+
+    // Ensure the entered school code is valid
+    const results: SchoolSearch = await schoolSearcher(schoolCode);
+    if (results.errored) {
+      detailValidationError("Invalid School Code", "The school code you entered is invalid. Please check your code is correct and try again.");
+      setSchoolCode(null);
+      setSchoolCodeStyle("p-invalid");
       setLoadingCreation(false);
       setBlockForm(false);
-      setSchoolCodeStyle("");
-      setSchoolNameStyle("");
-      setFirstNameStyle("");
-      setSurnameStyle("");
-      setUsernameStyle("");
-      setPasswordStyle("");
-    }, 2000);
+      return;
+    };
+
+    // Ensure a valid school has been detected and assigned
+    if (schoolName === "") {
+      detailValidationError("No School Detected", "Ensure you detect your school by searching with a school code before creating your account.");
+      setSchoolNameStyle("p-invalid");
+      setLoadingCreation(false);
+      setBlockForm(false);
+      return;
+    };
+
+    // Ensure a first name has been provided
+    if (firstName === "") {
+      detailValidationError("Invalid First Name", "You have not entered a first name. Please provide a first name and try again.");
+      setFirstNameStyle("p-invalid");
+      setLoadingCreation(false);
+      setBlockForm(false);
+      return;
+    };
+
+    // Ensure a surname initial has been provided
+    if (surnameInitial === "" || surnameInitial === null) {
+      detailValidationError("Invalid Surname Initial", "You have not entered a surname initial. Please enter a surname initial and try again.");
+      setSurnameStyle("p-invalid");
+      setLoadingCreation(false);
+      setBlockForm(false);
+      return;
+    };
+
+    // Ensure a unique username has been entered and ensure the username contains no spaces
+    if (username === "") {
+      detailValidationError("Invalid Username", "You have not entered a username. Please enter a username and try again.");
+      setUsernameStyle("p-invalid");
+      setLoadingCreation(false);
+      setBlockForm(false);
+      return;
+    };
+    if (/\s/.test(username)) {
+      detailValidationError("Invalid Username", "Usernames must not contain a space. Please remove any spaces from your username.");
+      setUsernameStyle("p-invalid");
+      setLoadingCreation(false);
+      setBlockForm(false);
+      return;
+    };
+    const allUsernames: string | string[] = await retrieveDocumentIDs("students");
+    if (typeof allUsernames === "string") {
+      detailValidationError("An Unexpected Error Occurred", "An unexpected error occurred while validating the username uniques. Please try again.");
+      setUsernameStyle("p-invalid");
+      setLoadingCreation(false);
+      setBlockForm(false);
+      return;
+    };
+    allUsernames.forEach((n) => {
+      if (n === username) {
+        detailValidationError("Invalid Username", "The username you have entered is not unique. Please enter a different username and try again.");
+        setUsernameStyle("p-invalid");
+        setLoadingCreation(false);
+        setBlockForm(false);
+        return;
+      };
+    });
+
+    // Ensure that a password has been provided and ensure it matches the confirmation password
+    if (password === "" || confirmPassword === "") {
+      detailValidationError("Invalid Password", "You have not entered and/or confirmed a password. Please enter and confirm your password and try again.");
+      (password === "") ? setPasswordStyle("p-invalid") : setConfirmPasswordStyle("p-invalid");
+      setLoadingCreation(false);
+      setBlockForm(false);
+      return;
+    };
+    if (password !== confirmPassword) {
+      detailValidationError("Invalid Password", "You did not enter the same password twice. Please ensure you enter the same password twice.");
+      setPasswordStyle("p-invalid");
+      setConfirmPasswordStyle("p-invalid");
+      setLoadingCreation(false);
+      setBlockForm(false);
+      return;
+    };
+
+    // Create the student account
+    const creationResults: boolean = await createStudentAccount(schoolCode, schoolName, firstName, surnameInitial, username, password);
+    if (!creationResults) {
+      detailValidationError("Something Went Wrong", "An unexpected error occurred and the account was not able to be created. Please try again.");
+      setLoadingCreation(false);
+      setBlockForm(false);
+      return;
+    };
+
+    // Output confirmation message
+    const accountCreatedConfirm = () => {
+      toast.current?.show({
+        severity: `success`,
+        summary: `Account Creation Successful`,
+        detail: `The account '${username}' was created successfully. You should now be able to login from the student login page.`,
+        closeIcon: 'pi pi-times',
+        life: 7000,
+      });
+    };
+    accountCreatedConfirm();
+    clearForm();
+    
+    setLoadingCreation(false);
+    setBlockForm(false);
     return;
   };
 
   // Function to clear the form
-  function clearForm() {
+  function clearForm(): void {
     setLoadingClear(true);
     setSchoolCode(null);
     setSchoolName("");
@@ -113,54 +255,194 @@ const StudentCreationForm: React.FC<StudentAccountCreationProps> = ({visible, se
     setSurnameInitial("");
     setUsername("");
     setPassword("");
+    setConfirmPassword("");
     setLoadingClear(false);
     return;
-  }
+  };
 
   // Async function to handle searching for a school based on a given school code
-  async function schoolSearchHandler() {
+  async function schoolSearchHandler(): Promise<void> {
     setLoadingSchoolSearch(true);
-    setTimeout(() => {
-      setLoadingSchoolSearch(false);
-    }, 2000);
-    return;
-  }
 
-  // Function to handle username generation
-  function usernameGenerationHandler() {
-    setLoadingUsernameGen(true);
-    setTimeout(() => {
-      setLoadingUsernameGen(false);
-    }, 2000);
+    // Attempt to retrieve the name of the school that matches the given ID
+    const results: SchoolSearch = await schoolSearcher(schoolCode);
+    if (results.errored) {
+      const errorDialogue = () => {
+        toast.current?.show({
+          severity: `error`,
+          summary: `${results.errorMessage.header}`,
+          detail: `${results.errorMessage.message}`,
+          closeIcon: 'pi pi-times',
+          life: 7000,
+        });
+      };
+      errorDialogue();
+      setSchoolCode(null);
+      setSchoolCodeStyle("p-invalid");
+      setLoadingSchoolSearch(false);
+      return;
+    };
+
+    // Update the school name field on the creation form
+    setSchoolName(results.schoolName);
+    const confirmationDialogue = () => {
+      toast.current?.show({
+        severity: `success`,
+        summary: `School Name Retrieved`,
+        detail: `The given school code was valid and '${results.schoolName}' has been detected as your school.`,
+        closeIcon: 'pi pi-times',
+        life: 7000,
+      });
+    };
+    confirmationDialogue();
+    setLoadingSchoolSearch(false);
     return;
-  }
+  };
+
+  // async function to handle username generation
+  async function usernameGenerationHandler(): Promise<void> {
+    setLoadingUsernameGen(true);
+
+    // Ensure the user has provided their first name and surname initial
+    if (firstName === "" || surnameInitial === null || surnameInitial === "") {
+      const errorDialogue = () => {
+        toast.current?.show({
+          severity: `error`,
+          summary: `Missing Details`,
+          detail: `Please ensure you enter your first name and surname initial before trying to generate a username.`,
+          closeIcon: 'pi pi-times',
+          life: 7000,
+        });
+      };
+      errorDialogue();
+      (firstName === "") ? setFirstNameStyle("p-invalid") : setSurnameStyle("p-invalid");
+      setLoadingUsernameGen(false);
+      return;
+    };
+
+    // Generate username and ensure it's unique
+    const genUsername: UsernameGen = await generateUsername(firstName, surnameInitial);
+    if (!genUsername.success) {
+      const errorDialogue = () => {
+        toast.current?.show({
+          severity: `error`,
+          summary: `Unexpected Error Occurred`,
+          detail: `An unexpected error occurred while validating if the generated usernames is unique.`,
+          closeIcon: 'pi pi-times',
+          life: 7000,
+        });
+      };
+      errorDialogue();
+      setLoadingUsernameGen(false);
+      return;
+    };
+
+    // Save and output the generated username
+    setUsername(genUsername.name);
+    const confirmationDialogue = () => {
+      toast.current?.show({
+        severity: `success`,
+        summary: `Username Generated`,
+        detail: `The username '${genUsername.name}' was generated successfully.`,
+        closeIcon: 'pi pi-times',
+        life: 7000,
+      });
+    };
+    confirmationDialogue();
+
+    setLoadingUsernameGen(false);
+    return;
+  };
 
   // Function to handle password generation
   function passwordGenerationHandler() {
     setLoadingPasswordGen(true);
-    setTimeout(() => {
+    
+    // Ensure the user has provided their first name and surname initial
+    if (firstName === "" || surnameInitial === null || surnameInitial === "") {
+      const errorDialogue = () => {
+        toast.current?.show({
+          severity: `error`,
+          summary: `Missing Details`,
+          detail: `Please ensure you enter your first name and surname initial before trying to generate a password.`,
+          closeIcon: 'pi pi-times',
+          life: 7000,
+        });
+      };
+      errorDialogue();
+      (firstName === "") ? setFirstNameStyle("p-invalid") : setSurnameStyle("p-invalid");
       setLoadingPasswordGen(false);
-    }, 2000);
+      return;
+    };
+
+    // Generate a password and output it to the user
+    const genPassword: string = generatePassword(firstName, surnameInitial);
+    setPassword(genPassword);
+    const confirmationDialogue = () => {
+      toast.current?.show({
+        severity: `success`,
+        summary: `Password Generated`,
+        detail: `The password '${genPassword}' was generated successfully.`,
+        closeIcon: 'pi pi-times',
+        life: 7000,
+      });
+    };
+    confirmationDialogue();
+    const showPassword = () => {
+      msg.current?.clear();
+      msg.current?.show([
+        {
+          severity: 'info',
+          summary: 'Generated Password:',
+          detail: `${genPassword}`,
+          sticky: true,
+          closable: true,
+          closeIcon: 'pi pi-times'
+        }
+      ]);
+    };
+    showPassword();
+
+    setLoadingPasswordGen(false);
     return;
-  }
+  };
+
+  // Function to clear all the error highlighting
+  function clearHighlighting(): void {
+    setSchoolCodeStyle("");
+    setSchoolNameStyle("");
+    setFirstNameStyle("");
+    setSurnameStyle("");
+    setUsernameStyle("");
+    setPasswordStyle("");
+    setConfirmPasswordStyle("");
+    return;
+  };
 
   // Return JSX
   return (
     <BlockUI blocked={blockForm}>
-    <Card title='Create New Account' subTitle='Enter your details:' style={{ display: visible ? 'block' : 'none' }}>
+    <Toast ref={toast} />
+    <Card title={`Create New ${accountType} Account`} subTitle='Enter your details:' style={{ display: visible ? 'block' : 'none' }}>
       <div className="p-inputgroup flex-1">
         <span className="p-float-label">
           <InputMask 
             id="school_code_input"
             value={schoolCode} 
-            onChange={(e: InputMaskChangeEvent) => setSchoolCode(e.target.value)}
+            onChange={(e: InputMaskChangeEvent) => {
+              setSchoolName("");
+              setSchoolCode(e.target.value);
+            }}
             mask="99-99-99"
             slotChar="00-00-00"
             className={schoolCodeStyle}
             aria-describedby='school-code-help'
           />
           <label htmlFor="school_code_input">School Code</label>
-          <Button label='Search' icon="pi pi-search" loading={loadingSchoolSearch} onClick={schoolSearchHandler} severity="info"/>
+          <Button label='Search' icon="pi pi-search" loading={loadingSchoolSearch} onClick={() => {
+            setSchoolCodeStyle("");
+            schoolSearchHandler();
+          }} severity="info"/>
         </span>
       </div>
       <small id="school-code-help" className='creation-form-help-text'>
@@ -180,7 +462,12 @@ const StudentCreationForm: React.FC<StudentAccountCreationProps> = ({visible, se
               aria-describedby='school-name-help'
             />
             <label htmlFor="school-name">School Name</label>
-            <Button label="Clear" icon="pi pi-times" onClick={() => {setSchoolName("")}} severity="secondary"/>
+            <Button label="Clear" icon="pi pi-times" onClick={() => {
+              setSchoolName("");
+              setSchoolNameStyle("");
+              setSchoolCode(null);
+              setSchoolCodeStyle("");
+            }} severity="secondary"/>
           </span>
         </div>
         <small id="school-name-help" className='creation-form-help-text'>
@@ -238,7 +525,12 @@ const StudentCreationForm: React.FC<StudentAccountCreationProps> = ({visible, se
               aria-describedby='username-help'
             />
             <label htmlFor="creation-username">Username</label>
-            <Button label='Generate' icon="pi pi-sync" loading={loadingUsernameGen} onClick={usernameGenerationHandler} severity="info"/>
+            <Button label='Generate' icon="pi pi-sync" loading={loadingUsernameGen} onClick={() => {
+              setUsernameStyle("");
+              setFirstNameStyle("");
+              setSurnameStyle("");
+              usernameGenerationHandler();
+            }} severity="info"/>
           </span>
         </div>
         <small id="username-help" className='creation-form-help-text'>
@@ -259,7 +551,12 @@ const StudentCreationForm: React.FC<StudentAccountCreationProps> = ({visible, se
               aria-describedby='password-help'
             />
             <label htmlFor="creation-password">Password</label>
-            <Button label='Generate' icon="pi pi-sync" loading={loadingPasswordGen} onClick={passwordGenerationHandler} severity="info"/>
+            <Button label='Generate' icon="pi pi-sync" loading={loadingPasswordGen} onClick={() => {
+              setPasswordStyle("");
+              setFirstNameStyle("");
+              setSurnameStyle("");
+              passwordGenerationHandler();
+            }} severity="info"/>
           </span>
         </div>
         <small id="password-help" className='creation-form-help-text'>
@@ -267,19 +564,51 @@ const StudentCreationForm: React.FC<StudentAccountCreationProps> = ({visible, se
         </small>
       </div>
 
-      <Toast ref={toast} />
+      <Messages ref={msg}/>
+
+      <div className="student-creation-form-field">
+        <div className="p-inputgroup flex-1">
+          <span className="p-float-label">
+            <InputText
+              id="confirm-password"
+              type="password"
+              value={confirmPassword}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => setConfirmPassword(e.target.value)}
+              required
+              className={confirmPasswordStyle}
+              aria-describedby='confirm-password-help'
+            />
+            <label htmlFor="confirm-password">Confirm Password</label>
+          </span>
+        </div>
+        <small id="confirm-password-help" className='creation-form-help-text'>
+          Re-enter your password to confirm it's correct.
+        </small>
+      </div>
 
       <div className="student-creation-form-button-field">
         <div className="student-creation-form-button">
-          <Button label="Login" icon="pi pi-check" loading={loadingCreation} onClick={creationHandler} raised severity="info"/>
+          <Button label="Login" icon="pi pi-check" loading={loadingCreation} onClick={() => {
+            clearHighlighting();
+            creationHandler();
+          }} raised severity="info"/>
         </div>
         <div className="student-creation-form-button">
-          <Button label="Clear" icon="pi pi-exclamation-triangle" loading={loadingClear} onClick={confirmFormClear} raised severity="warning"/>
+          <Button label="Clear" icon="pi pi-exclamation-triangle" loading={loadingClear} onClick={() => {
+            clearHighlighting();
+            confirmFormClear();
+          }} raised severity="warning"/>
         </div>
         <div className="student-login-form-button">
           <Button label="Back" icon="pi pi-arrow-left" onClick={() => {
-            setVisible(false);
-            setOptionMenuVisible(true);
+            if (schoolCode !== null || firstName !== "" || surnameInitial !== "" || username !== "" || password !== "" || confirmPassword !== "") {
+              confirmFormClose();
+            } else {
+              setVisible(false);
+              clearHighlighting();
+              clearForm();
+              setOptionMenuVisible(true);
+            };
           }} severity="secondary"/>
         </div>
       </div>
