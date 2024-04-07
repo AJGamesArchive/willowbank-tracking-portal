@@ -1,0 +1,30 @@
+.student-badge {
+    margin: 10px;
+}
+.image {
+    display:inline-block;
+    vertical-align: middle;
+}
+
+.content {
+    display:inline-block;
+    vertical-align:middle;
+    margin-left: 10px;
+}
+
+.icon {
+    margin: 0;
+    height: auto;
+    flex-shrink: 0;
+}
+
+.content h2{
+    margin: 0;
+    text-align: left;
+}
+
+.content p {
+    font-size: 14px;
+    margin: 0;
+    text-align: left;
+}
