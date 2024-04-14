@@ -5,7 +5,6 @@ import { Button } from 'primereact/button';
 import { InputText } from 'primereact/inputtext';
 import { Toast } from 'primereact/toast';
 import { BlockUI } from 'primereact/blockui';
-import { confirmDialog } from 'primereact/confirmdialog';
 import { Messages } from 'primereact/messages';
 import { Divider } from 'primereact/divider';
 
@@ -24,17 +23,19 @@ interface LoginFormProps {
   visible: boolean;
   setVisible: (value: boolean) => void;
   setOptionMenuVisible: (value: boolean) => void;
+  setForgotPasswordVisible: (value: boolean) => void;
 };
 
+//TODO Maybe remove the Toast component from this form as I'm pretty sure it's not being used?
+
 // React function to render the student login form
-const LoginForm: React.FC<LoginFormProps> = ({accountType, visible, setVisible, setOptionMenuVisible}) => {
+const LoginForm: React.FC<LoginFormProps> = ({accountType, visible, setVisible, setOptionMenuVisible, setForgotPasswordVisible}) => {
   // Variables to store the required login credentials
   const [username, setUsername] = useState<string>("");
   const [password, setPassword] = useState<string>("");
 
   // Variables to control the loading state of the form buttons
   const [loadingLogin, setLoadingLogin] = useState<boolean>(false);
-  const [loadingClear, setLoadingClear] = useState<boolean>(false);
 
   // Variables to control the form input field styling
   const [usernameStyle, setUsernameStyle] = useState<string>("");
@@ -49,59 +50,15 @@ const LoginForm: React.FC<LoginFormProps> = ({accountType, visible, setVisible, 
 
   // Variables to control toast messages
   const toast = useRef<Toast>(null);
-  const accept = () => {
-    clearForm();
-    clearHighlighting();
-    toast.current?.show({
-      severity: 'success',
-      summary: 'Success',
-      detail: 'Form cleared successfully.',
-      closeIcon: 'pi pi-times',
-      life: 7000,
-    });
-  };
-  const reject = () => {
-    toast.current?.show({
-      severity: 'info',
-      summary: 'Operation Cancelled',
-      detail: 'The form has not been cleared.',
-      closeIcon: 'pi pi-times',
-      life: 7000,
-    });
-  };
-
-  // Variables to store confirmation dialogue messages
-  const confirmFormClear = () => {
-    confirmDialog({
-      message: 'Are you sure you want to clear the form?',
-      header: 'Confirmation',
-      icon: 'pi pi-exclamation-triangle',
-      defaultFocus: 'accept',
-      position: 'top',
-      accept,
-      reject
-    });
-  };
-  const confirmFormClose = () => {
-    confirmDialog({
-      message: "Are you sure you want to close the form? All the details you've added will be lost.",
-      header: 'Confirmation',
-      icon: 'pi pi-exclamation-triangle',
-      defaultFocus: 'accept',
-      position: 'top',
-      accept: () => {
-        clearHighlighting();
-        setVisible(false);
-        setOptionMenuVisible(true);
-      },
-      reject: () => {}
-    });
-  };
 
   // Async function to handel the form submission
   async function loginHandler(): Promise<void> {
     setLoadingLogin(true);
     setBlockForm(true);
+    const unlock = () => {
+      setLoadingLogin(false);
+      setBlockForm(false);
+    };
 
     // Ensure a username has been entered
     if (username === "") {
@@ -116,9 +73,7 @@ const LoginForm: React.FC<LoginFormProps> = ({accountType, visible, setVisible, 
         }
       ]);
       setUsernameStyle("p-invalid");
-      setLoadingLogin(false);
-      setBlockForm(false);
-      return;
+      unlock(); return;
     };
 
     // Ensure a password has been entered
@@ -134,9 +89,7 @@ const LoginForm: React.FC<LoginFormProps> = ({accountType, visible, setVisible, 
         }
       ]);
       setPasswordStyle("p-invalid");
-      setLoadingLogin(false);
-      setBlockForm(false);
-      return;
+      unlock(); return;
     };
 
     // Login Handler - Ensure username and password match
@@ -154,14 +107,11 @@ const LoginForm: React.FC<LoginFormProps> = ({accountType, visible, setVisible, 
       ]);
       setUsernameStyle("p-invalid");
       setPasswordStyle("p-invalid");
-      setLoadingLogin(false);
-      setBlockForm(false);
-      return;
+      unlock(); return;
     };
 
     // Successful login - Send user to their respective portal
-    setLoadingLogin(false);
-    setBlockForm(false);
+    unlock();
     clearForm();
 
     // Send the user to their respective portal
@@ -182,10 +132,8 @@ const LoginForm: React.FC<LoginFormProps> = ({accountType, visible, setVisible, 
 
   // Function to clear the form
   function clearForm(): void {
-    setLoadingClear(true);
     setUsername("");
     setPassword("");
-    setLoadingClear(false);
     return;
   };
 
@@ -270,24 +218,24 @@ const LoginForm: React.FC<LoginFormProps> = ({accountType, visible, setVisible, 
 
         <div className="student-login-form-button-field">
           <div className="student-login-form-button">
-            <Button label="Login" icon="pi pi-check" loading={loadingLogin} onClick={() => {
+            <Button label="Login" icon="pi pi-sign-in" loading={loadingLogin} onClick={() => {
               clearHighlighting();
               loginHandler();
             }} raised severity="info"/>
           </div>
           <div className="student-login-form-button">
-            <Button label="Clear" icon="pi pi-exclamation-triangle" loading={loadingClear} onClick={confirmFormClear} raised severity="warning"/>
+            <Button label="Forgot Password" icon="pi pi-question-circle" onClick={() => {
+              setVisible(false);
+              setForgotPasswordVisible(true);
+            }} raised severity="help"/>
           </div>
           <div className="student-login-form-button">
             <Button label="Back" icon="pi pi-arrow-left" onClick={() => {
-              if (username !== "" || password !== "") {
-                confirmFormClose();
-              } else {
-                clearHighlighting();
-                setVisible(false);
-                setOptionMenuVisible(true);
-              };
-            }} severity="secondary"/>
+              setVisible(false);
+              setOptionMenuVisible(true);
+              clearHighlighting();
+              clearForm();
+            }} raised severity="secondary"/>
           </div>
         </div>
       </Card>
