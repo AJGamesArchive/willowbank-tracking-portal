@@ -4,21 +4,19 @@ import { Button } from 'primereact/button';
 import { ProgressSpinner } from 'primereact/progressspinner';
 
 // Import global parameters
-import { GlobalParams } from '../../interfaces/GlobalParams';
+import { GlobalParams } from '../../../interfaces/GlobalParams';
 import { useParams } from 'react-router';
 
 // Import CSS
-import './AdminPortalDesktop.css'
-import './AdminPortalGlobal.css'
-import '../../components/Admin/admin.css'
+import './AdminResetDesktop.css'
+import './AdminResetGlobal.css'
+import '../../../components/Admin/admin.css'
 
 // Import functions
-import { confirmLogin } from '../../functions/Global/ConfirmLogin';
-import { Divider } from 'primereact/divider';
-import AdminCard from '../../components/Admin/admin';
+import { confirmLogin } from '../../../functions/Global/ConfirmLogin';
 
 // React function to render the Admin Portal page for desktop devices
-const AdminPortalDesktop: React.FC = () => {
+const AdminResetDesktop: React.FC = () => {
   // Setting up global params on this page
   const params = useParams<GlobalParams>();
 
@@ -40,19 +38,13 @@ const AdminPortalDesktop: React.FC = () => {
   if (isLoggedIn) {
     return (
       <>
-        <h1>Welcome {params.username}</h1>
-        <p>Please select from the following options.</p>
+        <h1>Reset student's password</h1>
+        <p>Please approve or decline the following password reset requests.</p>
         <br />
-        <AdminCard title="View password request resets" 
-        description="Reset passwords for teachers and students."
-        destinationPage="" />
-        <AdminCard title="Manage existing accounts"
-        description="Create, modify or delete accounts."
-        destinationPage=""/>  
-        <AdminCard title="Add a new school"
-        description="Add a new school to the system"
-        destinationPage=""/>
-        <Divider />
+        
+        
+
+        <br />
         <Button label="[DEV] Back" icon="pi pi-arrow-left" onClick={() => {
           window.location.href = `/home` //! DEV button to return to login page - remove later
         }} severity="secondary"/>
@@ -67,4 +59,4 @@ const AdminPortalDesktop: React.FC = () => {
   };
 };
 
-export default AdminPortalDesktop;
+export default AdminResetDesktop;

@@ -12,7 +12,7 @@ interface IAdmin {
 }
 
 const AdminCard : React.FC<IAdmin> = ({title, description, destinationPage}) => {
-    return <Card 
+    return <Card
         className="student-badge" 
         onClick={() => { window.location.href = destinationPage;}}>
         <h2>{title}</h2>
