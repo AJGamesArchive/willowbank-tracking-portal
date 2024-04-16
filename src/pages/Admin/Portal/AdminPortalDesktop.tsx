@@ -46,11 +46,14 @@ const AdminPortalDesktop: React.FC = () => {
         <AdminCard title="View password request resets" 
         description="Reset passwords for teachers and students."
         destinationPage={`/adminportal/resetpassword/${params.username}/${params.token}`} />
-        <AdminCard title="Manage existing accounts"
-        description="Create, modify or delete accounts."
+        <AdminCard title="Manage accounts"
+        description="Create, modify or delete accounts. Modify a student's progress."
         destinationPage=""/>  
-        <AdminCard title="Add a new school"
-        description="Add a new school to the system"
+        <AdminCard title="Manage schools"
+        description="Create, modify or delete schools."
+        destinationPage=""/>
+        <AdminCard title="Manage Activites"
+        description="Create or delete activities."
         destinationPage=""/>
         <Divider />
         <Button label="[DEV] Back" icon="pi pi-arrow-left" onClick={() => {
