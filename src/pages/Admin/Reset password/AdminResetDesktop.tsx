@@ -13,6 +13,7 @@ import './AdminResetGlobal.css'
 import '../../../components/Admin/admin.css'
 import '../../../components/Admin/resetpasswordlist'
 import { getResetRequests } from '../../../functions/Global/GetResetRequests.ts';
+import {PasswordRequest} from '../../../types/Global/PasswordRequest.ts'
 
 // Import functions
 import { confirmLogin } from '../../../functions/Global/ConfirmLogin';
@@ -20,10 +21,7 @@ import ResetList from '../../../components/Admin/resetpasswordlist';
 
 async function aGetRequests ()
 {
-    const requests: string | string[] = await getResetRequests();
-
-    if (typeof requests == 'string')
-        return [requests];
+    const requests: PasswordRequest[] = await getResetRequests();
     return requests;
 }
 
