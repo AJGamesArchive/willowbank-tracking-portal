@@ -33,6 +33,7 @@ export async function createPasswordRequest(username: string, accountType: strin
       created: timestamp,
       completed: "",
       newPassword: "",
+      ignored: false,
     };
     // Save updated request array to DB and activate active requests flag
     await setDoc(doc(db, "requests", "password-resets"), {
