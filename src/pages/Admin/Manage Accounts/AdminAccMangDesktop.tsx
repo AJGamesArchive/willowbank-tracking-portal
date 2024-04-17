@@ -39,7 +39,7 @@ const AdminAccMangDesktop: React.FC = () => {
   if (isLoggedIn) {
     return (
       <>
-        <div className="leftContainer">
+        <div>
                 <AccountListBox />
         </div>
         <Button label="[DEV] Back" icon="pi pi-arrow-left" onClick={() => {
