@@ -51,7 +51,6 @@ const AdminResetDesktop: React.FC = () => {
   console.log(request)
   // Return JSX based on login state
   if (isLoggedIn) {
-    aGetRequests();
 
     var username: string[] = [];
     request.forEach(element => {
