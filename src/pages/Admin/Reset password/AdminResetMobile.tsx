@@ -10,7 +10,7 @@ import { useParams } from 'react-router';
 // Import CSS
 import './AdminResetDesktop.css'
 import './AdminResetGlobal.css'
-import '../../../components/Admin/admin.css'
+import '../../../components/Admin/AdminCard.css'
 
 // Import functions
 import { confirmLogin } from '../../../functions/Global/ConfirmLogin';

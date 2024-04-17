@@ -10,12 +10,12 @@ import { useParams } from 'react-router';
 // Import CSS
 import './AdminPortalDesktop.css'
 import './AdminPortalGlobal.css'
-import '../../../components/Admin/admin.css'
+import '../../../components/Admin/AdminCard.css'
 
 // Import functions
 import { confirmLogin } from '../../../functions/Global/ConfirmLogin';
 import { Divider } from 'primereact/divider';
-import AdminCard from '../../../components/Admin/admin';
+import AdminCard from '../../../components/Admin/AdminCard';
 
 // React function to render the Admin Portal page for desktop devices
 const AdminPortalDesktop: React.FC = () => {
