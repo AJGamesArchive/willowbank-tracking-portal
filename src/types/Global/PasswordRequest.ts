@@ -12,4 +12,5 @@ export type PasswordRequestLog = {
   created: string;
   completed: string;
   newPassword: string;
+  ignored: boolean;
 };
