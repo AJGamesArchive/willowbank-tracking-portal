@@ -1,9 +1,10 @@
 // Importing the database
 import { db } from "../../database/Initalise"
-import { setDoc, doc } from "firebase/firestore";
+import { setDoc, updateDoc, doc } from "firebase/firestore";
 import { PasswordRequest } from "../../types/Global/PasswordRequest";
 import { getResetRequests } from "./GetResetRequests";
 import { getLogs } from "./GetLogs";
+import { dateTime } from "./GenerateTimestamp";
 
 // Async function to retrieve all the document ID's for a given collection in the database
 export async function removeResetRequest(remove : PasswordRequest): Promise<boolean> {
@@ -37,12 +38,14 @@ export async function removeResetRequest(remove : PasswordRequest): Promise<bool
             requests: allAccounts
         });
 
-        // const logs = getLogs();
-        // if (typeof logs === "string")
-        // {
-            
-        // }
+        
+        const logDocRef = doc(db, "requests", "password-resets", "request-logs", remove.created)
+            updateDoc(logDocRef, {
+                ignored: true,
+                completed: dateTime()
+            });
 
+    // change to ignored and completed timestamp to current time
         // request -> created -> key for log request -> add boolean on end
         // request -> password-resets -> request-logs (key is date) set to true
         return Promise.resolve(true);
