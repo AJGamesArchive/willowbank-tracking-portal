@@ -1,4 +1,4 @@
-import './ResetPasswordList.css';
+import './resetpasswordlist.css';
 import '../../functions/Global/GetResetRequests.ts'
 import { ListBox } from 'primereact/listbox';
 import React from 'react';

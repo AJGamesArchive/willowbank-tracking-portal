@@ -11,13 +11,12 @@ import { useParams } from 'react-router';
 import './AdminResetDesktop.css'
 import './AdminResetGlobal.css'
 import '../../../components/Admin/AdminCard'
-import '../../../components/Admin/ResetPasswordList';
 import { getResetRequests } from '../../../functions/Global/GetResetRequests.ts';
 import { PasswordRequest } from '../../../types/Global/PasswordRequest.ts'
 
 // Import functions
 import { confirmLogin } from '../../../functions/Global/ConfirmLogin';
-import ResetList from '../../../components/Admin/ResetPasswordList';
+import ResetList from '../../../components/Admin/resetpasswordlist.tsx';
 
 // React function to render the Admin Portal page for desktop devices
 const AdminResetDesktop: React.FC = () => {
