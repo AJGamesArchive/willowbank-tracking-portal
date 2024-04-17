@@ -10,6 +10,7 @@ import { useParams } from 'react-router';
 // Import CSS
 import './TeacherPortalDesktop.css'
 import './TeacherPortalGlobal.css'
+import TeacherCard from '../../components/Teacher/TeacherCard';
 
 // Import functions
 import { confirmLogin } from '../../functions/Global/ConfirmLogin';
@@ -41,6 +42,11 @@ const TeacherPortalDesktop: React.FC = () => {
         <h1>Teacher Portal</h1>
         <h2>{params.username}</h2>
         <h2>{params.token}</h2>
+        <TeacherCard
+          title= "By Program"
+          description='View Student Progress by Program'
+          destinationPage={``}
+        />
         <Button label="[DEV] Back" icon="pi pi-arrow-left" onClick={() => {
           window.location.href = `/home` //! DEV button to return to login page - remove later
         }} severity="secondary"/>
