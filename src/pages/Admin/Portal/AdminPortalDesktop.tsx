@@ -48,7 +48,7 @@ const AdminPortalDesktop: React.FC = () => {
         destinationPage={`/adminportal/resetpassword/${params.username}/${params.token}`} />
         <AdminCard title="Manage accounts"
         description="Create, modify or delete accounts. Modify a student's progress."
-        destinationPage= {`/adminportal/AccountManagement/${params.username}/${params.token}`}/>  
+        destinationPage={`/AccManagement/${params.username}/${params.token}`}/>  
         <AdminCard title="Manage schools"
         description="Create, modify or delete schools."
         destinationPage=""/>
