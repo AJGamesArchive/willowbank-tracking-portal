@@ -19,25 +19,30 @@ export async function removeResetRequest(remove : PasswordRequest): Promise<bool
         }
         
         // Remove password request
-        const index = allAccounts.indexOf(remove);
+        const index = allAccounts.findIndex(account => account.username === remove.username)
+        console.log(allAccounts)
+        console.log(remove)
+        console.log(index)
         if (index > -1) 
         {
             allAccounts.splice(index, 1);
         }
 
+        console.log(allAccounts)
         // Write back to database
         const docRef = doc(db, "requests", "password-resets");
-        await setDoc(docRef, allAccounts), 
-        {
+        
+        await setDoc(docRef, {
             activeRequests: (allAccounts.length === 0) ? false : true,
             requests: allAccounts
-        };
+        });
 
-        const logs = getLogs();
-        if (typeof logs === "string")
-        {
+        // const logs = getLogs();
+        // if (typeof logs === "string")
+        // {
             
-        }
+        // }
+
         // request -> created -> key for log request -> add boolean on end
         // request -> password-resets -> request-logs (key is date) set to true
         return Promise.resolve(true);

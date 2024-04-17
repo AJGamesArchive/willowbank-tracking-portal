@@ -16,7 +16,6 @@ export async function getResetRequests(): Promise<string | PasswordRequest[]> {
             return Promise.resolve("ERROR");
         }
         var requests: PasswordRequest[] = docPasswordReset.data().requests;
-        console.log(requests);
     }
     catch (e)
     {

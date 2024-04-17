@@ -58,7 +58,7 @@ const AdminResetDesktop: React.FC = () => {
         <h1>Reset student's password</h1>
         <p>Please approve or ignore the following password reset requests.</p>
         <br />
-        <ResetList requests={request} />
+        <ResetList requests={request}/>
         <br />
         <Button label="[DEV] Back" icon="pi pi-arrow-left" onClick={() => {
           window.location.href = `/home` //! DEV button to return to login page - remove later
