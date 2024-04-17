@@ -53,14 +53,17 @@ const AdminResetDesktop: React.FC = () => {
   // Return JSX based on login state
   if (isLoggedIn) {
     aGetRequests();
+
+    var username: string[] = [];
+    request.forEach(element => {
+        username.push(element.username);
+    });
     return (
       <>
         <h1>Reset student's password</h1>
         <p>Please approve or decline the following password reset requests.</p>
         <br />
-        
         <ResetList requests={request} />
-
         <br />
         <Button label="[DEV] Back" icon="pi pi-arrow-left" onClick={() => {
           window.location.href = `/home` //! DEV button to return to login page - remove later

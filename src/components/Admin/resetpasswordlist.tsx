@@ -9,8 +9,14 @@ interface IResetList {
 }
 
 const ResetList : React.FC<IResetList> = ({requests}) => {
+    var username: string[] = [];
+    requests.forEach(element => {
+        username.push(element.username);
+    });
     return <ListBox 
-        options={requests}
+        filter
+        options={username}
+        /*optionLabel={username}*/
     ></ListBox>
 }
 
