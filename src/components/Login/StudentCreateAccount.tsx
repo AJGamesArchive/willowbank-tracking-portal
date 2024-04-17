@@ -93,7 +93,7 @@ const StudentCreationForm: React.FC<StudentAccountCreationProps> = ({accountType
       header: 'Confirmation',
       icon: 'pi pi-exclamation-triangle',
       defaultFocus: 'accept',
-      position: 'top',
+      position: 'center',
       accept,
       reject
     });
@@ -104,7 +104,7 @@ const StudentCreationForm: React.FC<StudentAccountCreationProps> = ({accountType
       header: 'Confirmation',
       icon: 'pi pi-exclamation-triangle',
       defaultFocus: 'accept',
-      position: 'top',
+      position: 'center',
       accept: () => {
         setVisible(false);
         clearHighlighting();
@@ -119,11 +119,15 @@ const StudentCreationForm: React.FC<StudentAccountCreationProps> = ({accountType
   async function creationHandler() {
     setLoadingCreation(true);
     setBlockForm(true);
+    const unlock = () => {
+      setLoadingCreation(false);
+      setBlockForm(false);
+    };
     
     // Declaring base error for overall credential validation
-    const detailValidationError = (title: string, message: string) => {
+    const detailValidationError = (type: any, title: string, message: string) => {
       toast.current?.show({
-        severity: `error`,
+        severity: type,
         summary: `${title}`,
         detail: `${message}`,
         closeIcon: 'pi pi-times',
@@ -134,98 +138,76 @@ const StudentCreationForm: React.FC<StudentAccountCreationProps> = ({accountType
     // Ensure the entered school code is valid
     const results: SchoolSearch = await schoolSearcher(schoolCode);
     if (results.errored) {
-      detailValidationError("Invalid School Code", "The school code you entered is invalid. Please check your code is correct and try again.");
+      detailValidationError("error", "Unexpected Error Occurred", "The school code you entered is invalid. Please check your code is correct and try again.");
       setSchoolCode(null);
       setSchoolCodeStyle("p-invalid");
-      setLoadingCreation(false);
-      setBlockForm(false);
-      return;
+      unlock(); return;
     };
 
     // Ensure a valid school has been detected and assigned
     if (schoolName === "") {
-      detailValidationError("No School Detected", "Ensure you detect your school by searching with a school code before creating your account.");
+      detailValidationError("warn", "No School Detected", "Ensure you detect your school by searching with a school code before creating your account.");
       setSchoolNameStyle("p-invalid");
-      setLoadingCreation(false);
-      setBlockForm(false);
-      return;
+      unlock(); return;
     };
 
     // Ensure a first name has been provided
     if (firstName === "") {
-      detailValidationError("Invalid First Name", "You have not entered a first name. Please provide a first name and try again.");
+      detailValidationError("warn", "Invalid First Name", "You have not entered a first name. Please provide a first name and try again.");
       setFirstNameStyle("p-invalid");
-      setLoadingCreation(false);
-      setBlockForm(false);
-      return;
+      unlock(); return;
     };
 
     // Ensure a surname initial has been provided
     if (surnameInitial === "" || surnameInitial === null) {
-      detailValidationError("Invalid Surname Initial", "You have not entered a surname initial. Please enter a surname initial and try again.");
+      detailValidationError("warn", "Invalid Surname Initial", "You have not entered a surname initial. Please enter a surname initial and try again.");
       setSurnameStyle("p-invalid");
-      setLoadingCreation(false);
-      setBlockForm(false);
-      return;
+      unlock(); return;
     };
 
     // Ensure a unique username has been entered and ensure the username contains no spaces
     if (username === "") {
-      detailValidationError("Invalid Username", "You have not entered a username. Please enter a username and try again.");
+      detailValidationError("warn", "Invalid Username", "You have not entered a username. Please enter a username and try again.");
       setUsernameStyle("p-invalid");
-      setLoadingCreation(false);
-      setBlockForm(false);
-      return;
+      unlock(); return;
     };
     if (/\s/.test(username)) {
-      detailValidationError("Invalid Username", "Usernames must not contain a space. Please remove any spaces from your username.");
+      detailValidationError("warn", "Invalid Username", "Usernames must not contain a space. Please remove any spaces from your username.");
       setUsernameStyle("p-invalid");
-      setLoadingCreation(false);
-      setBlockForm(false);
-      return;
+      unlock(); return;
     };
     const allUsernames: string | string[] = await retrieveDocumentIDs("students");
     if (typeof allUsernames === "string") {
-      detailValidationError("An Unexpected Error Occurred", "An unexpected error occurred while validating the username uniques. Please try again.");
+      detailValidationError("error", "An Unexpected Error Occurred", "An unexpected error occurred while validating the username uniques. Please try again.");
       setUsernameStyle("p-invalid");
-      setLoadingCreation(false);
-      setBlockForm(false);
-      return;
+      unlock(); return;
     };
     allUsernames.forEach((n) => {
       if (n === username) {
-        detailValidationError("Invalid Username", "The username you have entered is not unique. Please enter a different username and try again.");
+        detailValidationError("warn", "Invalid Username", "The username you have entered is not unique. Please enter a different username and try again.");
         setUsernameStyle("p-invalid");
-        setLoadingCreation(false);
-        setBlockForm(false);
-        return;
+        unlock(); return;
       };
     });
 
     // Ensure that a password has been provided and ensure it matches the confirmation password
     if (password === "" || confirmPassword === "") {
-      detailValidationError("Invalid Password", "You have not entered and/or confirmed a password. Please enter and confirm your password and try again.");
+      detailValidationError("warn", "Invalid Password", "You have not entered and/or confirmed a password. Please enter and confirm your password and try again.");
       (password === "") ? setPasswordStyle("p-invalid") : setConfirmPasswordStyle("p-invalid");
-      setLoadingCreation(false);
-      setBlockForm(false);
-      return;
+      unlock(); return;
     };
     if (password !== confirmPassword) {
-      detailValidationError("Invalid Password", "You did not enter the same password twice. Please ensure you enter the same password twice.");
+      detailValidationError("warn", "Invalid Password", "You did not enter the same password twice. Please ensure you enter the same password twice.");
       setPasswordStyle("p-invalid");
       setConfirmPasswordStyle("p-invalid");
-      setLoadingCreation(false);
-      setBlockForm(false);
-      return;
+      unlock(); return;
     };
 
     // Create the student account
     const creationResults: boolean = await createStudentAccount(schoolCode, schoolName, firstName, surnameInitial, username, password);
     if (!creationResults) {
-      detailValidationError("Something Went Wrong", "An unexpected error occurred and the account was not able to be created. Please try again.");
-      setLoadingCreation(false);
-      setBlockForm(false);
-      return;
+      detailValidationError("error", "Something Went Wrong", "An unexpected error occurred and the account was not able to be created. Please try again.");
+      unlock(); return;
     };
 
     // Output confirmation message
@@ -240,10 +222,7 @@ const StudentCreationForm: React.FC<StudentAccountCreationProps> = ({accountType
     };
     accountCreatedConfirm();
     clearForm();
-    
-    setLoadingCreation(false);
-    setBlockForm(false);
-    return;
+    unlock(); return;
   };
 
   // Function to clear the form
@@ -279,8 +258,7 @@ const StudentCreationForm: React.FC<StudentAccountCreationProps> = ({accountType
       errorDialogue();
       setSchoolCode(null);
       setSchoolCodeStyle("p-invalid");
-      setLoadingSchoolSearch(false);
-      return;
+      setLoadingSchoolSearch(false); return;
     };
 
     // Update the school name field on the creation form
@@ -295,8 +273,7 @@ const StudentCreationForm: React.FC<StudentAccountCreationProps> = ({accountType
       });
     };
     confirmationDialogue();
-    setLoadingSchoolSearch(false);
-    return;
+    setLoadingSchoolSearch(false); return;
   };
 
   // async function to handle username generation
@@ -307,7 +284,7 @@ const StudentCreationForm: React.FC<StudentAccountCreationProps> = ({accountType
     if (firstName === "" || surnameInitial === null || surnameInitial === "") {
       const errorDialogue = () => {
         toast.current?.show({
-          severity: `error`,
+          severity: `warn`,
           summary: `Missing Details`,
           detail: `Please ensure you enter your first name and surname initial before trying to generate a username.`,
           closeIcon: 'pi pi-times',
@@ -316,8 +293,7 @@ const StudentCreationForm: React.FC<StudentAccountCreationProps> = ({accountType
       };
       errorDialogue();
       (firstName === "") ? setFirstNameStyle("p-invalid") : setSurnameStyle("p-invalid");
-      setLoadingUsernameGen(false);
-      return;
+      setLoadingUsernameGen(false); return;
     };
 
     // Generate username and ensure it's unique
@@ -333,8 +309,7 @@ const StudentCreationForm: React.FC<StudentAccountCreationProps> = ({accountType
         });
       };
       errorDialogue();
-      setLoadingUsernameGen(false);
-      return;
+      setLoadingUsernameGen(false); return;
     };
 
     // Save and output the generated username
@@ -350,8 +325,7 @@ const StudentCreationForm: React.FC<StudentAccountCreationProps> = ({accountType
     };
     confirmationDialogue();
 
-    setLoadingUsernameGen(false);
-    return;
+    setLoadingUsernameGen(false); return;
   };
 
   // Function to handle password generation
@@ -362,7 +336,7 @@ const StudentCreationForm: React.FC<StudentAccountCreationProps> = ({accountType
     if (firstName === "" || surnameInitial === null || surnameInitial === "") {
       const errorDialogue = () => {
         toast.current?.show({
-          severity: `error`,
+          severity: `warn`,
           summary: `Missing Details`,
           detail: `Please ensure you enter your first name and surname initial before trying to generate a password.`,
           closeIcon: 'pi pi-times',
@@ -371,8 +345,7 @@ const StudentCreationForm: React.FC<StudentAccountCreationProps> = ({accountType
       };
       errorDialogue();
       (firstName === "") ? setFirstNameStyle("p-invalid") : setSurnameStyle("p-invalid");
-      setLoadingPasswordGen(false);
-      return;
+      setLoadingPasswordGen(false); return;
     };
 
     // Generate a password and output it to the user
@@ -403,8 +376,7 @@ const StudentCreationForm: React.FC<StudentAccountCreationProps> = ({accountType
     };
     showPassword();
 
-    setLoadingPasswordGen(false);
-    return;
+    setLoadingPasswordGen(false); return;
   };
 
   // Function to clear all the error highlighting
@@ -588,7 +560,7 @@ const StudentCreationForm: React.FC<StudentAccountCreationProps> = ({accountType
 
       <div className="student-creation-form-button-field">
         <div className="student-creation-form-button">
-          <Button label="Login" icon="pi pi-check" loading={loadingCreation} onClick={() => {
+          <Button label="Create" icon="pi pi-check" loading={loadingCreation} onClick={() => {
             clearHighlighting();
             creationHandler();
           }} raised severity="info"/>
@@ -609,7 +581,7 @@ const StudentCreationForm: React.FC<StudentAccountCreationProps> = ({accountType
               clearForm();
               setOptionMenuVisible(true);
             };
-          }} severity="secondary"/>
+          }} raised severity="secondary"/>
         </div>
       </div>
     </Card>

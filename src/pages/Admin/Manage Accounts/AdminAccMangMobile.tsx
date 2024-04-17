@@ -4,18 +4,18 @@ import { Button } from 'primereact/button';
 import { ProgressSpinner } from 'primereact/progressspinner';
 
 // Import global parameters
-import { GlobalParams } from '../../interfaces/GlobalParams';
+import { GlobalParams } from '../../../interfaces/GlobalParams';
 import { useParams } from 'react-router';
 
 // Import CSS
-import './AdminPortalDesktop.css'
-import './AdminPortalGlobal.css'
+import './AdminAccMangMobile.css'
+import './AdminAccMangGlobal.css'
 
 // Import functions
-import { confirmLogin } from '../../functions/Global/ConfirmLogin';
+import { confirmLogin } from '../../../functions/Global/ConfirmLogin';
 
-// React function to render the Admin Portal page for desktop devices
-const AdminPortalDesktop: React.FC = () => {
+// React function to render the Teacher Portal page for mobile devices
+const AdminAccMangMobile: React.FC = () => {
   // Setting up global params on this page
   const params = useParams<GlobalParams>();
 
@@ -25,7 +25,7 @@ const AdminPortalDesktop: React.FC = () => {
   // Event handler to perform action upon initial render
   useEffect(() => {
     async function confirmLoginHandler() {
-      const confirmed: boolean = await confirmLogin("admins", params.username, params.token);
+      const confirmed: boolean = await confirmLogin("teachers", params.username, params.token);
       if (confirmed) { setIsLoggedIn(true); return; }
       window.location.href = `/home`;
       return;
@@ -37,8 +37,8 @@ const AdminPortalDesktop: React.FC = () => {
   if (isLoggedIn) {
     return (
       <>
-        <h1>Desktop UI Code</h1>
-        <h1>Admin Portal</h1>
+        <h1>Mobile UI Code</h1>
+        <h1>Teacher Portal</h1>
         <h2>{params.username}</h2>
         <h2>{params.token}</h2>
         <Button label="[DEV] Back" icon="pi pi-arrow-left" onClick={() => {
@@ -55,4 +55,4 @@ const AdminPortalDesktop: React.FC = () => {
   };
 };
 
-export default AdminPortalDesktop;
+export default AdminAccMangMobile;

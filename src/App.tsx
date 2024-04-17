@@ -16,8 +16,10 @@ import LoginDesktop from './pages/Login/LoginDesktop';
 import LoginMobile from './pages/Login/LoginMobile';
 import StudentDesktop from './pages/Student/HomeDesktop';
 import StudentMobile from './pages/Student/HomeMobile';
-import AdminPortalDesktop from './pages/Admin/AdminPortalDesktop';
-import AdminPortalMobile from './pages/Admin/AdminPortalMobile';
+import AdminPortalDesktop from './pages/Admin/Portal/AdminPortalDesktop';
+import AdminPortalMobile from './pages/Admin/Portal/AdminPortalMobile';
+import AdminResetDesktop from './pages/Admin/Reset password/AdminResetDesktop';
+import AdminResetMobile from './pages/Admin/Reset password/AdminResetMobile';
 import TeacherPortalDesktop from './pages/Teacher/TeacherPortalDesktop';
 import TeacherPortalMobile from './pages/Teacher/TeacherPortalMobile';
 
@@ -34,6 +36,7 @@ const App: React.FC = () => {
         <Route path="/home" Component={LoginMobile} />
         <Route path="/studenthome/:username/:token" Component={StudentMobile}></Route>
         <Route path="/adminportal/:username/:token" Component={AdminPortalMobile} />
+        <Route path="/adminportal/resetpassword/:username/:token" Component={AdminResetMobile}/>
         <Route path="/teacherportal/:username/:token" Component={TeacherPortalMobile} />
       </Routes>
     );
@@ -46,6 +49,7 @@ const App: React.FC = () => {
         <Route path="/home" Component={LoginDesktop} />
         <Route path="/studenthome/:username/:token" Component={StudentDesktop}></Route>
         <Route path="/adminportal/:username/:token" Component={AdminPortalDesktop} />
+        <Route path="/adminportal/resetpassword/:username/:token" Component={AdminResetDesktop}/>
         <Route path="/teacherportal/:username/:token" Component={TeacherPortalDesktop} />
       </Routes>
     );
@@ -57,6 +61,7 @@ const App: React.FC = () => {
         <Route path="/home" Component={LoginDesktop} />
         <Route path="/studenthome/:username/:token" Component={StudentDesktop}></Route>
         <Route path="/adminportal/:username/:token" Component={AdminPortalDesktop} />
+        <Route path="/adminportal/resetpassword/:username/:token" Component={AdminResetDesktop}/>
         <Route path="/teacherportal/:username/:token" Component={TeacherPortalDesktop} />
       </Routes>
     );

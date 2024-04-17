@@ -2,9 +2,14 @@
 import './LoginOptionsMenu.css';
 import '../../pages/Login/LoginGlobal.css'
 
+// Import functions
+import { generateToken } from '../../functions/Global/GenerateToken';
+
 // Import UI components
 import { PanelMenu } from 'primereact/panelmenu';
 import { MenuItem } from 'primereact/menuitem';
+import { Divider } from 'primereact/divider';
+import { Button } from 'primereact/button';
 
 // Interfacing forcing certain props on the Login Options Menu component
 interface LoginOptionsMenuProps {
@@ -82,6 +87,10 @@ const LoginOptionsMenu: React.FC<LoginOptionsMenuProps> = ({setLoginType, visibl
           <i className='pi pi-book'/> Willowbank Education Track Portal
         </p>
       </div>
+      <Divider/>
+      <Button label={`[DEV] Token`} icon="pi pi-exclamation-triangle" onClick={() => {
+          console.log(generateToken());
+        }} raised severity="danger"/>
     </div>
   );
 };

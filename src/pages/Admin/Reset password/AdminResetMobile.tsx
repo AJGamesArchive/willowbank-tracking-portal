@@ -4,19 +4,19 @@ import { Button } from 'primereact/button';
 import { ProgressSpinner } from 'primereact/progressspinner';
 
 // Import global parameters
-import { GlobalParams } from '../../interfaces/GlobalParams';
+import { GlobalParams } from '../../../interfaces/GlobalParams';
 import { useParams } from 'react-router';
 
 // Import CSS
-import './TeacherPortalDesktop.css'
-import './TeacherPortalGlobal.css'
-import TeacherCard from '../../components/Teacher/TeacherCard';
+import './AdminResetDesktop.css'
+import './AdminResetGlobal.css'
+import '../../../components/Admin/AdminCard.css'
 
 // Import functions
-import { confirmLogin } from '../../functions/Global/ConfirmLogin';
+import { confirmLogin } from '../../../functions/Global/ConfirmLogin';
 
-// React function to render the Teacher Portal page for desktop devices
-const TeacherPortalDesktop: React.FC = () => {
+// React function to render the Admin Portal page for desktop devices
+const AdminResetDesktop: React.FC = () => {
   // Setting up global params on this page
   const params = useParams<GlobalParams>();
 
@@ -26,7 +26,7 @@ const TeacherPortalDesktop: React.FC = () => {
   // Event handler to perform action upon initial render
   useEffect(() => {
     async function confirmLoginHandler() {
-      const confirmed: boolean = await confirmLogin("teachers", params.username, params.token);
+      const confirmed: boolean = await confirmLogin("admins", params.username, params.token);
       if (confirmed) { setIsLoggedIn(true); return; }
       window.location.href = `/home`;
       return;
@@ -38,15 +38,13 @@ const TeacherPortalDesktop: React.FC = () => {
   if (isLoggedIn) {
     return (
       <>
-        <h1>Desktop UI Code</h1>
-        <h1>Teacher Portal</h1>
-        <h2>{params.username}</h2>
-        <h2>{params.token}</h2>
-        <TeacherCard
-          title= "By Program"
-          description='View Student Progress by Program'
-          destinationPage={``}
-        />
+        <h1>Reset student's password</h1>
+        <p>Please approve or decline the following password reset requests.</p>
+        <br />
+        
+        
+
+        <br />
         <Button label="[DEV] Back" icon="pi pi-arrow-left" onClick={() => {
           window.location.href = `/home` //! DEV button to return to login page - remove later
         }} severity="secondary"/>
@@ -61,4 +59,4 @@ const TeacherPortalDesktop: React.FC = () => {
   };
 };
 
-export default TeacherPortalDesktop;
+export default AdminResetDesktop;
