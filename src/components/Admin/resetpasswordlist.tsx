@@ -10,9 +10,8 @@ interface IResetList {
 
 const ResetList : React.FC<IResetList> = ({requests}) => {
     return <ListBox 
-        // onChange={TO BE IMPLEMENTED}
         options={requests}
-        />
+    ></ListBox>
 }
 
 export default ResetList;

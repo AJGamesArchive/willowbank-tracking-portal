@@ -19,16 +19,11 @@ import {PasswordRequest} from '../../../types/Global/PasswordRequest.ts'
 import { confirmLogin } from '../../../functions/Global/ConfirmLogin';
 import ResetList from '../../../components/Admin/resetpasswordlist';
 
-async function aGetRequests ()
-{
-    const requests: PasswordRequest[] = await getResetRequests();
-    return requests;
-}
-
 // React function to render the Admin Portal page for desktop devices
 const AdminResetDesktop: React.FC = () => {
   // Setting up global params on this page
   const params = useParams<GlobalParams>();
+  const [request, setRequests] = useState<PasswordRequest[]>([]);
 
   // Variable to force confirmation of the account login state
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
@@ -44,15 +39,27 @@ const AdminResetDesktop: React.FC = () => {
     confirmLoginHandler();
   }, []); // Emptying process array to ensure handler only runs on initial render
 
+  async function aGetRequests ()
+  {
+    const requestsArray = await getResetRequests();
+    if ( typeof requestsArray === "string")
+    {
+      return;
+    }
+    setRequests(requestsArray)
+    return;
+  }
+  console.log(request)
   // Return JSX based on login state
   if (isLoggedIn) {
+    aGetRequests();
     return (
       <>
         <h1>Reset student's password</h1>
         <p>Please approve or decline the following password reset requests.</p>
         <br />
         
-        <ResetList requests={aGetRequests} />
+        <ResetList requests={request} />
 
         <br />
         <Button label="[DEV] Back" icon="pi pi-arrow-left" onClick={() => {
