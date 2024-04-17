@@ -10,14 +10,14 @@ import { useParams } from 'react-router';
 // Import CSS
 import './AdminResetDesktop.css'
 import './AdminResetGlobal.css'
-import '../../../components/Admin/admin.css'
-import '../../../components/Admin/resetpasswordlist'
+import '../../../components/Admin/AdminCard'
+import '../../../components/Admin/ResetPasswordList';
 import { getResetRequests } from '../../../functions/Global/GetResetRequests.ts';
-import {PasswordRequest} from '../../../types/Global/PasswordRequest.ts'
+import { PasswordRequest } from '../../../types/Global/PasswordRequest.ts'
 
 // Import functions
 import { confirmLogin } from '../../../functions/Global/ConfirmLogin';
-import ResetList from '../../../components/Admin/resetpasswordlist';
+import ResetList from '../../../components/Admin/ResetPasswordList';
 
 // React function to render the Admin Portal page for desktop devices
 const AdminResetDesktop: React.FC = () => {
@@ -61,7 +61,7 @@ const AdminResetDesktop: React.FC = () => {
     return (
       <>
         <h1>Reset student's password</h1>
-        <p>Please approve or decline the following password reset requests.</p>
+        <p>Please approve or ignore the following password reset requests.</p>
         <br />
         <ResetList requests={request} />
         <br />

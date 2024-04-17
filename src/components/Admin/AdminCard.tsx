@@ -1,4 +1,4 @@
-import './admin.css';
+import './AdminCard.css';
 import React from 'react';
 
 // Import primereact features
