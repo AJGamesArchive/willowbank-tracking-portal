@@ -16,7 +16,7 @@ import { PasswordRequest } from '../../../types/Global/PasswordRequest.ts'
 
 // Import functions
 import { confirmLogin } from '../../../functions/Global/ConfirmLogin';
-import ResetList from '../../../components/Admin/resetpasswordlist.tsx';
+import ResetList from '../../../components/Admin/ResetPasswordList.tsx';
 
 // React function to render the Admin Portal page for desktop devices
 const AdminResetDesktop: React.FC = () => {
@@ -33,9 +33,12 @@ const AdminResetDesktop: React.FC = () => {
       const confirmed: boolean = await confirmLogin("admins", params.username, params.token);
       if (confirmed) { setIsLoggedIn(true); return; }
       window.location.href = `/home`;
+      var username: string[] = [];
+      request.forEach(element => { username.push(element.username); });
       return;
     };
     confirmLoginHandler();
+    aGetRequests();
   }, []); // Emptying process array to ensure handler only runs on initial render
 
   async function aGetRequests ()
@@ -48,20 +51,14 @@ const AdminResetDesktop: React.FC = () => {
     setRequests(requestsArray)
     return;
   }
-  console.log(request)
   // Return JSX based on login state
   if (isLoggedIn) {
-
-    var username: string[] = [];
-    request.forEach(element => {
-        username.push(element.username);
-    });
     return (
       <>
         <h1>Reset student's password</h1>
         <p>Please approve or ignore the following password reset requests.</p>
         <br />
-        <ResetList requests={request} />
+        <ResetList requests={request}/>
         <br />
         <Button label="[DEV] Back" icon="pi pi-arrow-left" onClick={() => {
           window.location.href = `/home` //! DEV button to return to login page - remove later

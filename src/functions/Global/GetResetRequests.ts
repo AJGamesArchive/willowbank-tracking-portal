@@ -4,16 +4,18 @@ import { getDoc, doc } from "firebase/firestore";
 import { PasswordRequest } from "../../types/Global/PasswordRequest";
 
 // Async function to retrieve all the document ID's for a given collection in the database
-export async function getResetRequests(): Promise<string| PasswordRequest[]> {
+export async function getResetRequests(): Promise<string | PasswordRequest[]> {
     
     const docRef = doc(db, "requests", "password-resets");
     try 
     {
         const docPasswordReset = await getDoc(docRef);
-        if (docPasswordReset.exists())
+
+        if (!docPasswordReset.exists())
         {
-            var requests = docPasswordReset.data().requests;
+            return Promise.resolve("ERROR");
         }
+        var requests: PasswordRequest[] = docPasswordReset.data().requests;
     }
     catch (e)
     {
