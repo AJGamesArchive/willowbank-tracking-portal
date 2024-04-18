@@ -45,7 +45,7 @@ const HomeDesktop: React.FC = () => {
   if (isLoggedIn) {
     return (
       <>
-        <h1>Welcome (name)</h1>
+        <h1>Welcome {params.username}</h1>
         <h2>My Journey</h2>
         <Journey level={5} experience={10} badges={3}></Journey>
         <Divider />
