@@ -59,6 +59,7 @@ const ResetList : React.FC<IResetList> = ({requests}) => {
     // Called by Dialog if admin chooses to reset the user's password
     const accept = async () => {
         await resetPasswordHandler(account);
+        // update log with new password
         return
     }
 
