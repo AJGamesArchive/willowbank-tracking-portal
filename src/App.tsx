@@ -22,16 +22,16 @@ import StudentMobile from './pages/Student/HomeMobile';
 // Admin Portal
 import AdminPortalDesktop from './pages/Admin/Portal/AdminPortalDesktop';
 import AdminPortalMobile from './pages/Admin/Portal/AdminPortalMobile';
-import AdminResetMobile from './pages/Admin/Reset password/AdminResetMobile';
-import AdminResetDesktop from './pages/Admin/Reset password/AdminResetMobile';
+import AdminResetDesktop from './pages/Admin/ResetPasswords/AdminResetDesktop';
+import AdminResetMobile from './pages/Admin/ResetPasswords/AdminResetMobile';
+import AdminAccMangDesktop from './pages/Admin/Manage Accounts/AdminAccMangDesktop';
+import AdminAccMangMobile from './pages/Admin/Manage Accounts/AdminAccMangMobile';
 import ManageProgramsDesktop from './pages/Admin/Manage Programs/ManageProgramsDesktop';
 import ManageProgramsMobile from './pages/Admin/Manage Programs/ManageProgramsMobile';
 
 // Teacher Portal
 import TeacherPortalDesktop from './pages/Teacher/TeacherPortalDesktop';
 import TeacherPortalMobile from './pages/Teacher/TeacherPortalMobile';
-import AdminAccMangDesktop from './pages/Admin/Manage Accounts/AdminAccMangDesktop';
-import AdminAccMangMobile from './pages/Admin/Manage Accounts/AdminAccMangMobile';
 
 // React function to handle core app navigation and UI code rendering based on given run time device screen size
 const App: React.FC = () => {

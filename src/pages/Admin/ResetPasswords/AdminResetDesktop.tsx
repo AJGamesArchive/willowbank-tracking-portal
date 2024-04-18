@@ -15,8 +15,8 @@ import { getResetRequests } from '../../../functions/Global/GetResetRequests.ts'
 import { PasswordRequest } from '../../../types/Global/PasswordRequest.ts'
 
 // Import functions
-import { confirmLogin } from '../../../functions/Global/ConfirmLogin';
-import ResetList from '../../../components/Admin/resetpasswordlist.tsx';
+import { confirmLogin } from '../../../functions/Global/ConfirmLogin.ts';
+import ResetList from '../../../components/Admin/ResetPasswordList.tsx';
 
 // React function to render the Admin Portal page for desktop devices
 const AdminResetDesktop: React.FC = () => {

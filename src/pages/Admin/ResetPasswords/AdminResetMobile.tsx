@@ -16,7 +16,7 @@ import '../../../components/Admin/AdminCard.css'
 import { confirmLogin } from '../../../functions/Global/ConfirmLogin';
 
 // React function to render the Admin Portal page for desktop devices
-const AdminResetDesktop: React.FC = () => {
+const AdminResetMobile: React.FC = () => {
   // Setting up global params on this page
   const params = useParams<GlobalParams>();
 
@@ -59,4 +59,4 @@ const AdminResetDesktop: React.FC = () => {
   };
 };
 
-export default AdminResetDesktop;
+export default AdminResetMobile;
