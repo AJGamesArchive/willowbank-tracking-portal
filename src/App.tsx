@@ -30,6 +30,8 @@ import ManageProgramsMobile from './pages/Admin/Manage Programs/ManageProgramsMo
 // Teacher Portal
 import TeacherPortalDesktop from './pages/Teacher/TeacherPortalDesktop';
 import TeacherPortalMobile from './pages/Teacher/TeacherPortalMobile';
+import AdminAccMangDesktop from './pages/Admin/Manage Accounts/AdminAccMangDesktop';
+import AdminAccMangMobile from './pages/Admin/Manage Accounts/AdminAccMangMobile';
 
 // React function to handle core app navigation and UI code rendering based on given run time device screen size
 const App: React.FC = () => {
@@ -47,6 +49,7 @@ const App: React.FC = () => {
         <Route path="/adminportal/resetpassword/:username/:token" Component={AdminResetMobile}/>
         <Route path="/adminportal/manageprograms/:username/:token" Component={ManageProgramsMobile}/>
         <Route path="/teacherportal/:username/:token" Component={TeacherPortalMobile} />
+        <Route path="/AccManagement/:username/:token" Component={AdminAccMangMobile} />
       </Routes>
     );
   } else if (windowSize.width >= 768 && windowSize.width <= 1024) {
@@ -61,6 +64,7 @@ const App: React.FC = () => {
         <Route path="/adminportal/resetpassword/:username/:token" Component={AdminResetDesktop}/>
         <Route path="/adminportal/manageprograms/:username/:token" Component={ManageProgramsDesktop}/>
         <Route path="/teacherportal/:username/:token" Component={TeacherPortalDesktop} />
+        <Route path="/AccManagement/:username/:token" Component={AdminAccMangDesktop} />
       </Routes>
     );
   } else {
@@ -74,6 +78,7 @@ const App: React.FC = () => {
         <Route path="/adminportal/resetpassword/:username/:token" Component={AdminResetDesktop}/>
         <Route path="/adminportal/manageprograms/:username/:token" Component={ManageProgramsDesktop}/>
         <Route path="/teacherportal/:username/:token" Component={TeacherPortalDesktop} />
+        <Route path="/AccManagement/:username/:token" Component={AdminAccMangDesktop} />
       </Routes>
     );
   };
