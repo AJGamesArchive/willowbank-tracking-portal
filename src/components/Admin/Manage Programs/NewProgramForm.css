@@ -1,0 +1,20 @@
+.add-program-form-field {
+  margin-top: 35px;
+}
+
+.add-program-form-button-field {
+  margin-top: 25px;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+}
+
+.add-program-form-button {
+  margin-right: 10px;
+}
+
+.add-program-form-help-text {
+  display: flex;
+  padding-left: 5px;
+}

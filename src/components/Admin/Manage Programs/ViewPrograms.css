@@ -1,0 +1,15 @@
+.view-programs-button {
+    padding-top: 25px;
+}
+
+.grid-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 20px;
+}
+
+.grid-item {
+    background-color: #85d2f9;
+    padding: 5px;
+    border: 1px solid #ccc;
+}
