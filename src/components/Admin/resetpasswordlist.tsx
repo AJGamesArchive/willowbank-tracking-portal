@@ -4,7 +4,7 @@ import React from 'react';
 import { ListBox } from 'primereact/listbox';
 import { PasswordRequest } from '../../types/Global/PasswordRequest.ts';
 import { ConfirmPopup } from 'primereact/confirmpopup';
-import { removeResetRequest, resetPassword } from '../../functions/Global/DBUpdatePasswordRequests';
+import { removeResetRequest, resetPassword } from '../../functions/Global/DBUpdatePasswordRequests.ts';
 import { Dialog } from 'primereact/dialog';
 import { useState } from 'react';
 

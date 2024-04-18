@@ -4,18 +4,18 @@ import { Button } from 'primereact/button';
 import { ProgressSpinner } from 'primereact/progressspinner';
 
 // Import global parameters
-import { GlobalParams } from '../../../interfaces/GlobalParams';
+import { GlobalParams } from '../../../interfaces/GlobalParams.ts';
 import { useParams } from 'react-router';
 
 // Import CSS
 import './AdminResetDesktop.css'
 import './AdminResetGlobal.css'
-import '../../../components/Admin/AdminCard'
+import '../../../components/Admin/AdminCard.tsx'
 import { getResetRequests } from '../../../functions/Global/GetResetRequests.ts';
 import { PasswordRequest } from '../../../types/Global/PasswordRequest.ts'
 
 // Import functions
-import { confirmLogin } from '../../../functions/Global/ConfirmLogin';
+import { confirmLogin } from '../../../functions/Global/ConfirmLogin.ts';
 import ResetList from '../../../components/Admin/ResetPasswordList.tsx';
 
 // React function to render the Admin Portal page for desktop devices
