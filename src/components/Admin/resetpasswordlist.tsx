@@ -1,12 +1,10 @@
 import './resetpasswordlist.css'
 import '../../functions/Global/GetResetRequests.ts'
-import { ListBox } from 'primereact/listbox';
 import React from 'react';
+import { ListBox } from 'primereact/listbox';
 import { PasswordRequest } from '../../types/Global/PasswordRequest.ts';
 import { ConfirmPopup } from 'primereact/confirmpopup';
-import './ResetPasswordPopup.css';
-//import { generatePassword } from '../../functions/Login/GeneratePassword';
-import { removeResetRequest } from '../../functions/Global/DBUpdatePasswordRequests';
+import { removeResetRequest, resetPassword } from '../../functions/Global/DBUpdatePasswordRequests.ts';
 import { Dialog } from 'primereact/dialog';
 import { useState } from 'react';
 
@@ -23,6 +21,8 @@ const ResetList : React.FC<IResetList> = ({requests}) => {
     // Use state constant declarations
     const [dialogVisible, setDialogVisible] = useState<boolean>(false);
     const [popupVisible, setPopupVisible] = useState<boolean>(false);
+    const [passwordDisplayVisible, setPasswordDisplayVisible] = useState<boolean>(false);
+    const [password, setPassword] = useState<string>("")
     const [account, setAccount] = useState<PasswordRequest>({
         username: "test",
         accountType: "",
@@ -33,24 +33,38 @@ const ResetList : React.FC<IResetList> = ({requests}) => {
     // from the request array and update the database
     // Returns void
     async function removeResetRequestHandler( account : PasswordRequest ) {    
-        const output = await removeResetRequest(account);
+        const output = await removeResetRequest(account, true);
         if (!output) {
             setPopupVisible(true)
         }
         return;
     }
 
+    async function resetPasswordHandler ( account : PasswordRequest )
+    {
+        const newPassword = await resetPassword (account)
+        console.log(newPassword)
+        if (newPassword === "") {
+            setPopupVisible(true)
+        }
+        else
+        {
+            setPassword(newPassword)
+            setPasswordDisplayVisible(true)
+            removeResetRequest(account, false);
+        }
+        return
+    }
+    
     // Called by Dialog if admin chooses to reset the user's password
-    const accept = () => {
-        // Change password
+    const accept = async () => {
+        await resetPasswordHandler(account);
         return
     }
 
     // Called by Dialog if admin chooses to ignore the user's request
-    const reject = () => {
-        // calls removeResetRequest and sets popup visibility to true
-        // if the account could not be removed
-        removeResetRequestHandler(account);
+    const reject = async () => {
+        await removeResetRequestHandler(account);
         return;
     }
 
@@ -66,9 +80,21 @@ const ResetList : React.FC<IResetList> = ({requests}) => {
             <Dialog
                 visible={dialogVisible}
                 onHide={() => setDialogVisible(false)}
+                closeIcon="pi pi-times"
                 header="Error"
             >
             <p>Something went wrong. Please try again.</p>
+            </Dialog>
+            {
+
+            }
+            <Dialog
+                visible={passwordDisplayVisible}
+                onHide={() => {setPasswordDisplayVisible(false); setPassword("")}}
+                header="Success!"
+                closeIcon="pi pi-times"
+            >
+            <p>{account.username}'s password was successfully reset to {password}.</p>
             </Dialog>
 
             <ConfirmPopup

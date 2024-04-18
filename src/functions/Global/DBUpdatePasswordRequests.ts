@@ -1,13 +1,13 @@
 // Importing the database
 import { db } from "../../database/Initalise"
-import { setDoc, updateDoc, doc } from "firebase/firestore";
+import { getDoc, setDoc, updateDoc, doc } from "firebase/firestore";
 import { PasswordRequest } from "../../types/Global/PasswordRequest";
 import { getResetRequests } from "./GetResetRequests";
-import { getLogs } from "./GetLogs";
 import { dateTime } from "./GenerateTimestamp";
+import { generatePassword } from '../../functions/Login/GeneratePassword.ts';
 
 // Async function to retrieve all the document ID's for a given collection in the database
-export async function removeResetRequest(remove : PasswordRequest): Promise<boolean> {
+export async function removeResetRequest(remove : PasswordRequest, ignore : Boolean): Promise<boolean> {
     try 
     {
         // Pull all accounts from database
@@ -21,15 +21,11 @@ export async function removeResetRequest(remove : PasswordRequest): Promise<bool
         
         // Remove password request
         const index = allAccounts.findIndex(account => account.username === remove.username)
-        console.log(allAccounts)
-        console.log(remove)
-        console.log(index)
         if (index > -1) 
         {
             allAccounts.splice(index, 1);
         }
 
-        console.log(allAccounts)
         // Write back to database
         const docRef = doc(db, "requests", "password-resets");
         
@@ -38,20 +34,39 @@ export async function removeResetRequest(remove : PasswordRequest): Promise<bool
             requests: allAccounts
         });
 
-        
         const logDocRef = doc(db, "requests", "password-resets", "request-logs", remove.created)
             updateDoc(logDocRef, {
-                ignored: true,
+                ignored: ignore,
                 completed: dateTime()
             });
 
-    // change to ignored and completed timestamp to current time
-        // request -> created -> key for log request -> add boolean on end
-        // request -> password-resets -> request-logs (key is date) set to true
         return Promise.resolve(true);
     }
     catch (e)
     {
         return Promise.resolve(false);
+    }
+}
+
+export async function resetPassword ( account : PasswordRequest ) : Promise<string>
+{
+    const docRef = doc(db, `${account.accountType}`, `${account.username}`)
+    console.log(docRef)
+    try
+    {
+        const Account = await getDoc(docRef)
+        if (!Account.exists()) {
+            return Promise.resolve("");
+        }
+        var name : string = Account.data().firstName
+        var surnameInitial : string = Account.data().surnameInitial
+        var newPassword = generatePassword(name, surnameInitial)
+        await updateDoc(docRef, {
+            password : newPassword
+        });
+        return Promise.resolve(newPassword);
+    }
+    catch (e) {
+        return Promise.resolve("")
     }
 }

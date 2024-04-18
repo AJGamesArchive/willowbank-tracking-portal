@@ -14,12 +14,20 @@ import { detectWindowSize } from './functions/Global/DetectWindowSize';
 // Import pages
 import LoginDesktop from './pages/Login/LoginDesktop';
 import LoginMobile from './pages/Login/LoginMobile';
+
+// Student Portal
 import StudentDesktop from './pages/Student/HomeDesktop';
 import StudentMobile from './pages/Student/HomeMobile';
+
+// Admin Portal
 import AdminPortalDesktop from './pages/Admin/Portal/AdminPortalDesktop';
 import AdminPortalMobile from './pages/Admin/Portal/AdminPortalMobile';
-import AdminResetDesktop from './pages/Admin/Reset password/AdminResetDesktop';
-import AdminResetMobile from './pages/Admin/Reset password/AdminResetMobile';
+import AdminResetDesktop from './pages/Admin/Reset Password/AdminResetDesktop';
+import AdminResetMobile from './pages/Admin/Reset Password/AdminResetMobile';
+import ManageProgramsDesktop from './pages/Admin/Manage Programs/ManageProgramsDesktop';
+import ManageProgramsMobile from './pages/Admin/Manage Programs/ManageProgramsMobile';
+
+// Teacher Portal
 import TeacherPortalDesktop from './pages/Teacher/TeacherPortalDesktop';
 import TeacherPortalMobile from './pages/Teacher/TeacherPortalMobile';
 import AdminAccMangDesktop from './pages/Admin/Manage Accounts/AdminAccMangDesktop';
@@ -39,6 +47,7 @@ const App: React.FC = () => {
         <Route path="/studenthome/:username/:token" Component={StudentMobile}></Route>
         <Route path="/adminportal/:username/:token" Component={AdminPortalMobile} />
         <Route path="/adminportal/resetpassword/:username/:token" Component={AdminResetMobile}/>
+        <Route path="/adminportal/manageprograms/:username/:token" Component={ManageProgramsMobile}/>
         <Route path="/teacherportal/:username/:token" Component={TeacherPortalMobile} />
         <Route path="/AccManagement/:username/:token" Component={AdminAccMangMobile} />
       </Routes>
@@ -53,6 +62,7 @@ const App: React.FC = () => {
         <Route path="/studenthome/:username/:token" Component={StudentDesktop}></Route>
         <Route path="/adminportal/:username/:token" Component={AdminPortalDesktop} />
         <Route path="/adminportal/resetpassword/:username/:token" Component={AdminResetDesktop}/>
+        <Route path="/adminportal/manageprograms/:username/:token" Component={ManageProgramsDesktop}/>
         <Route path="/teacherportal/:username/:token" Component={TeacherPortalDesktop} />
         <Route path="/AccManagement/:username/:token" Component={AdminAccMangDesktop} />
       </Routes>
@@ -66,6 +76,7 @@ const App: React.FC = () => {
         <Route path="/studenthome/:username/:token" Component={StudentDesktop}></Route>
         <Route path="/adminportal/:username/:token" Component={AdminPortalDesktop} />
         <Route path="/adminportal/resetpassword/:username/:token" Component={AdminResetDesktop}/>
+        <Route path="/adminportal/manageprograms/:username/:token" Component={ManageProgramsDesktop}/>
         <Route path="/teacherportal/:username/:token" Component={TeacherPortalDesktop} />
         <Route path="/AccManagement/:username/:token" Component={AdminAccMangDesktop} />
       </Routes>
