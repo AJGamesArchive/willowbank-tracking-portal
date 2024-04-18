@@ -2,6 +2,9 @@
 // --import { useState } from 'react';
 import React, { useEffect, useState } from 'react';
 import { InputText } from 'primereact/inputtext';
+import { getUserData } from '../../../functions/Admin/accountInformation';
+import { UserData } from '../../../functions/Admin/accountInformation';
+
 
 // Import CSS
 import './AccountMangBoxs.css';
@@ -14,22 +17,19 @@ interface AccountListBoxProps {
 }
     //creates usestates for the selected users ifnromation
     const AccountManageBoxs: React.FC<AccountListBoxProps> = ({selectedUsername, setSelectedUsername,selectedCategory,setSelectedCategory}) => {
-    const [selectedFirstName, setselectedFirstName] = useState<string | null>(null);
-    const [selectedLastName, setselectedLastName] = useState<string | null>(null);
-    const [selectedschool, setselectedschool] = useState<string | null>(null);
+    const [userData, setUserData] = useState<UserData | null>(null);
 
     //use effects runs when component is called
     useEffect(() => {
-        const fetchData = async () => {
-            try {
-                
-            } catch (error) {
-                //runs error if a problem arrises with fetching usernames
-                console.error('Error fetching infromation:', error);
-            }
-        };
-
-        fetchData();
+        if (selectedUsername && selectedCategory) {
+            getUserData(selectedUsername, selectedCategory)
+                .then((data) => {
+                    setUserData(data);
+                })
+                .catch((error) => {
+                    console.error('Error fetching user data:', error);
+                });
+        }
     }, []);
 
     return (
@@ -43,18 +43,22 @@ interface AccountListBoxProps {
                         <label htmlFor="username:  ">Username</label>
                         <InputText 
                         id="username"
-                        value={selectedUsername}
+                        value={userData?.firstName}
                         />
                         <label htmlFor="First Name:  ">FirstName</label>
                         <InputText 
                         id="FirstName"
-                        
+                        value={userData?.firstName}
                         />
                         <label htmlFor="Last Name Intl:  ">LastName</label>
-                        <InputText id="LastName"
+                        <InputText 
+                        id="LastName"
+                        value={userData?.lastName}
                         />
                         <label htmlFor="School:  ">School</label>
-                        <InputText id="School"
+                        <InputText 
+                        id="School"
+                        value={userData?.school}
                         />
                     </div>
                     

@@ -22,8 +22,8 @@ import StudentMobile from './pages/Student/HomeMobile';
 // Admin Portal
 import AdminPortalDesktop from './pages/Admin/Portal/AdminPortalDesktop';
 import AdminPortalMobile from './pages/Admin/Portal/AdminPortalMobile';
-import AdminResetDesktop from './pages/Admin/Reset Password/AdminResetDesktop';
-import AdminResetMobile from './pages/Admin/Reset Password/AdminResetMobile';
+import AdminResetMobile from './pages/Admin/Reset password/AdminResetMobile';
+import AdminResetDesktop from './pages/Admin/Reset password/AdminResetMobile';
 import ManageProgramsDesktop from './pages/Admin/Manage Programs/ManageProgramsDesktop';
 import ManageProgramsMobile from './pages/Admin/Manage Programs/ManageProgramsMobile';
 
