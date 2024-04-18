@@ -2,23 +2,40 @@
 // --import { useState } from 'react';
 
 import React, { useEffect, useState } from 'react';
-import { retrieveDocumentIDs } from '../../functions/Global/RetrieveDocumentIDs';
+import { retrieveDocumentIDs } from '../../../functions/Global/RetrieveDocumentIDs';
 import { ListBox } from 'primereact/listbox';
-import { Button } from 'primereact/button';
 
 // Import CSS
-import './AccountMang.css';
+import './AccountMangLists.css';
 
-const AccountListBox: React.FC = () => {
+interface AccountListBoxProps {
+    selectedUsername: string;
+    setSelectedUsername: (value: string) => void;
+    selectedCategory: string;
+    setSelectedCategory: (value: string) => void;
+}
+
+    const AccountListBox: React.FC<AccountListBoxProps> = ({selectedUsername, setSelectedUsername,selectedCategory,setSelectedCategory}) => {
     //declaring state variables, ready to store the usernames for teachers, students and admins and selected user
-    const [selectedUsername, setSelectedUsername] = useState<string | null>(null); 
+    // const [selectedUsername, setSelectedUsername] = useState<string | null>(null); 
     const [studentUsernames, setStudentUsernames] = useState<string[]>([]);
     const [teacherUsernames, setTeacherUsernames] = useState<string[]>([]);
     const [adminUsernames, setAdminUsernames] = useState<string[]>([]);
 
     // Function to handle username selection
     const handleUsernameSelect = (e: any) => {
-        setSelectedUsername(e.value); // Update selected username
+        const selectedUsername = e.value;
+        setSelectedUsername(selectedUsername); 
+        // Determine the category based on the selected username
+        if (studentUsernames.includes(selectedUsername)) {
+            setSelectedCategory('students');
+        } else if (teacherUsernames.includes(selectedUsername)) {
+            setSelectedCategory('teachers');
+        } else if (adminUsernames.includes(selectedUsername)) {
+            setSelectedCategory('admins');
+        } else {
+            setSelectedCategory(""); // If the category is unknown or not found
+        }
     };
     //use effects runs when component is called
     useEffect(() => {
@@ -48,9 +65,11 @@ const AccountListBox: React.FC = () => {
         fetchData();
     }, []);
 
+    
     return (
+        
         <div> {/* Wrap everything in a div */}
-        {selectedUsername === null && (
+        {selectedUsername === "" && (
             <>
                 <div className="listBoxContainer">
                     <h3>Student Usernames</h3>
@@ -80,11 +99,6 @@ const AccountListBox: React.FC = () => {
                 </div>
             </>
         )}
-        <div className='buttonContainer'>
-            <Button label="Back" icon="pi pi-arrow-left" onClick={() => {
-            setSelectedUsername(null); //goes back to the list pages
-            }} severity="secondary"/>
-        </div>
     </div>
 );
 };

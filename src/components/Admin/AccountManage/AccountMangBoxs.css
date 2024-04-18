@@ -1,0 +1,5 @@
+.textBoxContainer label,
+.textBoxContainer input {
+    display: block;
+    margin-bottom: 10px; /* Optional: Add some space between each label and input */
+}
