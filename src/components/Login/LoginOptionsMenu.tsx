@@ -89,8 +89,8 @@ const LoginOptionsMenu: React.FC<LoginOptionsMenuProps> = ({setLoginType, visibl
       </div>
       <Divider/>
       <Button label={`[DEV] Token`} icon="pi pi-exclamation-triangle" onClick={() => {
-          console.log(generateToken());
-        }} raised severity="danger"/>
+          console.log(generateToken()); //! Remove later
+        }} raised severity="help"/>
     </div>
   );
 };

@@ -57,9 +57,9 @@ const HomeMobile: React.FC = () => {
         <Divider/>
         <h2>New section etc.</h2>
         <Divider/>
-        <Button label="[DEV] Back" icon="pi pi-arrow-left" onClick={() => {
-          window.location.href = `/home` //! DEV button to return to login page - remove later
-        }} severity="secondary"/>
+        <Button label="Sign-Out" icon="pi pi-sign-out" onClick={() => {
+          window.location.href = `/home`
+        }} severity="danger"/>
       </>
     );
   } else {

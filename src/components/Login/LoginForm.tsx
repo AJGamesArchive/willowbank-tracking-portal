@@ -172,7 +172,7 @@ const LoginForm: React.FC<LoginFormProps> = ({accountType, visible, setVisible, 
               console.log("Make your own student account!!");
               break;
           };
-        }} raised severity="danger"/>
+        }} raised severity="help"/>
         <Divider/>
       </div>
       {

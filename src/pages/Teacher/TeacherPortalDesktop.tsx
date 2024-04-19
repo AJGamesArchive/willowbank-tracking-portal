@@ -47,9 +47,9 @@ const TeacherPortalDesktop: React.FC = () => {
           description='View Student Progress by Program'
           destinationPage={``}
         />
-        <Button label="[DEV] Back" icon="pi pi-arrow-left" onClick={() => {
-          window.location.href = `/home` //! DEV button to return to login page - remove later
-        }} severity="secondary"/>
+        <Button label="Sign-Out" icon="pi pi-sign-out" onClick={() => {
+          window.location.href = `/home`
+        }} severity="warning"/>
       </>
     );
   } else {

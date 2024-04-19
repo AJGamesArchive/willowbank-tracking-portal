@@ -55,13 +55,10 @@ const AdminPortalDesktop: React.FC = () => {
         <AdminCard title="Manage schools"
         description="Create, modify or delete schools."
         destinationPage=""/>
-        <AdminCard title="Manage Activites"
-        description="Create or delete activities."
-        destinationPage=""/>
         <Divider />
-        <Button label="[DEV] Back" icon="pi pi-arrow-left" onClick={() => {
-          window.location.href = `/home` //! DEV button to return to login page - remove later
-        }} severity="secondary"/>
+        <Button label="Sign-Out" icon="pi pi-sign-out" onClick={() => {
+          window.location.href = `/home`
+        }} severity="danger"/>
       </>
     );
   } else {

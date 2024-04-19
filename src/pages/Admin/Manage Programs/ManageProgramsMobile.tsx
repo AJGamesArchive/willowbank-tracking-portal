@@ -43,7 +43,7 @@ const ManageProgramsMobile: React.FC = () => {
         <Divider />
         <Button label="[DEV] Back" icon="pi pi-arrow-left" onClick={() => {
           window.location.href = `/home` //! DEV button to return to login page - remove later
-        }} severity="secondary"/>
+        }} severity="help"/>
       </>
     );
   } else {

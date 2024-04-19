@@ -41,9 +41,9 @@ const TeacherPortalMobile: React.FC = () => {
         <h1>Teacher Portal</h1>
         <h2>{params.username}</h2>
         <h2>{params.token}</h2>
-        <Button label="[DEV] Back" icon="pi pi-arrow-left" onClick={() => {
-          window.location.href = `/home` //! DEV button to return to login page - remove later
-        }} severity="secondary"/>
+        <Button label="Sign-Out" icon="pi pi-sign-out" onClick={() => {
+          window.location.href = `/home`
+        }} severity="warning"/>
       </>
     );
   } else {

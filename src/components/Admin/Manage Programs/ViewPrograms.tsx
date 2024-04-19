@@ -24,10 +24,12 @@ interface ViewProgressProps {
   setProgramRerender: (value: boolean) => void;
   programAdded: boolean;
   setProgramAdded: (value: boolean) => void;
+  setVisibleActivities: (value: boolean) => void;
+  setSelectedProgram: (value: string) => void;
 };
 
 // React function to render the login page for mobile devices
-const ViewProgress: React.FC<ViewProgressProps> = ({visible, setVisible, setVisibleForm, programRerender, setProgramRerender, programAdded, setProgramAdded}) => {
+const ViewProgress: React.FC<ViewProgressProps> = ({visible, setVisible, setVisibleForm, programRerender, setProgramRerender, programAdded, setProgramAdded, setVisibleActivities, setSelectedProgram}) => {
   // State variable to store the program data as an array
   const [programData, setProgramData] = useState<ProgramData[]>([]);
 
@@ -49,6 +51,14 @@ const ViewProgress: React.FC<ViewProgressProps> = ({visible, setVisible, setVisi
       return;
     };
     setProgramData(documents);
+    return;
+  };
+
+  // Function to handel program card click events
+  function onProgramCardClick(selectedProgramName: string): void {
+    setVisible(false);
+    setSelectedProgram(selectedProgramName);
+    setVisibleActivities(true);
     return;
   };
 
@@ -88,6 +98,7 @@ const ViewProgress: React.FC<ViewProgressProps> = ({visible, setVisible, setVisi
               name={item.name}
               description={item.description}
               colour={item.colour}
+              onProgramClick={onProgramCardClick}
             />
           </div>
         ))}
