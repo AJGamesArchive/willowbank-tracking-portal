@@ -28,8 +28,9 @@ const ManageProgramsDesktop: React.FC = () => {
   const [visiblePrograms, setVisiblePrograms] = useState<boolean>(true);
   const [visibleProgramForm, setVisibleProgramForm] = useState<boolean>(false);
 
-  // Event trigger state variable
-  const [programRerender, setProgramRerender] = useState<boolean>(false);
+  // Event trigger state variables
+  const [programRerender, setProgramRerender] = useState<boolean>(true);
+  const [programAdded, setProgramAdded] = useState<boolean>(false);
 
   // Variable to force confirmation of the account login state
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
@@ -54,6 +55,7 @@ const ManageProgramsDesktop: React.FC = () => {
           setVisible={setVisibleProgramForm}
           setVisiblePrograms={setVisiblePrograms}
           setProgramRerender={setProgramRerender}
+          setProgramAdded={setProgramAdded}
         />
         <ViewProgress
           visible={visiblePrograms}
@@ -61,6 +63,8 @@ const ManageProgramsDesktop: React.FC = () => {
           setVisibleForm={setVisibleProgramForm}
           programRerender={programRerender}
           setProgramRerender={setProgramRerender}
+          programAdded={programAdded}
+          setProgramAdded={setProgramAdded}
         />
         <Divider />
         <Button label="[DEV] Back" icon="pi pi-arrow-left" onClick={() => {

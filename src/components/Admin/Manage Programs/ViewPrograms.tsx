@@ -22,10 +22,12 @@ interface ViewProgressProps {
   setVisibleForm: (value: boolean) => void;
   programRerender: boolean;
   setProgramRerender: (value: boolean) => void;
+  programAdded: boolean;
+  setProgramAdded: (value: boolean) => void;
 };
 
 // React function to render the login page for mobile devices
-const ViewProgress: React.FC<ViewProgressProps> = ({visible, setVisible, setVisibleForm, programRerender, setProgramRerender}) => {
+const ViewProgress: React.FC<ViewProgressProps> = ({visible, setVisible, setVisibleForm, programRerender, setProgramRerender, programAdded, setProgramAdded}) => {
   // State variable to store the program data as an array
   const [programData, setProgramData] = useState<ProgramData[]>([]);
 
@@ -50,17 +52,27 @@ const ViewProgress: React.FC<ViewProgressProps> = ({visible, setVisible, setVisi
     return;
   };
 
-  // Trigger a refresh of the program data when event trigger is fired
-  if(programRerender) {
-    retrieveProgramDataHandler();
-    setProgramRerender(false);
-    return;
-  };
-
   // useEffect hook to execute certain functions upton initial page render
   useEffect(() => {
-    retrieveProgramDataHandler();
-  }, []); // Emptying process array to ensure handler only runs on initial render
+    // Trigger a refresh of the program data when event trigger is fired
+    if(programRerender) {
+      console.log("Re-render!")
+      retrieveProgramDataHandler();
+      setProgramRerender(false);
+      return;
+    };
+    if(programAdded) {
+      // Output an confirmation message saying the new program has been added to the system
+      toast.current?.show({
+        severity: 'success',
+        summary: 'Program Added',
+        detail: `The specified program has been added to the system successfully.`,
+        closeIcon: 'pi pi-times',
+        life: 7000,
+      });
+      setProgramAdded(false);
+    };
+  }, [programRerender]); // Pass the 'programRerender' state variable in as a dependency for the hook
 
   // Return JSX
   return (

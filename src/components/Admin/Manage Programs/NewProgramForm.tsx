@@ -18,10 +18,11 @@ interface NewProgramFormProps {
   setVisible: (value: boolean) => void;
   setVisiblePrograms: (value: boolean) => void;
   setProgramRerender: (value: boolean) => void;
+  setProgramAdded:(value: boolean) => void;
 };
 
 // React function to render the login page for mobile devices
-const NewProgramForm: React.FC<NewProgramFormProps> = ({visible, setVisible, setVisiblePrograms, setProgramRerender}) => {
+const NewProgramForm: React.FC<NewProgramFormProps> = ({visible, setVisible, setVisiblePrograms, setProgramRerender, setProgramAdded}) => {
   // State variables to store form input data
   const [programName, setProgramName] = useState<string>("");
   const [programDescription, setProgramDescription] = useState<string>("");
@@ -86,8 +87,9 @@ const NewProgramForm: React.FC<NewProgramFormProps> = ({visible, setVisible, set
       setLoadingAddProgramButton(false);
       return;
     };
+    let unique: boolean = true;
     existingPrograms.forEach((p) => {
-      if(p === programName) {
+      if(p === programName.toUpperCase()) {
         // Output a warning for the program name is not unique
         toast.current?.show({
           severity: 'warn',
@@ -98,9 +100,12 @@ const NewProgramForm: React.FC<NewProgramFormProps> = ({visible, setVisible, set
         });
         setLoadingAddProgramButton(false);
         setProgramNameStyle("p-invalid");
-        return;
+        unique = false;
       };
     });
+    if(!unique) {
+      return;
+    };
     // Attempted to add the entered program data to the system
     const successful: boolean = await addProgram(programName, programDescription, programColour);
     if(!successful) {
@@ -115,15 +120,15 @@ const NewProgramForm: React.FC<NewProgramFormProps> = ({visible, setVisible, set
       setLoadingAddProgramButton(false);
       return;
     };
-    // Output an confirmation message saying the new program has been added to the system
-    toast.current?.show({
-      severity: 'success',
-      summary: 'Program Added',
-      detail: `The specified program has been added to the system successfully.`,
-      closeIcon: 'pi pi-times',
-      life: 7000,
-    });
+    // Close form and return to program overviews
+    setProgramName("");
+    setProgramDescription("");
+    setProgramColour("");
     setLoadingAddProgramButton(false);
+    setProgramRerender(true);
+    setProgramAdded(true);
+    setVisible(false);
+    setVisiblePrograms(true);
     return;
   };
 
@@ -212,7 +217,6 @@ const NewProgramForm: React.FC<NewProgramFormProps> = ({visible, setVisible, set
             setVisible(false);
             setVisiblePrograms(true);
             setProgramRerender(true);
-            //TODO Try and resolve the 3 errors/warnings that occur when you click the cancel button and return to the program overview screen
           }} raised severity="secondary"/>
         </div>
       </div>
