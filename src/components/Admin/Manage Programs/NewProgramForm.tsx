@@ -183,6 +183,11 @@ const NewProgramForm: React.FC<NewProgramFormProps> = ({visible, setVisible, set
       <div className="add-program-form-field">
         <div className="p-inputgroup flex-1">
           <span className="p-float-label">
+            {
+              /*
+                TODO Maybe update this form field to use the colour picker component
+              */
+            }
             <InputText
               id="program-colour"
               value={programColour}

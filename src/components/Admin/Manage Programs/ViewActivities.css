@@ -1,3 +1,7 @@
-.activity-buttons {
+.activity-table-title {
+    text-align: center;
+}
+
+.edit-activity-data {
     padding-top: 25px;
 }

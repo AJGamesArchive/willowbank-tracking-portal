@@ -33,7 +33,7 @@ const ManageProgramsDesktop: React.FC = () => {
   // Event trigger state variables
   const [programRerender, setProgramRerender] = useState<boolean>(true);
   const [programAdded, setProgramAdded] = useState<boolean>(false);
-  const [selectedProgram, setSelectedProgram] = useState<string>("");
+  const [selectedProgram, setSelectedProgram] = useState<string>("No Doc");
 
   // Variable to force confirmation of the account login state
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);

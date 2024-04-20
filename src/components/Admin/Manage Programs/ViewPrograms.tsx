@@ -66,7 +66,6 @@ const ViewProgress: React.FC<ViewProgressProps> = ({visible, setVisible, setVisi
   useEffect(() => {
     // Trigger a refresh of the program data when event trigger is fired
     if(programRerender) {
-      console.log("Re-render!")
       retrieveProgramDataHandler();
       setProgramRerender(false);
       return;
