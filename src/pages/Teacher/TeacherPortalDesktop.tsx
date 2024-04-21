@@ -49,7 +49,7 @@ const TeacherPortalDesktop: React.FC = () => {
         />
         <Button label="Sign-Out" icon="pi pi-sign-out" onClick={() => {
           window.location.href = `/home`
-        }} severity="warning"/>
+        }} severity="danger"/>
       </>
     );
   } else {

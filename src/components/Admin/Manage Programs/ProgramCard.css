@@ -1,3 +1,29 @@
+.card-props {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
 .program-cards-button {
-    padding-top: 25px;
+    padding-top: 10px;
+}
+
+.program-card-button-colum {
+    padding-top: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    padding-bottom: 5px
+}
+
+.program-card-button-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
 }

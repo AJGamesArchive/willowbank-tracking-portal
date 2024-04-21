@@ -5,6 +5,7 @@ import { InputText } from 'primereact/inputtext';
 import { Button } from 'primereact/button';
 import { Toast } from 'primereact/toast';
 import { ColorPicker, ColorPickerChangeEvent } from 'primereact/colorpicker';
+import { BlockUI } from 'primereact/blockui';
 
 // Import CSS
 import './NewProgramForm.css';
@@ -12,6 +13,7 @@ import './NewProgramForm.css';
 // Import functions
 import { addProgram } from '../../../functions/Admin/AddProgram';
 import { retrieveDocumentIDs } from '../../../functions/Global/RetrieveDocumentIDs';
+import { classNames } from 'primereact/utils';
 
 // Interface to define props for the new program form
 interface NewProgramFormProps {
@@ -32,23 +34,21 @@ const NewProgramForm: React.FC<NewProgramFormProps> = ({visible, setVisible, set
   // Variable to hold the CSS colour variable for the colour picker display box
   const colourPickerDisplayBox = document.getElementById('program-colour-picker-display');
 
-  // State variables to store additional CSS styling for form components
-  const [programNameStyle, setProgramNameStyle] = useState<string>("");
-  const [programDescriptionStyle, setProgramDescriptionStyle] = useState<string>("");
-  const [programColourStyle, setProgramColourStyle] = useState<string>("");
-
   // State variables to handel the loading state of form buttons
-  const [loadingAddProgramButton, setLoadingAddProgramButton] = useState<boolean>(false);
+  const [blockedUI, setBlockUI] = useState<boolean>(false);
+
+  // Variable to store the submitted state of the form
+  const [submitted, setSubmitted] = useState<boolean>(false);
+  const [uniqueProgramName, setUniqueProgramName] = useState<boolean>(true);
 
   // Variables to control toast messages
   const toast = useRef<Toast>(null);
 
   // Async function to handel the adding of programs to the system
   async function addProgramHandler(): Promise<void> {
-    setLoadingAddProgramButton(true);
-    setProgramNameStyle("");
-    setProgramDescriptionStyle("");
-    setProgramColourStyle("");
+    setBlockUI(true);
+    setSubmitted(true);
+    setUniqueProgramName(true);
     // Guard statements to ensure program data has been entered
     const invalidData = (field: string) => {
       toast.current?.show({
@@ -61,20 +61,12 @@ const NewProgramForm: React.FC<NewProgramFormProps> = ({visible, setVisible, set
     };
     if(programName === "") {
       invalidData("name");
-      setProgramNameStyle("p-invalid");
-      setLoadingAddProgramButton(false);
+      setBlockUI(false);
       return;
     };
     if(programDescription === "") {
       invalidData("description");
-      setProgramDescriptionStyle("p-invalid");
-      setLoadingAddProgramButton(false);
-      return;
-    };
-    if(programColour === "") {
-      invalidData("colour");
-      setProgramColourStyle("p-invalid");
-      setLoadingAddProgramButton(false);
+      setBlockUI(false);
       return;
     };
     // Ensure the entered program name is unique
@@ -88,7 +80,7 @@ const NewProgramForm: React.FC<NewProgramFormProps> = ({visible, setVisible, set
         closeIcon: 'pi pi-times',
         life: 7000,
       });
-      setLoadingAddProgramButton(false);
+      setBlockUI(false);
       return;
     };
     let unique: boolean = true;
@@ -102,8 +94,8 @@ const NewProgramForm: React.FC<NewProgramFormProps> = ({visible, setVisible, set
           closeIcon: 'pi pi-times',
           life: 7000,
         });
-        setLoadingAddProgramButton(false);
-        setProgramNameStyle("p-invalid");
+        setBlockUI(false);
+        setUniqueProgramName(false);
         unique = false;
       };
     });
@@ -121,14 +113,15 @@ const NewProgramForm: React.FC<NewProgramFormProps> = ({visible, setVisible, set
         closeIcon: 'pi pi-times',
         life: 7000,
       });
-      setLoadingAddProgramButton(false);
+      setBlockUI(false);
       return;
     };
     // Close form and return to program overviews
+    setSubmitted(false);
     setProgramName("");
     setProgramDescription("");
     setProgramColour("");
-    setLoadingAddProgramButton(false);
+    setBlockUI(false);
     setProgramRerender(true);
     setProgramAdded(true);
     setVisible(false);
@@ -145,88 +138,88 @@ const NewProgramForm: React.FC<NewProgramFormProps> = ({visible, setVisible, set
 
   // Return JSX
   return (
-    <Card title={`Add New Program`} subTitle='Enter the details of the new program:' style={{ display: visible ? 'block' : 'none' }}>
-      <Toast ref={toast}/>
-      <div className="p-inputgroup flex-1">
-        <span className="p-float-label">
-          <InputText
-            id="program-name"
-            value={programName}
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setProgramName(e.target.value)}
-            required
-            className={programNameStyle}
-            aria-describedby='program-name-help'
-          />
-          <label htmlFor="program-name">Program Name</label>
-        </span>
-      </div>
-      <small id="program-name-help" className='add-program-form-help-text'>
-        Enter the name of the new program of study.
-      </small>
-
-      <div className="add-program-form-field">
+    <BlockUI blocked={blockedUI}>
+      <Card title={`Add New Program`} subTitle='Enter the details of the new program:' style={{ display: visible ? 'block' : 'none' }}>
+        <Toast ref={toast}/>
+        
         <div className="p-inputgroup flex-1">
           <span className="p-float-label">
             <InputText
-              id="program-description"
-              value={programDescription}
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) => setProgramDescription(e.target.value)}
+              id="program-name"
+              value={programName}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => setProgramName(e.target.value)}
               required
-              className={programDescriptionStyle}
-              aria-describedby='program-description-help'
+              className={classNames({ 'p-invalid': submitted && (!programName || !uniqueProgramName) })}
+              aria-describedby='program-name-help'
             />
-            <label htmlFor="program-description">Program Description</label>
+            <label htmlFor="program-name">Program Name</label>
           </span>
         </div>
-        <small id="program-description-help" className='add-program-form-help-text'>
-          Enter a brief description of the new program of study.
+        <small id="program-name-help" className='add-program-form-help-text'>
+          Enter the name of the new program of study.
         </small>
-      </div>
-      
-      <div className="add-program-form-field">
-        <div className='program-colour-picker-colum'>
-          <label htmlFor="cp-hex" className="font-bold block mb-2">
-            Program Colour:
-          </label>
-          <div className='program-colour-picker-row'>
-            <ColorPicker 
-              inputId="cp-hex" 
-              inline format="hex" 
-              value={programColour} 
-              onChange={(e: ColorPickerChangeEvent) => handleHexInput(e)} 
-              className={programColourStyle}
-            />
-            <div id='program-colour-picker-display' className='program-colour-picker-display'/>
+        {submitted && (!programName || !uniqueProgramName) && <small className="p-error">A program name is required.</small>}
+
+        <div className="add-program-form-field">
+          <div className="p-inputgroup flex-1">
+            <span className="p-float-label">
+              <InputText
+                id="program-description"
+                value={programDescription}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setProgramDescription(e.target.value)}
+                required
+                className={classNames({ 'p-invalid': submitted && !programDescription })}
+                aria-describedby='program-description-help'
+              />
+              <label htmlFor="program-description">Program Description</label>
+            </span>
           </div>
-          <span>#{programColour}</span>
           <small id="program-description-help" className='add-program-form-help-text'>
-            Select a colour to represent the program and it's badges.
+            Enter a brief description of the new program of study.
           </small>
+          {submitted && !programDescription && <small className="p-error">A program description is required.</small>}
         </div>
-      </div>
+        
+        <div className="add-program-form-field">
+          <div className='program-colour-picker-colum'>
+            <label htmlFor="cp-hex" className="font-bold block mb-2">
+              Program Colour:
+            </label>
+            <div className='program-colour-picker-row'>
+              <ColorPicker 
+                inputId="cp-hex" 
+                inline format="hex" 
+                value={programColour} 
+                onChange={(e: ColorPickerChangeEvent) => handleHexInput(e)} 
+              />
+              <div id='program-colour-picker-display' className='program-colour-picker-display'/>
+            </div>
+            <span>#{programColour}</span>
+            <small id="program-description-help" className='add-program-form-help-text'>
+              Select a colour to represent the program and it's badges.
+            </small>
+          </div>
+        </div>
 
-      <div className="add-program-form-button-field">
-        <div className="add-program-form-button">
-          <Button label="Add Program" icon="pi pi-plus" loading={loadingAddProgramButton} onClick={() => {
-            addProgramHandler();
-          }} raised severity="info"/>
+        <div className="add-program-form-button-field">
+          <div className="add-program-form-button">
+            <Button label="Add Program" icon="pi pi-plus" loading={blockedUI} onClick={() => {
+              addProgramHandler();
+            }} raised severity="info"/>
+          </div>
+          <div className="add-program-form-button">
+            <Button label="Cancel" icon="pi pi-times" onClick={() => {
+              setSubmitted(false);
+              setUniqueProgramName(true);
+              setVisible(false);
+              setVisiblePrograms(true);
+              setProgramRerender(true);
+            }} raised severity="secondary"/>
+          </div>
         </div>
-        <div className="add-program-form-button">
-          <Button label="Help" icon="pi pi-question-circle" onClick={() => {
-            console.log("Help!");
-            //TODO Implement help information for what hex code colours are and how to get them.
-          }} raised severity="help"/>
-        </div>
-        <div className="add-program-form-button">
-          <Button label="Cancel" icon="pi pi-times" onClick={() => {
-            setVisible(false);
-            setVisiblePrograms(true);
-            setProgramRerender(true);
-          }} raised severity="secondary"/>
-        </div>
-      </div>
 
-    </Card>
+      </Card>
+    </BlockUI>
   );
 };
 

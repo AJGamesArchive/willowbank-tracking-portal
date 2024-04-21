@@ -62,6 +62,34 @@ const ViewProgress: React.FC<ViewProgressProps> = ({visible, setVisible, setVisi
     return;
   };
 
+  // Function to handel calling the edit program details form
+  //TODO Implement this feature
+  function onEditClick(name: string, description: string, colour: string): void {
+    console.log(name, description, colour);
+    toast.current?.show({
+      severity: 'error',
+      summary: 'Not Implemented Exception',
+      detail: `This feature has not been implemented yet. Please come back later.`,
+      closeIcon: 'pi pi-times',
+      life: 7000,
+    });
+    return;
+  };
+
+  // Async function to handel deleting a program
+  //TODO Implement this feature
+  async function onDeleteClick(name: string): Promise<void> {
+    console.log(name);
+    toast.current?.show({
+      severity: 'error',
+      summary: 'Not Implemented Exception',
+      detail: `This feature has not been implemented yet. Please come back later.`,
+      closeIcon: 'pi pi-times',
+      life: 7000,
+    });
+    return;
+  };
+
   // useEffect hook to execute certain functions upton initial page render
   useEffect(() => {
     // Trigger a refresh of the program data when event trigger is fired
@@ -98,6 +126,8 @@ const ViewProgress: React.FC<ViewProgressProps> = ({visible, setVisible, setVisi
               description={item.description}
               colour={item.colour}
               onProgramClick={onProgramCardClick}
+              onEditClick={onEditClick}
+              onDeleteClick={onDeleteClick}
             />
           </div>
         ))}
