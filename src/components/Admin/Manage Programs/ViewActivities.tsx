@@ -15,6 +15,7 @@ import { InputText } from 'primereact/inputtext';
 import { Tag } from 'primereact/tag';
 import { ColumnGroup } from 'primereact/columngroup';
 import { Row } from 'primereact/row';
+import { BlockUI } from 'primereact/blockui';
 
 // Import CSS
 import './ViewActivities.css';
@@ -24,6 +25,11 @@ import { Activity } from '../../../types/Global/Activity';
 
 // Import functions
 import { retrieveAllActivities } from '../../../functions/Admin/RetrieveActivityData';
+import { isEmptyString } from '../../../functions/Validation/IsEmptyString';
+import { isLessThan } from '../../../functions/Validation/IsLessThan';
+import { saveActivityData } from '../../../functions/Admin/SaveActivity';
+import { deleteActivities } from '../../../functions/Admin/DeleteActivity';
+import { generateActivityID } from '../../../functions/Admin/GenerateActivityID';
 
 // Interface defining props for the ViewActivities page
 interface ViewActivitiesProps {
@@ -67,6 +73,10 @@ const ViewActivities: React.FC<ViewActivitiesProps> = ({visible, setVisible, set
   // Flag to control the submission state of a form
   const [submitted, setSubmitted] = useState<boolean>(false);
 
+  // Flags to control blocking the UI interaction while processes are carried out
+  const [blocked, setBlocked] = useState<boolean>(false);
+  const [buttonLoading, setButtonLoading] = useState<boolean>(false);
+
   // Variable to store all activity difficulties
   //TODO Maybe add an 'undefined/unclassified' tag to this list?
   const [difficultyOptions] = useState([
@@ -107,7 +117,152 @@ const ViewActivities: React.FC<ViewActivitiesProps> = ({visible, setVisible, set
       });
       return;
     };
+    // Sort the array of activities by their activity ID
+    data.sort((a, b) => a.id - b.id);
     setActivities(data);
+    return;
+  };
+
+  // Async function to update existing activity details and add new activities
+  async function saveActivityDataHandler(): Promise<void> {
+    setSubmitted(true);
+    setBlocked(true);
+    setButtonLoading(true);
+    // Defining error and warning messages for validation
+    const missingData = (missingField: string) => {
+      toast.current?.show({ 
+        severity: 'warn',
+        summary: `Missing ${missingField}`,
+        detail: `You have not entered a ${missingField} for the given activity. Please fill in the ${missingField} box.`,
+        closeIcon: 'pi pi-times',
+        life: 7000,
+      });
+      setBlocked(false);
+      setButtonLoading(false);
+    };
+    const invalidXP = () => {
+      toast.current?.show({ 
+        severity: 'warn',
+        summary: `Invalid XP Amount`,
+        detail: `You have entered an XP amount that is lower than 1 meaning the activity rewards nothing. Please ensure the activity awards some XP.`,
+        closeIcon: 'pi pi-times',
+        life: 7000,
+      });
+      setBlocked(false);
+      setButtonLoading(false);
+    };
+
+    // Validating the users inputs
+    if(isEmptyString(activity.description)) {missingData("Description"); return;}
+    if(isEmptyString(activity.dateAdded)) {missingData("Creation Date"); return;}
+    if(isEmptyString(activity.difficulty)) {missingData("Difficulty"); return;}
+    if(isLessThan(activity.xpValue, 1)) {invalidXP(); return;}
+
+    // Generate an activity ID if the activity is a new entry
+    let isNew: boolean = false;
+    if(activity.id === 0) {
+      isNew = true;
+      const id: string | number = await generateActivityID(programName);
+      if(typeof id === "string") {
+        toast.current?.show({ 
+          severity: 'error',
+          summary: 'Unexpected Error',
+          detail: 'An unexpected error occurred while trying to generate a new activity ID. Please try again.',
+          closeIcon: 'pi pi-times',
+          life: 7000,
+        });
+        setBlocked(false);
+        setButtonLoading(false);
+        return;
+      };
+      let updatedActivity = { ...activity };
+      updatedActivity["id"] = id;
+      activity.id = id;
+    };
+
+    // Save the updated activity to the database
+    const success: boolean = await saveActivityData(activity, isNew, programName);
+    if(!success) {
+      toast.current?.show({ 
+        severity: 'error',
+        summary: 'Unexpected Error',
+        detail: 'An unexpected error occurred while trying to update the activity details. Please try again.',
+        closeIcon: 'pi pi-times',
+        life: 7000,
+      });
+      setBlocked(false);
+      setButtonLoading(false);
+      return;
+    };
+
+    // Update the on-screen table
+    if(isNew) {
+      activities.push(activity);
+    };
+    if(!isNew) {
+      for(let i = 0; i < activities.length; i++) {
+        if(activities[i].id !== activity.id) {continue;}
+        activities[i] = activity;
+        break;
+      };
+    };
+
+    // Output confirmation message
+    toast.current?.show({ 
+      severity: 'success',
+      summary: 'Activity Saved',
+      detail: 'The updated activity data was saved successfully.',
+      closeIcon: 'pi pi-times',
+      life: 7000,
+    });
+
+    setActivityDialog(false);
+    setBlocked(false);
+    setButtonLoading(false);
+    setActivity(emptyActivity);
+    return;
+  };
+
+  // Async function to handel deleting activities
+  async function deleteActivitiesHandler(): Promise<void> {
+    setBlocked(true);
+    setButtonLoading(true);
+    // Delete given activities from the DB
+    const success: boolean = await deleteActivities(selectedActivities, programName);
+    if(!success) {
+      toast.current?.show({ 
+        severity: 'error',
+        summary: 'Unexpected Error',
+        detail: 'An unexpected error occurred while trying to delete the activities. Please try again.',
+        closeIcon: 'pi pi-times',
+        life: 7000,
+      });
+      setSelectedActivities([]);
+      setActivity(emptyActivity);
+      setBlocked(false);
+      setButtonLoading(false);
+      setDeleteActivityDialog(false);
+      setDeleteActivitiesDialog(false);
+      return;
+    };
+
+    // Output confirmation message
+    toast.current?.show({ 
+      severity: 'success',
+      summary: 'Activities Deleted',
+      detail: 'All selected activities were deleted successfully.',
+      closeIcon: 'pi pi-times',
+      life: 7000,
+    });
+
+    // Re-load on screen table
+    retrieveActivitiesHandler();
+    setSelectedActivities([]);
+    setActivity(emptyActivity);
+    setBlocked(false);
+    setButtonLoading(false);
+    setDeleteActivityDialog(false);
+    setDeleteActivitiesDialog(false);
     return;
   };
 
@@ -128,46 +283,12 @@ const ViewActivities: React.FC<ViewActivitiesProps> = ({visible, setVisible, set
   //? Component & Template Functions
   // Function to handel saving an activity
   const saveActivity = () => {
-    setSubmitted(true);
-    //TODO Finish writing this function
-    //TODO Update the 'activities' array that's being displayed on the screen and write the updated array to the DB
-    //TODO Add input validation here to ensure the form doesn't close and submit with invalid data
-    setActivityDialog(false);
-    setActivity(emptyActivity);
-    toast.current?.show({ 
-      severity: 'error',
-      summary: 'Not Implemented Exception',
-      detail: 'The operation you are trying to complete has not been fully implemented yet and thus cannot be complete. Please try again later.',
-      life: 7000,
-    });
-  };
-
-  // Function to delete a single activity
-  const deleteActivity = () => {
-    //TODO Finish writing this function
-    //TODO Update the 'activities' array that's being displayed on the screen and delete the select activity from the DB
-    setDeleteActivityDialog(false);
-    setActivity(emptyActivity);
-    toast.current?.show({ 
-      severity: 'error',
-      summary: 'Not Implemented Exception',
-      detail: 'The operation you are trying to complete has not been fully implemented yet and thus cannot be complete. Please try again later.',
-      life: 7000,
-    });
+    saveActivityDataHandler();
   };
 
   // Function to delete all selected activities
   const deleteSelectedActivities = () => {
-    //TODO Finish writing this function
-    //TODO Update the 'activities' array that's being displayed on the screen and delete the selected activities from the DB
-    setDeleteActivitiesDialog(false);
-    setSelectedActivities([]);
-    toast.current?.show({ 
-      severity: 'error',
-      summary: 'Not Implemented Exception',
-      detail: 'The operation you are trying to complete has not been fully implemented yet and thus cannot be complete. Please try again later.',
-      life: 7000,
-    });
+    deleteActivitiesHandler();
   };
 
   // Call to open the activity dialogue pop-up
@@ -207,6 +328,7 @@ const ViewActivities: React.FC<ViewActivitiesProps> = ({visible, setVisible, set
   // Call the delete single activity dialogue box
   const confirmDeleteProduct = (activity: Activity) => {
     setActivity(activity);
+    setSelectedActivities([activity]);
     setDeleteActivityDialog(true);
   };
 
@@ -269,24 +391,28 @@ const ViewActivities: React.FC<ViewActivitiesProps> = ({visible, setVisible, set
   // Creating a Toolbar component template for the view activities page toolbar start position
   const toolbarStartTemplate = () => {
     return (
-      <div className="flex flex-wrap gap-2">
-        <Button label="New" icon="pi pi-plus" raised severity="success" onClick={openNew} />
-        <Button label="Delete" icon="pi pi-trash" raised severity="danger" onClick={confirmDeleteSelected} disabled={!selectedActivities || !selectedActivities.length} />
-      </div>
+      <BlockUI blocked={blocked}>
+        <div className="flex flex-wrap gap-2">
+          <Button label="New" icon="pi pi-plus" raised severity="success" onClick={openNew} />
+          <Button label="Delete" icon="pi pi-trash" raised severity="danger" onClick={confirmDeleteSelected} disabled={!selectedActivities || !selectedActivities.length} />
+        </div>
+      </BlockUI>
     );
   };
 
   // Creating a Toolbar component template for the view activities page toolbar end position
   const toolbarEndTemplate = () => {
     return (
-      <div className="flex flex-wrap gap-2">
-        <Button label="Export" icon="pi pi-upload" raised className="p-button-help" onClick={exportCSV} />
-        <Button label="Back to Programs" icon="pi pi-arrow-left" onClick={() => {
-          setVisible(false);
-          setActivities([]);
-          setProgramsVisible(true);
-        }} raised severity="secondary"/>
-      </div>
+      <BlockUI blocked={blocked}>
+        <div className="flex flex-wrap gap-2">
+          <Button label="Export All" icon="pi pi-upload" raised className="p-button-help" onClick={exportCSV} />
+          <Button label="Back to Programs" icon="pi pi-arrow-left" onClick={() => {
+            setVisible(false);
+            setActivities([]);
+            setProgramsVisible(true);
+          }} raised severity="secondary"/>
+        </div>
+      </BlockUI>
     );
   };
 
@@ -299,8 +425,10 @@ const ViewActivities: React.FC<ViewActivitiesProps> = ({visible, setVisible, set
   const actionBodyTemplate = (rowData: Activity) => {
     return (
       <React.Fragment>
-        <Button icon="pi pi-pencil" rounded outlined className="mr-2" onClick={() => editProduct(rowData)} />
-        <Button icon="pi pi-trash" rounded outlined severity="danger" onClick={() => confirmDeleteProduct(rowData)} />
+        <BlockUI blocked={blocked}>
+          <Button icon="pi pi-pencil" rounded outlined className="mr-2" onClick={() => editProduct(rowData)} />
+          <Button icon="pi pi-trash" rounded outlined severity="danger" onClick={() => confirmDeleteProduct(rowData)} />
+        </BlockUI>
       </React.Fragment>
     );
   };
@@ -313,46 +441,54 @@ const ViewActivities: React.FC<ViewActivitiesProps> = ({visible, setVisible, set
   //? Component Templates
   // Template to define the data table header
   const header = (
-    <div className="flex flex-wrap gap-2 align-items-center justify-content-between">
-      <h2 className="activity-table-title">Manage {programName} Activities</h2>
-      <span className="p-input-icon-left">
-        <i className="pi pi-search" />
-        <InputText type="search" placeholder="Search..." onInput={(e) => {const target = e.target as HTMLInputElement; setGlobalFilter(target.value);}}  />
-      </span>
-    </div>
+    <BlockUI blocked={blocked}>
+      <div className="flex flex-wrap gap-2 align-items-center justify-content-between">
+        <h2 className="activity-table-title">Manage {programName} Activities</h2>
+        <span className="p-input-icon-left">
+          <i className="pi pi-search" />
+          <InputText type="search" placeholder="Search..." onInput={(e) => {const target = e.target as HTMLInputElement; setGlobalFilter(target.value);}}  />
+        </span>
+      </div>
+    </BlockUI>
   );
 
   // Template to define the data tables footer
   const footerGroup = (
     <ColumnGroup>
       <Row>
-        <Column footer="Total Activities:" colSpan={6} footerStyle={{ textAlign: 'right' }} />
+        <Column footer={`Total ${programName} Activities:`} colSpan={6} footerStyle={{ textAlign: 'right' }} />
         <Column footer={activities.length} />
       </Row>
     </ColumnGroup>
   );
 
   // Template to define the footer of the activity dialogue box
-  const productDialogFooter = (
+  const activityDialogFooter = (
     <React.Fragment>
-      <Button label="Cancel" icon="pi pi-times" onClick={hideDialog} severity='secondary' />
-      <Button label="Save" icon="pi pi-check" onClick={saveActivity} />
+      <BlockUI blocked={blocked}>
+        <Button label="Cancel" icon="pi pi-times" onClick={hideDialog} severity='secondary' />
+        <Button label="Save" loading={buttonLoading} icon="pi pi-check" onClick={saveActivity} />
+      </BlockUI>
     </React.Fragment>
   );
 
   // Template to define the footer of the delete a single activity dialogue box
   const deleteActivityDialogFooter = (
     <React.Fragment>
-      <Button label="No" icon="pi pi-times" onClick={hideDeleteActivityDialog} />
-      <Button label="Yes" icon="pi pi-check" severity="danger" onClick={deleteActivity} />
+      <BlockUI blocked={blocked}>
+        <Button label="No" icon="pi pi-times" onClick={hideDeleteActivityDialog} />
+        <Button label="Yes" loading={buttonLoading} icon="pi pi-check" severity="danger" onClick={deleteSelectedActivities} />
+      </BlockUI>
     </React.Fragment>
   );
 
   // Template to define the footer of the delete multiple activities dialogue box
   const deleteActivitiesDialogFooter = (
     <React.Fragment>
-      <Button label="No" icon="pi pi-times" onClick={hideDeleteActivitiesDialog} />
-      <Button label="Yes" icon="pi pi-check" severity="danger" onClick={deleteSelectedActivities} />
+      <BlockUI blocked={blocked}>
+        <Button label="No" icon="pi pi-times" onClick={hideDeleteActivitiesDialog} />
+        <Button label="Yes" loading={buttonLoading} icon="pi pi-check" severity="danger" onClick={deleteSelectedActivities} />
+      </BlockUI>
     </React.Fragment>
   );
 
@@ -361,126 +497,130 @@ const ViewActivities: React.FC<ViewActivitiesProps> = ({visible, setVisible, set
   return (
     <div style={{ display: visible ? 'block' : 'none' }}>
       <Toast ref={toast}/>
-
-      <div className="card">
-        <Toolbar className="mb-4" start={toolbarStartTemplate} end={toolbarEndTemplate}></Toolbar>
-        <DataTable 
-          ref={dt} 
-          value={activities} 
-          selection={selectedActivities} 
-          footerColumnGroup={footerGroup}
-          onSelectionChange={(e) => {
-            if(Array.isArray(e.value)) {
-              setSelectedActivities(e.value);
-            };
-          }}
-          dataKey="id"  paginator rows={10} rowsPerPageOptions={[5, 10, 25]}
-          paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
-          currentPageReportTemplate="Showing {first} to {last} of {totalRecords} products" globalFilter={globalFilter} header={header}
-          selectionMode="multiple"
-        >
-          <Column selectionMode="multiple" exportable={false}></Column>
-          <Column field="id" header="ID" sortable style={{ minWidth: '10rem' }}></Column>
-          <Column field="description" header="Description" style={{ minWidth: '16rem' }}></Column>
-          <Column field="xpValue" sortable header="XP" style={{ minWidth: '10rem' }}></Column>
-          <Column field="dateAdded" header="Date Added" sortable style={{ minWidth: '10rem' }}></Column>
-          <Column field="difficulty" header="Difficulty" body={statusBodyTemplate} style={{ minWidth: '12rem' }}></Column>
-          <Column body={actionBodyTemplate} exportable={false} style={{ minWidth: '12rem' }}></Column>
-        </DataTable>
-      </div>
-
-      <Dialog visible={activityDialog} style={{ width: '32rem' }} breakpoints={{ '960px': '75vw', '641px': '90vw' }} header={`Activity ${activity.id} Details`} modal className="p-fluid" footer={productDialogFooter} onHide={hideDialog}>
-        <div>
-          <label htmlFor="activity-description" className="font-bold">
-            Description
-          </label>
-          <InputText id="activity-description" value={activity.description} onChange={(e) => onDescriptionChange(e, 'description')} required autoFocus className={classNames({ 'p-invalid': submitted && !activity.description })} />
-          {submitted && !activity.description && <small className="p-error">Description is required.</small>}
+      <BlockUI blocked={blocked}>
+        <div className="card">
+          <Toolbar className="mb-4" start={toolbarStartTemplate} end={toolbarEndTemplate}></Toolbar>
+          <DataTable 
+            ref={dt} 
+            value={activities} 
+            selection={selectedActivities} 
+            footerColumnGroup={footerGroup}
+            onSelectionChange={(e) => {
+              if(Array.isArray(e.value)) {
+                setSelectedActivities(e.value);
+              };
+            }}
+            dataKey="id"  paginator rows={10} rowsPerPageOptions={[5, 10, 25]}
+            paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
+            currentPageReportTemplate="Showing {first} to {last} of {totalRecords} products" globalFilter={globalFilter} header={header}
+            selectionMode="multiple"
+          >
+            <Column selectionMode="multiple" exportable={false}></Column>
+            <Column field="id" header="ID" sortable style={{ minWidth: '10rem' }}></Column>
+            <Column field="description" header="Description" style={{ minWidth: '16rem' }}></Column>
+            <Column field="xpValue" sortable header="XP" style={{ minWidth: '10rem' }}></Column>
+            <Column field="dateAdded" header="Date Added" sortable style={{ minWidth: '10rem' }}></Column>
+            <Column field="difficulty" header="Difficulty" body={statusBodyTemplate} style={{ minWidth: '12rem' }}></Column>
+            <Column body={actionBodyTemplate} exportable={false} style={{ minWidth: '12rem' }}></Column>
+          </DataTable>
         </div>
 
-        <div className="edit-activity-data">
-          <label htmlFor="description" className="font-bold">
-            Date Added
-          </label>
-          {
-            /*
-              TODO Maybe update this form field to use the date picker component
-            */
-          }
-          <InputMask 
-            id="date-added"
-            value={activity.dateAdded} 
-            onChange={(e: InputMaskChangeEvent) => onInputMaskChange(e, "dateAdded")}
-            mask="99/99/9999"
-            slotChar="DD/MM/YYYY"
-            placeholder='DD/MM/YYYY'
-            required
-            className={classNames({ 'p-invalid': submitted && !activity.dateAdded })}
-          />
-        </div>
-
-        <div className="edit-activity-data">
-          <label className="mb-3 font-bold">Difficulty</label>
-            <Dropdown 
-              value={activity.difficulty}
-              options={difficultyOptions}
-              onChange={(e: DropdownChangeEvent) => onDifficultyChange(e)} 
-              itemTemplate={difficultyItemTemplate}
-              placeholder="Select One" 
-              className="p-column-filter" 
-              showClear
-              style={{ minWidth: '12rem' }} 
-            />
-        </div>
-
-        <div className='edit-activity-data'>
-          <div className="field col">
-            <label htmlFor="xp" className="font-bold">
-                XP Amount
+        <Dialog visible={activityDialog} closeIcon='pi pi-times' style={{ width: '32rem' }} breakpoints={{ '960px': '75vw', '641px': '90vw' }} header={`Activity ${activity.id} Details`} modal className="p-fluid" footer={activityDialogFooter} onHide={hideDialog}>
+          <div>
+            <label htmlFor="activity-description" className="font-bold">
+              Description
             </label>
-            <InputNumber 
-              id='xp'
-              value={activity.xpValue} 
-              onValueChange={(e: InputNumberValueChangeEvent) => onInputXPChange(e, 'xpValue')}
-              showButtons 
-              buttonLayout="horizontal" 
-              step={10}
-              useGrouping={false}
-              decrementButtonClassName="p-button-danger" 
-              incrementButtonClassName="p-button-success" 
-              incrementButtonIcon="pi pi-plus" 
-              decrementButtonIcon="pi pi-minus"
-            />
+            <InputText id="activity-description" value={activity.description} onChange={(e) => onDescriptionChange(e, 'description')} required autoFocus className={classNames({ 'p-invalid': submitted && !activity.description })} />
+            {submitted && !activity.description && <small className="p-error">Description is required.</small>}
           </div>
-        </div>
 
-        <div className='edit-activity-data'>
-          <div className="field col">
-            <label htmlFor="activity-id" className="font-bold">
-              Activity ID
+          <div className="edit-activity-data">
+            <label htmlFor="description" className="font-bold">
+              Date Added
             </label>
-            <InputNumber id="activity-id" value={activity.id} disabled />
+            {
+              /*
+                TODO Maybe update this form field to use the date picker component
+              */
+            }
+            <InputMask 
+              id="date-added"
+              value={activity.dateAdded} 
+              onChange={(e: InputMaskChangeEvent) => onInputMaskChange(e, "dateAdded")}
+              mask="99/99/9999"
+              slotChar="DD/MM/YYYY"
+              placeholder='DD/MM/YYYY'
+              required
+              className={classNames({ 'p-invalid': submitted && !activity.dateAdded })}
+            />
+            {submitted && !activity.dateAdded && <small className="p-error">Date is required.</small>}
           </div>
-        </div>
-      </Dialog>
 
-      <Dialog visible={deleteActivityDialog} style={{ width: '32rem' }} breakpoints={{ '960px': '75vw', '641px': '90vw' }} header="Confirm" modal footer={deleteActivityDialogFooter} onHide={hideDeleteActivityDialog}>
-        <div className="confirmation-content">
-          <i className="pi pi-exclamation-triangle mr-3" style={{ fontSize: '2rem' }} />
-          {activity && (
-            <span>
-              Are you sure you want to delete 'Activity <b>{activity.id}'</b>?
-            </span>
-          )}
-        </div>
-      </Dialog>
+          <div className="edit-activity-data">
+            <label className="mb-3 font-bold">Difficulty</label>
+              <Dropdown 
+                value={activity.difficulty}
+                options={difficultyOptions}
+                onChange={(e: DropdownChangeEvent) => onDifficultyChange(e)} 
+                itemTemplate={difficultyItemTemplate}
+                placeholder="Select One" 
+                className={classNames({ 'p-invalid': submitted && !activity.difficulty })}
+                style={{ minWidth: '12rem' }} 
+              />
+              {submitted && !activity.difficulty && <small className="p-error">Difficulty is required.</small>}
+          </div>
 
-      <Dialog visible={deleteActivitiesDialog} style={{ width: '32rem' }} breakpoints={{ '960px': '75vw', '641px': '90vw' }} header="Confirm" modal footer={deleteActivitiesDialogFooter} onHide={hideDeleteActivitiesDialog}>
-        <div className="confirmation-content">
-          <i className="pi pi-exclamation-triangle mr-3" style={{ fontSize: '2rem' }} />
-          {activity && <span>Are you sure you want to delete the selected activities?</span>}
-        </div>
-      </Dialog>
+          <div className='edit-activity-data'>
+            <div className="field col">
+              <label htmlFor="xp" className="font-bold">
+                  XP Amount
+              </label>
+              <InputNumber 
+                id='xp'
+                value={activity.xpValue} 
+                onValueChange={(e: InputNumberValueChangeEvent) => onInputXPChange(e, 'xpValue')}
+                showButtons 
+                buttonLayout="horizontal" 
+                step={10}
+                useGrouping={false}
+                className={classNames({ 'p-invalid': submitted && (activity.xpValue < 1) })}
+                decrementButtonClassName="p-button-danger" 
+                incrementButtonClassName="p-button-success" 
+                incrementButtonIcon="pi pi-plus" 
+                decrementButtonIcon="pi pi-minus"
+              />
+              {submitted && (activity.xpValue < 1) && <small className="p-error">XP amount is required.</small>}
+            </div>
+          </div>
+
+          <div className='edit-activity-data'>
+            <div className="field col">
+              <label htmlFor="activity-id" className="font-bold">
+                Activity ID
+              </label>
+              <InputNumber id="activity-id" value={activity.id} disabled />
+            </div>
+          </div>
+        </Dialog>
+
+        <Dialog visible={deleteActivityDialog} closeIcon='pi pi-times' style={{ width: '32rem' }} breakpoints={{ '960px': '75vw', '641px': '90vw' }} header="Confirm" modal footer={deleteActivityDialogFooter} onHide={hideDeleteActivityDialog}>
+          <div className="confirmation-content">
+            <i className="pi pi-exclamation-triangle mr-3" style={{ fontSize: '2rem' }} />
+            {activity && (
+              <span>
+                Are you sure you want to delete 'Activity <b>{activity.id}'</b>?
+              </span>
+            )}
+          </div>
+        </Dialog>
+
+        <Dialog visible={deleteActivitiesDialog} closeIcon='pi pi-times' style={{ width: '32rem' }} breakpoints={{ '960px': '75vw', '641px': '90vw' }} header="Confirm" modal footer={deleteActivitiesDialogFooter} onHide={hideDeleteActivitiesDialog}>
+          <div className="confirmation-content">
+            <i className="pi pi-exclamation-triangle mr-3" style={{ fontSize: '2rem' }} />
+            {activity && <span>Are you sure you want to delete the selected activities?</span>}
+          </div>
+        </Dialog>
+      </BlockUI>
     </div>
   );
 };
