@@ -4,6 +4,7 @@ import { Card } from 'primereact/card';
 import { InputText } from 'primereact/inputtext';
 import { Button } from 'primereact/button';
 import { Toast } from 'primereact/toast';
+import { ColorPicker, ColorPickerChangeEvent } from 'primereact/colorpicker';
 
 // Import CSS
 import './NewProgramForm.css';
@@ -26,7 +27,10 @@ const NewProgramForm: React.FC<NewProgramFormProps> = ({visible, setVisible, set
   // State variables to store form input data
   const [programName, setProgramName] = useState<string>("");
   const [programDescription, setProgramDescription] = useState<string>("");
-  const [programColour, setProgramColour] = useState<string>("");
+  const [programColour, setProgramColour] = useState<string>("ffffff");
+
+  // Variable to hold the CSS colour variable for the colour picker display box
+  const colourPickerDisplayBox = document.getElementById('program-colour-picker-display');
 
   // State variables to store additional CSS styling for form components
   const [programNameStyle, setProgramNameStyle] = useState<string>("");
@@ -133,11 +137,10 @@ const NewProgramForm: React.FC<NewProgramFormProps> = ({visible, setVisible, set
   };
 
   // Arrow function to handel the input validation for hex colour codes using reges expressions
-  const handleHexInput = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const inputValue = e.target.value.toUpperCase().slice(0, 7); // Limit input to 7 characters
-    if (/^#[0-9A-F]{0,6}$/i.test(inputValue) || inputValue === '#') {
-      setProgramColour(inputValue);
-    };
+  const handleHexInput = (e: ColorPickerChangeEvent) => {
+    const colour: string = (typeof e.value === "string") ? e.value : 'ffffff';
+    colourPickerDisplayBox?.style.setProperty('--colour-picker-display-block', `#${colour}`);
+    setProgramColour(colour);
   };
 
   // Return JSX
@@ -181,28 +184,25 @@ const NewProgramForm: React.FC<NewProgramFormProps> = ({visible, setVisible, set
       </div>
       
       <div className="add-program-form-field">
-        <div className="p-inputgroup flex-1">
-          <span className="p-float-label">
-            {
-              /*
-                TODO Maybe update this form field to use the colour picker component
-              */
-            }
-            <InputText
-              id="program-colour"
-              value={programColour}
-              onChange={handleHexInput}
-              placeholder='#000000'
-              required
+        <div className='program-colour-picker-colum'>
+          <label htmlFor="cp-hex" className="font-bold block mb-2">
+            Program Colour:
+          </label>
+          <div className='program-colour-picker-row'>
+            <ColorPicker 
+              inputId="cp-hex" 
+              inline format="hex" 
+              value={programColour} 
+              onChange={(e: ColorPickerChangeEvent) => handleHexInput(e)} 
               className={programColourStyle}
-              aria-describedby='program-colour-help'
             />
-            <label htmlFor="program-colour">Program Colour</label>
-          </span>
+            <div id='program-colour-picker-display' className='program-colour-picker-display'/>
+          </div>
+          <span>#{programColour}</span>
+          <small id="program-description-help" className='add-program-form-help-text'>
+            Select a colour to represent the program and it's badges.
+          </small>
         </div>
-        <small id="program-description-help" className='add-program-form-help-text'>
-          Enter the hex colour you want this programs badges to be.
-        </small>
       </div>
 
       <div className="add-program-form-button-field">

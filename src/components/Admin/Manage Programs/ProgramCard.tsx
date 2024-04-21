@@ -19,7 +19,7 @@ const ProgramCard: React.FC<ProgramCardProps> = ({name, description, colour, onP
   return (
     <>
       <Card title={`${name}`} subTitle={`${description}`}>
-        <p>{colour}</p>
+        <p>#{colour}</p>
         <div className='program-cards-button'>
           <Button label="View Activities" icon="pi pi-search" onClick={() => {onProgramClick(name)}} raised/>
         </div>
