@@ -201,6 +201,11 @@ const LoginForm: React.FC<LoginFormProps> = ({accountType, visible, setVisible, 
         <div className="student-login-form-field">
           <div className="p-inputgroup flex-1">
             <span className="p-float-label">
+              {
+                /*
+                  TODO Maybe swap this field out for the Password component, allowing you to add a feedback toggle
+                */
+              }
               <InputText
                 id="login-password"
                 type="password"

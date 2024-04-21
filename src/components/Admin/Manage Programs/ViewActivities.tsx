@@ -9,13 +9,14 @@ import { classNames } from 'primereact/utils';
 import { Column } from 'primereact/column';
 import { Dropdown, DropdownChangeEvent } from 'primereact/dropdown';
 import { InputNumber,InputNumberValueChangeEvent } from 'primereact/inputnumber';
-import { InputMask, InputMaskChangeEvent } from 'primereact/inputmask';
 import { Dialog } from 'primereact/dialog';
 import { InputText } from 'primereact/inputtext';
 import { Tag } from 'primereact/tag';
 import { ColumnGroup } from 'primereact/columngroup';
 import { Row } from 'primereact/row';
 import { BlockUI } from 'primereact/blockui';
+import { Calendar } from 'primereact/calendar';
+import { format } from 'date-fns';
 
 // Import CSS
 import './ViewActivities.css';
@@ -58,6 +59,9 @@ const ViewActivities: React.FC<ViewActivitiesProps> = ({visible, setVisible, set
 
   // Variable to store the details of a single activity - defaults to an empty activity object
   const [activity, setActivity] = useState<Activity>(emptyActivity);
+
+  // Variable to handle values passed to and from the data picker
+  const [date, setDate] = useState<Date | null>(null);
 
   // Array to store all activities currently selected in the data table
   const [selectedActivities, setSelectedActivities] = useState<Activity[]>([]);
@@ -155,6 +159,7 @@ const ViewActivities: React.FC<ViewActivitiesProps> = ({visible, setVisible, set
     // Validating the users inputs
     if(isEmptyString(activity.description)) {missingData("Description"); return;}
     if(isEmptyString(activity.dateAdded)) {missingData("Creation Date"); return;}
+    if(date === null) {missingData("Creation Date"); return;}
     if(isEmptyString(activity.difficulty)) {missingData("Difficulty"); return;}
     if(isLessThan(activity.xpValue, 1)) {invalidXP(); return;}
 
@@ -294,6 +299,7 @@ const ViewActivities: React.FC<ViewActivitiesProps> = ({visible, setVisible, set
   // Call to open the activity dialogue pop-up
   const openNew = () => {
     setActivity(emptyActivity);
+    setDate(null);
     setSubmitted(false);
     setActivityDialog(true);
   };
@@ -322,6 +328,20 @@ const ViewActivities: React.FC<ViewActivitiesProps> = ({visible, setVisible, set
   // Call the activity dialogue box
   const editProduct = (activity: Activity) => {
     setActivity({ ...activity });
+    const [day, month, year] = activity.dateAdded.split('/').map(Number);
+    const activityDate: Date = new Date(year, month - 1, day);
+    if(isNaN(activityDate.getTime())) {
+      toast.current?.show({ 
+        severity: 'warn',
+        summary: 'Unconfirmed Date',
+        detail: 'The selected activities creation date could not be confirmed. Please re-enter the creation date.',
+        closeIcon: 'pi pi-times',
+        life: 7000,
+      });
+      setDate(null);
+    } else {
+      setDate(activityDate);
+    };
     setActivityDialog(true);
   };
 
@@ -363,12 +383,11 @@ const ViewActivities: React.FC<ViewActivitiesProps> = ({visible, setVisible, set
   };
 
   // Function to update an activities date as the user types in the input mask
-  const onInputMaskChange = (e: InputMaskChangeEvent, date: string) => {
-    const value = (e.target && e.target.value) || '';
+  const onDatePickerChange = (e: any) => {
     let updatedActivity = { ...activity };
-    // @ts-ignore
-    updatedActivity[date] = value;
+    updatedActivity.dateAdded = (e.value) ? format(e.value, "dd/MM/yyyy") : '';
     setActivity(updatedActivity);
+    setDate(e.value);
   };
 
   // Function to update an activities difficulty when the user selects a new difficulty
@@ -538,22 +557,20 @@ const ViewActivities: React.FC<ViewActivitiesProps> = ({visible, setVisible, set
             <label htmlFor="description" className="font-bold">
               Date Added
             </label>
-            {
-              /*
-                TODO Maybe update this form field to use the date picker component
-              */
-            }
-            <InputMask 
-              id="date-added"
-              value={activity.dateAdded} 
-              onChange={(e: InputMaskChangeEvent) => onInputMaskChange(e, "dateAdded")}
-              mask="99/99/9999"
-              slotChar="DD/MM/YYYY"
-              placeholder='DD/MM/YYYY'
-              required
-              className={classNames({ 'p-invalid': submitted && !activity.dateAdded })}
+            <Calendar 
+              value={date}
+              onChange={(e) => onDatePickerChange(e)}
+              showButtonBar
+              showIcon
+              icon='pi pi-calendar'
+              decrementIcon='pi pi-angle-down'
+              incrementIcon='pi pi-angle-up'
+              nextIcon='pi pi-angle-right'
+              prevIcon='pi pi-angle-left'
+              dateFormat="dd/mm/yy"
+              className={classNames({ 'p-invalid': submitted && !activity.dateAdded && (date === null) })}
             />
-            {submitted && !activity.dateAdded && <small className="p-error">Date is required.</small>}
+            {submitted && !activity.dateAdded && (date === null) && <small className="p-error">Date is required.</small>}
           </div>
 
           <div className="edit-activity-data">

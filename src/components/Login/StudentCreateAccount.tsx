@@ -513,6 +513,11 @@ const StudentCreationForm: React.FC<StudentAccountCreationProps> = ({accountType
       <div className="student-creation-form-field">
         <div className="p-inputgroup flex-1">
           <span className="p-float-label">
+            {
+              /*
+                TODO Maybe swap this field out for the Password component, allowing you to add a feedback toggle
+              */
+            }
             <InputText
               id="creation-password"
               type="password"
@@ -541,6 +546,11 @@ const StudentCreationForm: React.FC<StudentAccountCreationProps> = ({accountType
       <div className="student-creation-form-field">
         <div className="p-inputgroup flex-1">
           <span className="p-float-label">
+            {
+              /*
+                TODO Maybe swap this field out for the Password component, allowing you to add a feedback toggle
+              */
+            }
             <InputText
               id="confirm-password"
               type="password"
