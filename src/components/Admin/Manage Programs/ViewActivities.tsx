@@ -486,7 +486,7 @@ const ViewActivities: React.FC<ViewActivitiesProps> = ({visible, setVisible, set
     <React.Fragment>
       <BlockUI blocked={blocked}>
         <Button label="Cancel" icon="pi pi-times" onClick={hideDialog} severity='secondary' />
-        <Button label="Save" loading={buttonLoading} icon="pi pi-check" onClick={saveActivity} />
+        <Button label="Save" loading={buttonLoading} icon="pi pi-check" severity='info' onClick={saveActivity} />
       </BlockUI>
     </React.Fragment>
   );
@@ -495,7 +495,7 @@ const ViewActivities: React.FC<ViewActivitiesProps> = ({visible, setVisible, set
   const deleteActivityDialogFooter = (
     <React.Fragment>
       <BlockUI blocked={blocked}>
-        <Button label="No" icon="pi pi-times" onClick={hideDeleteActivityDialog} />
+        <Button label="No" icon="pi pi-times" severity='secondary' onClick={hideDeleteActivityDialog} />
         <Button label="Yes" loading={buttonLoading} icon="pi pi-check" severity="danger" onClick={deleteSelectedActivities} />
       </BlockUI>
     </React.Fragment>
@@ -505,7 +505,7 @@ const ViewActivities: React.FC<ViewActivitiesProps> = ({visible, setVisible, set
   const deleteActivitiesDialogFooter = (
     <React.Fragment>
       <BlockUI blocked={blocked}>
-        <Button label="No" icon="pi pi-times" onClick={hideDeleteActivitiesDialog} />
+        <Button label="No" icon="pi pi-times" severity='secondary' onClick={hideDeleteActivitiesDialog} />
         <Button label="Yes" loading={buttonLoading} icon="pi pi-check" severity="danger" onClick={deleteSelectedActivities} />
       </BlockUI>
     </React.Fragment>
@@ -535,9 +535,9 @@ const ViewActivities: React.FC<ViewActivitiesProps> = ({visible, setVisible, set
             selectionMode="multiple"
           >
             <Column selectionMode="multiple" exportable={false}></Column>
-            <Column field="id" header="ID" sortable style={{ minWidth: '10rem' }}></Column>
-            <Column field="description" header="Description" style={{ minWidth: '16rem' }}></Column>
-            <Column field="xpValue" sortable header="XP" style={{ minWidth: '10rem' }}></Column>
+            <Column field="id" header="ID" sortable style={{ minWidth: '6rem' }}></Column>
+            <Column field="description" header="Description" style={{ minWidth: '23rem' }}></Column>
+            <Column field="xpValue" sortable header="XP" style={{ minWidth: '7rem' }}></Column>
             <Column field="dateAdded" header="Date Added" sortable style={{ minWidth: '10rem' }}></Column>
             <Column field="difficulty" header="Difficulty" body={statusBodyTemplate} style={{ minWidth: '12rem' }}></Column>
             <Column body={actionBodyTemplate} exportable={false} style={{ minWidth: '12rem' }}></Column>
@@ -623,6 +623,7 @@ const ViewActivities: React.FC<ViewActivitiesProps> = ({visible, setVisible, set
         <Dialog visible={deleteActivityDialog} closeIcon='pi pi-times' style={{ width: '32rem' }} breakpoints={{ '960px': '75vw', '641px': '90vw' }} header="Confirm" modal footer={deleteActivityDialogFooter} onHide={hideDeleteActivityDialog}>
           <div className="confirmation-content">
             <i className="pi pi-exclamation-triangle mr-3" style={{ fontSize: '2rem' }} />
+            <br />
             {activity && (
               <span>
                 Are you sure you want to delete 'Activity <b>{activity.id}'</b>?
@@ -634,6 +635,7 @@ const ViewActivities: React.FC<ViewActivitiesProps> = ({visible, setVisible, set
         <Dialog visible={deleteActivitiesDialog} closeIcon='pi pi-times' style={{ width: '32rem' }} breakpoints={{ '960px': '75vw', '641px': '90vw' }} header="Confirm" modal footer={deleteActivitiesDialogFooter} onHide={hideDeleteActivitiesDialog}>
           <div className="confirmation-content">
             <i className="pi pi-exclamation-triangle mr-3" style={{ fontSize: '2rem' }} />
+            <br />
             {activity && <span>Are you sure you want to delete the selected activities?</span>}
           </div>
         </Dialog>

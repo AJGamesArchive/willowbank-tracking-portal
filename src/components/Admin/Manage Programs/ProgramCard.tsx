@@ -14,10 +14,11 @@ interface ProgramCardProps {
   onProgramClick: (value: string) => void;
   onEditClick: (name: string, description: string, colour: string) => void;
   onDeleteClick: (value: string) => void;
+  lockDelete: boolean;
 };
 
 // React function to render the login page for mobile devices
-const ProgramCard: React.FC<ProgramCardProps> = ({name, description, colour, onProgramClick, onDeleteClick, onEditClick}) => {
+const ProgramCard: React.FC<ProgramCardProps> = ({name, description, colour, onProgramClick, onDeleteClick, onEditClick, lockDelete}) => {
   return (
     <>
       <Card title={`${name}`} subTitle={`${description}`} className='card-props'>
@@ -41,7 +42,7 @@ const ProgramCard: React.FC<ProgramCardProps> = ({name, description, colour, onP
           <div className='program-card-button-row'>
             <Button icon="pi pi-search" onClick={() => {onProgramClick(name)}} outlined/>
             <Button severity='info' icon="pi pi-pencil" onClick={() => {onEditClick(name, description, colour)}} outlined/>
-            <Button severity='danger' icon="pi pi-trash" onClick={() => {onDeleteClick(name)}} outlined/>
+            <Button severity='danger' icon="pi pi-trash" onClick={() => {onDeleteClick(name)}} disabled={lockDelete} outlined/>
           </div>
         </div>
       </Card>
