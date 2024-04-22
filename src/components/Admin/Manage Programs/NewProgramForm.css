@@ -2,6 +2,10 @@
   --colour-picker-display-block: #ffffff;
 }
 
+.add-program-form-field-top {
+  margin-top: 20px;
+}
+
 .add-program-form-field {
   margin-top: 35px;
 }

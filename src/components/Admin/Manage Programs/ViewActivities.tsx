@@ -25,12 +25,12 @@ import './ViewActivities.css';
 import { Activity } from '../../../types/Global/Activity';
 
 // Import functions
-import { retrieveAllActivities } from '../../../functions/Admin/RetrieveActivityData';
+import { retrieveAllActivities } from '../../../functions/Admin/ManagePrograms/RetrieveActivityData';
 import { isEmptyString } from '../../../functions/Validation/IsEmptyString';
 import { isLessThan } from '../../../functions/Validation/IsLessThan';
-import { saveActivityData } from '../../../functions/Admin/SaveActivity';
-import { deleteActivities } from '../../../functions/Admin/DeleteActivity';
-import { generateActivityID } from '../../../functions/Admin/GenerateActivityID';
+import { saveActivityData } from '../../../functions/Admin/ManagePrograms/SaveActivity';
+import { deleteActivities } from '../../../functions/Admin/ManagePrograms/DeleteActivity';
+import { generateActivityID } from '../../../functions/Admin/ManagePrograms/GenerateActivityID';
 
 // Interface defining props for the ViewActivities page
 interface ViewActivitiesProps {
@@ -38,11 +38,12 @@ interface ViewActivitiesProps {
   setVisible: (value: boolean) => void;
   setProgramsVisible: (value: boolean) => void;
   programName: string;
+  snowflake: string;
 };
 
 // React function to render the view activities components
 // TODO Work out why a firebase error occurs if this page is left open for to long - nothing seems to brake?
-const ViewActivities: React.FC<ViewActivitiesProps> = ({visible, setVisible, setProgramsVisible, programName}) => {
+const ViewActivities: React.FC<ViewActivitiesProps> = ({visible, setVisible, setProgramsVisible, programName, snowflake}) => {
   //? Default object(s)
   // Defining an empty activity object
   const emptyActivity: Activity = {
@@ -109,7 +110,7 @@ const ViewActivities: React.FC<ViewActivitiesProps> = ({visible, setVisible, set
   //? Async functions to read and write data
   // Async function to handel the retrieval of all activity data from the DB
   async function retrieveActivitiesHandler(): Promise<void> {
-    const data = await retrieveAllActivities(programName);
+    const data = await retrieveAllActivities(snowflake);
     if(typeof data === "string") {
       // Output an error message for error retrieving activity data
       toast.current?.show({
@@ -167,7 +168,7 @@ const ViewActivities: React.FC<ViewActivitiesProps> = ({visible, setVisible, set
     let isNew: boolean = false;
     if(activity.id === 0) {
       isNew = true;
-      const id: string | number = await generateActivityID(programName);
+      const id: string | number = await generateActivityID(snowflake);
       if(typeof id === "string") {
         toast.current?.show({ 
           severity: 'error',
@@ -186,7 +187,7 @@ const ViewActivities: React.FC<ViewActivitiesProps> = ({visible, setVisible, set
     };
 
     // Save the updated activity to the database
-    const success: boolean = await saveActivityData(activity, isNew, programName);
+    const success: boolean = await saveActivityData(activity, isNew, snowflake);
     if(!success) {
       toast.current?.show({ 
         severity: 'error',
@@ -233,7 +234,7 @@ const ViewActivities: React.FC<ViewActivitiesProps> = ({visible, setVisible, set
     setBlocked(true);
     setButtonLoading(true);
     // Delete given activities from the DB
-    const success: boolean = await deleteActivities(selectedActivities, programName);
+    const success: boolean = await deleteActivities(selectedActivities, snowflake);
     if(!success) {
       toast.current?.show({ 
         severity: 'error',
@@ -326,7 +327,7 @@ const ViewActivities: React.FC<ViewActivitiesProps> = ({visible, setVisible, set
   };
 
   // Call the activity dialogue box
-  const editProduct = (activity: Activity) => {
+  const editActivity = (activity: Activity) => {
     setActivity({ ...activity });
     const [day, month, year] = activity.dateAdded.split('/').map(Number);
     const activityDate: Date = new Date(year, month - 1, day);
@@ -445,7 +446,7 @@ const ViewActivities: React.FC<ViewActivitiesProps> = ({visible, setVisible, set
     return (
       <React.Fragment>
         <BlockUI blocked={blocked}>
-          <Button icon="pi pi-pencil" rounded outlined className="mr-2" onClick={() => editProduct(rowData)} />
+          <Button icon="pi pi-pencil" rounded outlined className="mr-2" onClick={() => editActivity(rowData)} />
           <Button icon="pi pi-trash" rounded outlined severity="danger" onClick={() => confirmDeleteProduct(rowData)} />
         </BlockUI>
       </React.Fragment>

@@ -31,6 +31,7 @@ const ManageProgramsDesktop: React.FC = () => {
   const [existingName, setExistingName] = useState<string>("");
   const [existingDescription, setExistingDescription] = useState<string>("");
   const [existingColour, setExistingColour] = useState<string>("");
+  const [programSnowflake, setProgramSnowflake] = useState<string>("");
   const [isNew, setIsNew] = useState<boolean>(true);
 
   // State variables to control the visibility of page components
@@ -72,6 +73,7 @@ const ManageProgramsDesktop: React.FC = () => {
           existingName={existingName}
           existingDescription={existingDescription}
           existingColour={existingColour}
+          programSnowflake={programSnowflake}
           isNew={isNew}
         />
         <ViewProgress
@@ -84,6 +86,7 @@ const ManageProgramsDesktop: React.FC = () => {
           setProgramAdded={setProgramAdded}
           setVisibleActivities={setVisibleActivities}
           setSelectedProgram={setSelectedProgram}
+          setSelectedProgramSnowflake={setProgramSnowflake}
           setFormHeader={setFormHeader}
           setFormSubheader={setFormSubheader}
           setExistingName={setExistingName}
@@ -93,6 +96,7 @@ const ManageProgramsDesktop: React.FC = () => {
         />
         <ViewActivities
           programName={selectedProgram}
+          snowflake={programSnowflake}
           visible={visibleActivities}
           setVisible={setVisibleActivities}
           setProgramsVisible={setVisiblePrograms}

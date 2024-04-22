@@ -1,8 +1,8 @@
-import { db } from "../../database/Initalise"
+import { db } from "../../../database/Initalise"
 import { getDocs, query, collection, DocumentData } from "firebase/firestore";
 
 // Import types
-import { ProgramData } from "../../types/Admin/ProgramData";
+import { ProgramData } from "../../../types/Admin/ProgramData";
 
 // Async function to retrieve and return all the program data in the system
 export async function retrieveProgramData(): Promise<string | ProgramData[]> {
@@ -17,7 +17,8 @@ export async function retrieveProgramData(): Promise<string | ProgramData[]> {
   documents.forEach((d) => {
     const docData: DocumentData = d.data();
     const programData: ProgramData = {
-      name: docData.displayName,
+      snowflake: docData.snowflake,
+      name: docData.name,
       description: docData.description,
       colour: docData.colour,
     };

@@ -1,13 +1,13 @@
 // Importing core resources
-import { db } from "../../database/Initalise";
+import { db } from "../../../database/Initalise";
 import { getDoc, doc } from "firebase/firestore";
 
 // Importing types
-import { Activity } from "../../types/Global/Activity";
+import { Activity } from "../../../types/Global/Activity";
 
 // Async function to look at all activity IDs in the DB and generate a new unique ID for a new activity
-export async function generateActivityID(programName: string): Promise<string | number> {
-  const docRef = doc(db, "programs", programName.toUpperCase());
+export async function generateActivityID(snowflake: string): Promise<string | number> {
+  const docRef = doc(db, "programs", snowflake);
   let programDoc;
   let activityData: Activity[] = [];
   try {

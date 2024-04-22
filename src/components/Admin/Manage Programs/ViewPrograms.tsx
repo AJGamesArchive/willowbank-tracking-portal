@@ -13,8 +13,8 @@ import './ViewPrograms.css'
 import ProgramCard from './ProgramCard';
 
 // Import functions
-import { retrieveProgramData } from '../../../functions/Admin/RetrieveProgramData';
-import { deleteProgram } from '../../../functions/Admin/DeleteProgram';
+import { retrieveProgramData } from '../../../functions/Admin/ManagePrograms/RetrieveProgramData';
+import { deleteProgram } from '../../../functions/Admin/ManagePrograms/DeleteProgram';
 
 // Import types
 import { ProgramData } from '../../../types/Admin/ProgramData';
@@ -30,6 +30,7 @@ interface ViewProgressProps {
   setProgramAdded: (value: boolean) => void;
   setVisibleActivities: (value: boolean) => void;
   setSelectedProgram: (value: string) => void;
+  setSelectedProgramSnowflake: (value: string) => void;
   setFormHeader: (value: string) => void;
   setFormSubheader: (value: string) => void;
   setExistingName: (value: string) => void;
@@ -39,12 +40,13 @@ interface ViewProgressProps {
 };
 
 // React function to render the login page for mobile devices
-const ViewProgress: React.FC<ViewProgressProps> = ({visible, setVisible, setVisibleForm, programRerender, setProgramRerender, programAdded, setProgramAdded, setVisibleActivities, setSelectedProgram, setFormHeader, setFormSubheader, setExistingName, setExistingDescription, setExistingColour, setIsNew}) => {
+const ViewProgress: React.FC<ViewProgressProps> = ({visible, setVisible, setVisibleForm, programRerender, setProgramRerender, programAdded, setProgramAdded, setVisibleActivities, setSelectedProgram, setSelectedProgramSnowflake, setFormHeader, setFormSubheader, setExistingName, setExistingDescription, setExistingColour, setIsNew}) => {
   // State variable to store the program data as an array
   const [programData, setProgramData] = useState<ProgramData[]>([]);
 
   // State variable to log the program selected for deletion
   const [deleteProgramName, setDeleteProgramName] = useState<string>("");
+  const [deleteProgramSnowflake, setDeleteProgramSnowflake] = useState<string>("");
 
   // State variable to control the visibility of the delete program dialogue box
   const [deleteProgramDialogue, setDeleteProgramDialogue] = useState<boolean>(false);
@@ -77,9 +79,10 @@ const ViewProgress: React.FC<ViewProgressProps> = ({visible, setVisible, setVisi
   };
 
   // Function to handel program card click events
-  function onProgramCardClick(selectedProgramName: string): void {
+  function onProgramCardClick(selectedProgramName: string, snowflake: string): void {
     setVisible(false);
     setSelectedProgram(selectedProgramName);
+    setSelectedProgramSnowflake(snowflake);
     setVisibleActivities(true);
     return;
   };
@@ -87,7 +90,7 @@ const ViewProgress: React.FC<ViewProgressProps> = ({visible, setVisible, setVisi
   // Async function to handel deleting a program
   async function deleteProgramHandler(): Promise<void> {
     setBlockUI(true);
-    const success: boolean = await deleteProgram(deleteProgramName);
+    const success: boolean = await deleteProgram(deleteProgramSnowflake);
     if(success) {
       toast.current?.show({
         severity: 'success',
@@ -109,6 +112,7 @@ const ViewProgress: React.FC<ViewProgressProps> = ({visible, setVisible, setVisi
     setBlockUI(false);
     setDeleteProgramDialogue(false);
     setDeleteProgramName("");
+    setDeleteProgramSnowflake("");
     retrieveProgramDataHandler();
     return;
   };
@@ -141,26 +145,29 @@ const ViewProgress: React.FC<ViewProgressProps> = ({visible, setVisible, setVisi
     setExistingName('');
     setExistingDescription('');
     setExistingColour('');
+    setSelectedProgramSnowflake('----------');
     setIsNew(true);
     setVisible(false);
     setVisibleForm(true);
   };
 
   // Function to handel opening the program details form for an existing program
-  const openExistingProgramForm = (name: string, description: string, colour: string) => {
+  const openExistingProgramForm = (name: string, description: string, colour: string, snowflake: string) => {
     setFormHeader('Update Program');
     setFormSubheader(`Update details for the program '${name}':`);
     setExistingName(name);
     setExistingDescription(description);
     setExistingColour(colour);
+    setSelectedProgramSnowflake(snowflake);
     setIsNew(false);
     setVisible(false);
     setVisibleForm(true);
   };
 
   // Function to handel calling the delete program dialogue box
-  const onDeleteClick = (name: string) => {
+  const onDeleteClick = (name: string, snowflake: string) => {
     setDeleteProgramName(name);
+    setDeleteProgramSnowflake(snowflake);
     setDeleteProgramDialogue(true);
   };
 
@@ -213,6 +220,7 @@ const ViewProgress: React.FC<ViewProgressProps> = ({visible, setVisible, setVisi
         {programData.map((item, index) => (
           <div className='grid-item' key={index}>
             <ProgramCard
+              snowflake={item.snowflake}
               name={item.name}
               description={item.description}
               colour={item.colour}

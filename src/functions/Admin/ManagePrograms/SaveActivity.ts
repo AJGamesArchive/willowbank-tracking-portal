@@ -1,13 +1,13 @@
 // Importing core resources
-import { db } from "../../database/Initalise";
+import { db } from "../../../database/Initalise";
 import { getDoc, doc, updateDoc } from "firebase/firestore";
 
 // Importing types
-import { Activity } from "../../types/Global/Activity";
+import { Activity } from "../../../types/Global/Activity";
 
 // Async function to save an activity to the database
-export async function saveActivityData(activity: Activity, isNew: boolean, programName: string): Promise<boolean> {
-  const docRef = doc(db, "programs", programName.toUpperCase());
+export async function saveActivityData(activity: Activity, isNew: boolean, snowflake: string): Promise<boolean> {
+  const docRef = doc(db, "programs", snowflake);
   let programDoc;
   let activityData: Activity[] = [];
   try {

@@ -1,13 +1,13 @@
-import { db } from "../../database/Initalise"
+import { db } from "../../../database/Initalise"
 import { doc, getDoc } from "firebase/firestore";
 
 // Import types
-import { Activity } from "../../types/Global/Activity";
+import { Activity } from "../../../types/Global/Activity";
 
 // Async function to retrieve all the activity data for a given program from the database
-export async function retrieveAllActivities(programName: string): Promise<string | Activity[]> {
+export async function retrieveAllActivities(snowflake: string): Promise<string | Activity[]> {
   let data: Activity[] = [];
-  const docRef = doc(db, "programs", programName.toUpperCase());
+  const docRef = doc(db, "programs", snowflake);
   let document;
   try {
     document = await getDoc(docRef);
