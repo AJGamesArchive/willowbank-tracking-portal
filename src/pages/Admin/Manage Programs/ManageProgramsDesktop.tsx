@@ -25,6 +25,14 @@ const ManageProgramsDesktop: React.FC = () => {
   // Setting up global params on this page
   const params = useParams<GlobalParams>();
 
+  // Variables to add program data between the view programs page and program details form
+  const [formHeader, setFormHeader] = useState<string>("");
+  const [formSubheader, setFormSubheader] = useState<string>("");
+  const [existingName, setExistingName] = useState<string>("");
+  const [existingDescription, setExistingDescription] = useState<string>("");
+  const [existingColour, setExistingColour] = useState<string>("");
+  const [isNew, setIsNew] = useState<boolean>(true);
+
   // State variables to control the visibility of page components
   const [visiblePrograms, setVisiblePrograms] = useState<boolean>(true);
   const [visibleActivities, setVisibleActivities] = useState<boolean>(false);
@@ -59,6 +67,12 @@ const ManageProgramsDesktop: React.FC = () => {
           setVisiblePrograms={setVisiblePrograms}
           setProgramRerender={setProgramRerender}
           setProgramAdded={setProgramAdded}
+          formHeader={formHeader}
+          formSubheader={formSubheader}
+          existingName={existingName}
+          existingDescription={existingDescription}
+          existingColour={existingColour}
+          isNew={isNew}
         />
         <ViewProgress
           visible={visiblePrograms}
@@ -70,6 +84,12 @@ const ManageProgramsDesktop: React.FC = () => {
           setProgramAdded={setProgramAdded}
           setVisibleActivities={setVisibleActivities}
           setSelectedProgram={setSelectedProgram}
+          setFormHeader={setFormHeader}
+          setFormSubheader={setFormSubheader}
+          setExistingName={setExistingName}
+          setExistingDescription={setExistingDescription}
+          setExistingColour={setExistingColour}
+          setIsNew={setIsNew}
         />
         <ViewActivities
           programName={selectedProgram}

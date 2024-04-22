@@ -30,10 +30,16 @@ interface ViewProgressProps {
   setProgramAdded: (value: boolean) => void;
   setVisibleActivities: (value: boolean) => void;
   setSelectedProgram: (value: string) => void;
+  setFormHeader: (value: string) => void;
+  setFormSubheader: (value: string) => void;
+  setExistingName: (value: string) => void;
+  setExistingDescription: (value: string) => void;
+  setExistingColour: (value: string) => void;
+  setIsNew: (value: boolean) => void;
 };
 
 // React function to render the login page for mobile devices
-const ViewProgress: React.FC<ViewProgressProps> = ({visible, setVisible, setVisibleForm, programRerender, setProgramRerender, programAdded, setProgramAdded, setVisibleActivities, setSelectedProgram}) => {
+const ViewProgress: React.FC<ViewProgressProps> = ({visible, setVisible, setVisibleForm, programRerender, setProgramRerender, programAdded, setProgramAdded, setVisibleActivities, setSelectedProgram, setFormHeader, setFormSubheader, setExistingName, setExistingDescription, setExistingColour, setIsNew}) => {
   // State variable to store the program data as an array
   const [programData, setProgramData] = useState<ProgramData[]>([]);
 
@@ -78,20 +84,6 @@ const ViewProgress: React.FC<ViewProgressProps> = ({visible, setVisible, setVisi
     return;
   };
 
-  // Function to handel calling the edit program details form
-  //TODO Implement this feature
-  function onEditClick(name: string, description: string, colour: string): void {
-    console.log(name, description, colour);
-    toast.current?.show({
-      severity: 'error',
-      summary: 'Not Implemented Exception',
-      detail: `This feature has not been implemented yet. Please come back later.`,
-      closeIcon: 'pi pi-times',
-      life: 7000,
-    });
-    return;
-  };
-
   // Async function to handel deleting a program
   async function deleteProgramHandler(): Promise<void> {
     setBlockUI(true);
@@ -133,14 +125,38 @@ const ViewProgress: React.FC<ViewProgressProps> = ({visible, setVisible, setVisi
       // Output an confirmation message saying the new program has been added to the system
       toast.current?.show({
         severity: 'success',
-        summary: 'Program Added',
-        detail: `The specified program has been added to the system successfully.`,
+        summary: 'Program Saved',
+        detail: `The specified program has been saved to the system successfully.`,
         closeIcon: 'pi pi-times',
         life: 7000,
       });
       setProgramAdded(false);
     };
   }, [programRerender]); // Pass the 'programRerender' state variable in as a dependency for the hook
+
+  // Function to handel opening the program details form for a new program
+  const openNewProgramForm = () => {
+    setFormHeader('Add New Program');
+    setFormSubheader('Enter details for the new program:');
+    setExistingName('');
+    setExistingDescription('');
+    setExistingColour('');
+    setIsNew(true);
+    setVisible(false);
+    setVisibleForm(true);
+  };
+
+  // Function to handel opening the program details form for an existing program
+  const openExistingProgramForm = (name: string, description: string, colour: string) => {
+    setFormHeader('Update Program');
+    setFormSubheader(`Update details for the program '${name}':`);
+    setExistingName(name);
+    setExistingDescription(description);
+    setExistingColour(colour);
+    setIsNew(false);
+    setVisible(false);
+    setVisibleForm(true);
+  };
 
   // Function to handel calling the delete program dialogue box
   const onDeleteClick = (name: string) => {
@@ -201,7 +217,7 @@ const ViewProgress: React.FC<ViewProgressProps> = ({visible, setVisible, setVisi
               description={item.description}
               colour={item.colour}
               onProgramClick={onProgramCardClick}
-              onEditClick={onEditClick}
+              onEditClick={openExistingProgramForm}
               onDeleteClick={onDeleteClick}
               lockDelete={disableDelete}
             />
@@ -210,10 +226,7 @@ const ViewProgress: React.FC<ViewProgressProps> = ({visible, setVisible, setVisi
       </div>
 
       <div className='view-programs-button'>
-        <Button label="Add New Program" icon="pi pi-plus" onClick={() => {
-          setVisible(false);
-          setVisibleForm(true);
-        }} raised severity="info"/>
+        <Button label="Add New Program" icon="pi pi-plus" onClick={openNewProgramForm} raised severity="info"/>
       </div>
 
       <div className='view-programs-button'>

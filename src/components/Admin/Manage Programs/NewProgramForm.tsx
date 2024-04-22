@@ -1,5 +1,5 @@
 // Import core functions
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Card } from 'primereact/card';
 import { InputText } from 'primereact/inputtext';
 import { Button } from 'primereact/button';
@@ -11,7 +11,7 @@ import { BlockUI } from 'primereact/blockui';
 import './NewProgramForm.css';
 
 // Import functions
-import { addProgram } from '../../../functions/Admin/AddProgram';
+import { saveProgram } from '../../../functions/Admin/SaveProgram';
 import { retrieveDocumentIDs } from '../../../functions/Global/RetrieveDocumentIDs';
 import { classNames } from 'primereact/utils';
 
@@ -22,10 +22,16 @@ interface NewProgramFormProps {
   setVisiblePrograms: (value: boolean) => void;
   setProgramRerender: (value: boolean) => void;
   setProgramAdded:(value: boolean) => void;
+  formHeader: string;
+  formSubheader: string;
+  existingName: string;
+  existingDescription: string;
+  existingColour: string;
+  isNew: boolean;
 };
 
 // React function to render the login page for mobile devices
-const NewProgramForm: React.FC<NewProgramFormProps> = ({visible, setVisible, setVisiblePrograms, setProgramRerender, setProgramAdded}) => {
+const NewProgramForm: React.FC<NewProgramFormProps> = ({visible, setVisible, setVisiblePrograms, setProgramRerender, setProgramAdded, formHeader, formSubheader, existingName, existingDescription, existingColour, isNew}) => {
   // State variables to store form input data
   const [programName, setProgramName] = useState<string>("");
   const [programDescription, setProgramDescription] = useState<string>("");
@@ -43,6 +49,16 @@ const NewProgramForm: React.FC<NewProgramFormProps> = ({visible, setVisible, set
 
   // Variables to control toast messages
   const toast = useRef<Toast>(null);
+
+  // UseEffect hook to set the details of an existing program if the user is updating an existing prorgam
+  useEffect(() => {
+    if(visible && !isNew) {
+      setProgramName(existingName);
+      setProgramDescription(existingDescription);
+      setProgramColour(existingColour);
+      colourPickerDisplayBox?.style.setProperty('--colour-picker-display-block', `#${existingColour}`);
+    };
+  }, [visible]);
 
   // Async function to handel the adding of programs to the system
   async function addProgramHandler(): Promise<void> {
@@ -69,41 +85,44 @@ const NewProgramForm: React.FC<NewProgramFormProps> = ({visible, setVisible, set
       setBlockUI(false);
       return;
     };
-    // Ensure the entered program name is unique
-    const existingPrograms = await retrieveDocumentIDs("programs");
-    if(typeof existingPrograms === "string") {
-      // Output an error message for the existing programs could not be retrieved
-      toast.current?.show({
-        severity: 'error',
-        summary: 'An Unexpected Error Occurred',
-        detail: `An unexpected error occurred while trying to validate the entered program name. Please try again.`,
-        closeIcon: 'pi pi-times',
-        life: 7000,
-      });
-      setBlockUI(false);
-      return;
-    };
-    let unique: boolean = true;
-    existingPrograms.forEach((p) => {
-      if(p === programName.toUpperCase()) {
-        // Output a warning for the program name is not unique
+    // Ensure the entered program name is unique if either; the program is new or the existing program has had a name change
+    if(programName.toUpperCase() !== existingName.toUpperCase()) {
+      const existingPrograms = await retrieveDocumentIDs("programs");
+      if(typeof existingPrograms === "string") {
+        // Output an error message for the existing programs could not be retrieved
         toast.current?.show({
-          severity: 'warn',
-          summary: 'Invalid Program Name',
-          detail: `The entered program already exists. Please entered a new program and try again.`,
+          severity: 'error',
+          summary: 'An Unexpected Error Occurred',
+          detail: `An unexpected error occurred while trying to validate the entered program name. Please try again.`,
           closeIcon: 'pi pi-times',
           life: 7000,
         });
         setBlockUI(false);
-        setUniqueProgramName(false);
-        unique = false;
+        return;
       };
-    });
-    if(!unique) {
-      return;
+      let unique: boolean = true;
+      existingPrograms.forEach((p) => {
+        if(p === programName.toUpperCase()) {
+          // Output a warning for the program name is not unique
+          toast.current?.show({
+            severity: 'warn',
+            summary: 'Invalid Program Name',
+            detail: `The entered program already exists. Please entered a new program and try again.`,
+            closeIcon: 'pi pi-times',
+            life: 7000,
+          });
+          setBlockUI(false);
+          setUniqueProgramName(false);
+          unique = false;
+        };
+      });
+      if(!unique) {
+        return;
+      };
     };
+    
     // Attempted to add the entered program data to the system
-    const successful: boolean = await addProgram(programName, programDescription, programColour);
+    const successful: boolean = await saveProgram(programName, programDescription, programColour, isNew);
     if(!successful) {
       // Output an error message for the program failing to add to the system
       toast.current?.show({
@@ -117,15 +136,9 @@ const NewProgramForm: React.FC<NewProgramFormProps> = ({visible, setVisible, set
       return;
     };
     // Close form and return to program overviews
-    setSubmitted(false);
-    setProgramName("");
-    setProgramDescription("");
-    setProgramColour("");
-    setBlockUI(false);
-    setProgramRerender(true);
     setProgramAdded(true);
-    setVisible(false);
-    setVisiblePrograms(true);
+    setBlockUI(false);
+    onFormClose();
     return;
   };
 
@@ -136,12 +149,26 @@ const NewProgramForm: React.FC<NewProgramFormProps> = ({visible, setVisible, set
     setProgramColour(colour);
   };
 
+  // Function to handel closing the form
+  const onFormClose = () => {
+    setSubmitted(false);
+    setProgramName("");
+    setProgramDescription("");
+    setProgramColour("ffffff");
+    colourPickerDisplayBox?.style.setProperty('--colour-picker-display-block', `#ffffff`);
+    setUniqueProgramName(true);
+    setVisible(false);
+    setVisiblePrograms(true);
+    setProgramRerender(true);
+  };
+
   // Return JSX
   return (
     <BlockUI blocked={blockedUI}>
-      <Card title={`Add New Program`} subTitle='Enter the details of the new program:' style={{ display: visible ? 'block' : 'none' }}>
+      <Card title={`${formHeader}`} subTitle={`${formSubheader}`} style={{ display: visible ? 'block' : 'none' }}>
         <Toast ref={toast}/>
-        
+
+        <br/>
         <div className="p-inputgroup flex-1">
           <span className="p-float-label">
             <InputText
@@ -159,7 +186,7 @@ const NewProgramForm: React.FC<NewProgramFormProps> = ({visible, setVisible, set
           Enter the name of the new program of study.
         </small>
         {submitted && (!programName || !uniqueProgramName) && <small className="p-error">A program name is required.</small>}
-
+        
         <div className="add-program-form-field">
           <div className="p-inputgroup flex-1">
             <span className="p-float-label">
@@ -203,18 +230,12 @@ const NewProgramForm: React.FC<NewProgramFormProps> = ({visible, setVisible, set
 
         <div className="add-program-form-button-field">
           <div className="add-program-form-button">
-            <Button label="Add Program" icon="pi pi-plus" loading={blockedUI} onClick={() => {
+            <Button label="Save Program" icon="pi pi-save" loading={blockedUI} onClick={() => {
               addProgramHandler();
             }} raised severity="info"/>
           </div>
           <div className="add-program-form-button">
-            <Button label="Cancel" icon="pi pi-times" onClick={() => {
-              setSubmitted(false);
-              setUniqueProgramName(true);
-              setVisible(false);
-              setVisiblePrograms(true);
-              setProgramRerender(true);
-            }} raised severity="secondary"/>
+            <Button label="Cancel" icon="pi pi-times" onClick={onFormClose} raised severity="secondary"/>
           </div>
         </div>
 
