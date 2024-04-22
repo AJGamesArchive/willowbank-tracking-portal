@@ -11,6 +11,9 @@ import { MenuItem } from 'primereact/menuitem';
 import { Divider } from 'primereact/divider';
 import { Button } from 'primereact/button';
 
+// Importing snowflakes
+import { snowflake } from '../../classes/Snowflake'; //! Remove later
+
 // Interfacing forcing certain props on the Login Options Menu component
 interface LoginOptionsMenuProps {
   setLoginType: (value: string) => void;
@@ -90,6 +93,7 @@ const LoginOptionsMenu: React.FC<LoginOptionsMenuProps> = ({setLoginType, visibl
       <Divider/>
       <Button label={`[DEV] Token`} icon="pi pi-exclamation-triangle" onClick={() => {
           console.log(generateToken()); //! Remove later
+          console.log(snowflake.generate()); //! Remove later
         }} raised severity="help"/>
     </div>
   );
