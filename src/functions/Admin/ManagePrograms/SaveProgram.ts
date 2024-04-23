@@ -4,7 +4,6 @@ import { snowflake } from "../../../classes/Snowflake";
 import { XPStudentAccountDetails } from "../../../types/Global/UserAccountDetails";
 
 // Async function to add a new program to the system
-//TODO Update this function to add newly created programs to all student XP tracking documents
 export async function saveProgram(programSnowflake: string, programName: string, programDescription: string, programColour: string, isNew: boolean): Promise<boolean> {
   try {
     if(isNew) {
@@ -15,6 +14,7 @@ export async function saveProgram(programSnowflake: string, programName: string,
         name: programName,
         description: programDescription,
         colour: programColour,
+        totalActivities: 0,
         activities: [],
       });
 
