@@ -1,8 +1,10 @@
 // Import core functions
+import React from 'react';
 import { useState, useEffect } from 'react';
 import { Button } from 'primereact/button';
 import { ProgressSpinner } from 'primereact/progressspinner';
-import React from 'react';
+
+// Importing UI components
 import AccountListBox from '../../../components/Admin/AccountManage/AccountMangLists';
 import AccountManageBoxs from '../../../components/Admin/AccountManage/AccountMangBoxs';
 
@@ -31,7 +33,7 @@ const AdminAccMangDesktop: React.FC = () => {
   // Event handler to perform action upon initial render
   useEffect(() => {
     async function confirmLoginHandler() {
-      const confirmed: boolean = await confirmLogin("admins", params.username, params.token);
+      const confirmed: boolean = await confirmLogin("admins", params.snowflake, params.token);
       if (confirmed) { setIsLoggedIn(true); return; }
       window.location.href = `/home`;
       return;
@@ -44,23 +46,23 @@ const AdminAccMangDesktop: React.FC = () => {
     return (
       <>
         <div>
-                <AccountListBox 
-                  selectedUsername={selectedUsername}
-                  setSelectedUsername={setSelectedUsername}
-                  selectedCategory={selectedCategory}
-                  setSelectedCategory={setSelectedCategory}
-                />
-                <AccountManageBoxs
-                selectedUsername={selectedUsername}
-                setSelectedUsername={setSelectedUsername}
-                selectedCategory={selectedCategory}
-                setSelectedCategory={setSelectedCategory}
-                />
+          <AccountListBox 
+            selectedUsername={selectedUsername}
+            setSelectedUsername={setSelectedUsername}
+            selectedCategory={selectedCategory}
+            setSelectedCategory={setSelectedCategory}
+          />
+          <AccountManageBoxs
+            selectedUsername={selectedUsername}
+            setSelectedUsername={setSelectedUsername}
+            selectedCategory={selectedCategory}
+            setSelectedCategory={setSelectedCategory}
+          />
         </div>
         <div className='buttonContainer'>
-            <Button label="Back" icon="pi pi-arrow-left" onClick={() => {
-            setSelectedUsername(""); //goes back to the list pages
-            }} severity="secondary"/>
+          <Button label="Back" icon="pi pi-arrow-left" onClick={() => {
+          setSelectedUsername(""); //goes back to the list pages
+          }} severity="secondary"/>
         </div>
         <Button label="[DEV] Back" icon="pi pi-arrow-left" onClick={() => {
           window.location.href = `/home` //! DEV button to return to login page - remove later

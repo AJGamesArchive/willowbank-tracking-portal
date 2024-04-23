@@ -44,12 +44,12 @@ const App: React.FC = () => {
       <Routes>
         <Route path="/" Component={LoginMobile} />
         <Route path="/home" Component={LoginMobile} />
-        <Route path="/studenthome/:username/:token" Component={StudentMobile}></Route>
-        <Route path="/adminportal/:username/:token" Component={AdminPortalMobile} />
-        <Route path="/adminportal/resetpassword/:username/:token" Component={AdminResetMobile}/>
-        <Route path="/adminportal/manageprograms/:username/:token" Component={ManageProgramsMobile}/>
-        <Route path="/teacherportal/:username/:token" Component={TeacherPortalMobile} />
-        <Route path="/AccManagement/:username/:token" Component={AdminAccMangMobile} />
+        <Route path="/studenthome/:snowflake/:token/:name" Component={StudentMobile}></Route>
+        <Route path="/adminportal/:snowflake/:token/:name" Component={AdminPortalMobile} />
+        <Route path="/adminportal/resetpassword/:snowflake/:token/:name" Component={AdminResetMobile}/>
+        <Route path="/adminportal/manageprograms/:snowflake/:token/:name" Component={ManageProgramsMobile}/>
+        <Route path="/teacherportal/:snowflake/:token/:name" Component={TeacherPortalMobile} />
+        <Route path="/AccManagement/:snowflake/:token/:name" Component={AdminAccMangMobile} />
       </Routes>
     );
   } else if (windowSize.width >= 768 && windowSize.width <= 1024) {
@@ -59,12 +59,12 @@ const App: React.FC = () => {
       <Routes>
         <Route path="/" Component={LoginDesktop} />
         <Route path="/home" Component={LoginDesktop} />
-        <Route path="/studenthome/:username/:token" Component={StudentDesktop}></Route>
-        <Route path="/adminportal/:username/:token" Component={AdminPortalDesktop} />
-        <Route path="/adminportal/resetpassword/:username/:token" Component={AdminResetDesktop}/>
-        <Route path="/adminportal/manageprograms/:username/:token" Component={ManageProgramsDesktop}/>
-        <Route path="/teacherportal/:username/:token" Component={TeacherPortalDesktop} />
-        <Route path="/AccManagement/:username/:token" Component={AdminAccMangDesktop} />
+        <Route path="/studenthome/:snowflake/:token/:name" Component={StudentDesktop}></Route>
+        <Route path="/adminportal/:snowflake/:token/:name" Component={AdminPortalDesktop} />
+        <Route path="/adminportal/resetpassword/:snowflake/:token/:name" Component={AdminResetDesktop}/>
+        <Route path="/adminportal/manageprograms/:snowflake/:token/:name" Component={ManageProgramsDesktop}/>
+        <Route path="/teacherportal/:snowflake/:token/:name" Component={TeacherPortalDesktop} />
+        <Route path="/AccManagement/:snowflake/:token/:name" Component={AdminAccMangDesktop} />
       </Routes>
     );
   } else {
@@ -73,12 +73,12 @@ const App: React.FC = () => {
       <Routes>
         <Route path="/" Component={LoginDesktop} />
         <Route path="/home" Component={LoginDesktop} />
-        <Route path="/studenthome/:username/:token" Component={StudentDesktop}></Route>
-        <Route path="/adminportal/:username/:token" Component={AdminPortalDesktop} />
-        <Route path="/adminportal/resetpassword/:username/:token" Component={AdminResetDesktop}/>
-        <Route path="/adminportal/manageprograms/:username/:token" Component={ManageProgramsDesktop}/>
-        <Route path="/teacherportal/:username/:token" Component={TeacherPortalDesktop} />
-        <Route path="/AccManagement/:username/:token" Component={AdminAccMangDesktop} />
+        <Route path="/studenthome/:snowflake/:token/:name" Component={StudentDesktop}></Route>
+        <Route path="/adminportal/:snowflake/:token/:name" Component={AdminPortalDesktop} />
+        <Route path="/adminportal/resetpassword/:snowflake/:token/:name" Component={AdminResetDesktop}/>
+        <Route path="/adminportal/manageprograms/:snowflake/:token/:name" Component={ManageProgramsDesktop}/>
+        <Route path="/teacherportal/:snowflake/:token/:name" Component={TeacherPortalDesktop} />
+        <Route path="/AccManagement/:snowflake/:token/:name" Component={AdminAccMangDesktop} />
       </Routes>
     );
   };

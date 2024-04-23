@@ -6,8 +6,8 @@ import { getDoc, doc } from "firebase/firestore";
 import { Activity } from "../../../types/Global/Activity";
 
 // Async function to look at all activity IDs in the DB and generate a new unique ID for a new activity
-//TODO Update this script to only generate new IDs and never reuse old IDs to enable us to create a system to mark activities as completed, even if the activity has been deleted
 export async function generateActivityID(snowflake: string): Promise<string | number> {
+  // Retrieve activity data for the given program
   const docRef = doc(db, "programs", snowflake);
   let programDoc;
   let activityData: Activity[] = [];
@@ -19,17 +19,14 @@ export async function generateActivityID(snowflake: string): Promise<string | nu
     console.log(e);
     Promise.resolve(String(e));
   };
+
+  // Find the highest ID currently in use
   let id: number = 0;
-  while(true) {
-    id++;
-    let foundMatch: boolean = false;
-    activityData.forEach((a) => {
-      if(a.id === id) {
-        foundMatch = true;
-      };
-    });
-    if(!foundMatch) {
-      return Promise.resolve(id);
-    };
-  };
+  activityData.forEach((a) => {
+    if(a.id > id) {id = a.id;}
+  });
+  // Increment the highest ID by 1 to create the new ID
+  id++;
+
+  return Promise.resolve(id);
 };

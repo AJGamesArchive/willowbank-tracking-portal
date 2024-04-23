@@ -7,7 +7,7 @@ import { dateTime } from "./GenerateTimestamp";
 import { generatePassword } from '../../functions/Login/GeneratePassword.ts';
 
 // Async function to retrieve all the document ID's for a given collection in the database
-export async function removeResetRequest(remove : PasswordRequest, ignore : Boolean): Promise<boolean> {
+export async function removeResetRequest(remove : PasswordRequest, ignore : Boolean, newPassword: string): Promise<boolean> {
     try 
     {
         // Pull all accounts from database
@@ -17,14 +17,14 @@ export async function removeResetRequest(remove : PasswordRequest, ignore : Bool
         if ( typeof allAccounts === "string")
         {
             return Promise.resolve(false);
-        }
+        };
         
         // Remove password request
-        const index = allAccounts.findIndex(account => account.username === remove.username)
+        const index = allAccounts.findIndex(account => account.snowflake === remove.snowflake)
         if (index > -1) 
         {
             allAccounts.splice(index, 1);
-        }
+        };
 
         // Write back to database
         const docRef = doc(db, "requests", "password-resets");
@@ -37,7 +37,8 @@ export async function removeResetRequest(remove : PasswordRequest, ignore : Bool
         const logDocRef = doc(db, "requests", "password-resets", "request-logs", remove.created)
             updateDoc(logDocRef, {
                 ignored: ignore,
-                completed: dateTime()
+                completed: dateTime(),
+                newPassword: newPassword,
             });
 
         return Promise.resolve(true);
@@ -45,13 +46,12 @@ export async function removeResetRequest(remove : PasswordRequest, ignore : Bool
     catch (e)
     {
         return Promise.resolve(false);
-    }
-}
+    };
+};
 
 export async function resetPassword ( account : PasswordRequest ) : Promise<string>
 {
-    const docRef = doc(db, `${account.accountType}`, `${account.username}`)
-    console.log(docRef)
+    const docRef = doc(db, `${account.accountType}`, `${account.snowflake}`);
     try
     {
         const Account = await getDoc(docRef)

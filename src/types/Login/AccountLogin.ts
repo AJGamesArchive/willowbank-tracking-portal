@@ -2,5 +2,6 @@
 export type AccountLogin = {
   successful: boolean;
   token: string;
-  username: string;
+  snowflake: string;
+  name: string;
 };

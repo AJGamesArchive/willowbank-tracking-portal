@@ -11,8 +11,8 @@ import { Avatar } from 'primereact/avatar';
 import './ForgotPassword.css'
 
 // Importing functions
-import { retrieveDocumentIDs } from '../../functions/Global/RetrieveDocumentIDs';
 import { createPasswordRequest } from '../../functions/Login/PasswordResetRequest';
+import { isUniqueUsernameName } from '../../functions/Validation/IsUniqueUsername';
 
 // Interfacing forcing certain props on the forgot password form
 interface ForgotPasswordFormProps {
@@ -93,18 +93,12 @@ const ForgotPassword: React.FC<ForgotPasswordFormProps> = ({ accountType, visibl
       setUsernameStyle("p-invalid");
       unlock(); return;
     };
-    const allUsernames: string | string [] = await retrieveDocumentIDs(db_collection);
-    if(typeof allUsernames === "string") {
+    const isUnique: boolean | string = await isUniqueUsernameName(username);
+    if(typeof isUnique === "string") {
       unexpectedError();
       unlock(); return;
     };
-    let exists: boolean = false;
-    allUsernames.forEach((n) => {
-      if(n === username.toUpperCase()) {
-        exists = true;
-      };
-    });
-    if(!exists) {
+    if(isUnique) {
       toast.current?.show({
         severity: 'warn',
         summary: 'Invalid Username',

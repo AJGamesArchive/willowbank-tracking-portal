@@ -11,12 +11,11 @@ export interface UserData {
 }
 
 // Function to retrieve user data from the database
-export async function getUserData(username: string, category: string): Promise<UserData | null> {
+export async function getUserData(snowflake: string, category: string): Promise<UserData | null> {
     try {
-        debugger
-        const docRef = doc(db, category, username); 
+        debugger //! Remember to remove this later
+        const docRef = doc(db, category, snowflake);
         const docSnap = await getDoc(docRef);
-        
         if (docSnap.exists()) {
             // Extract data from the document snapshot
             const userData: UserData = docSnap.data() as UserData;
@@ -24,9 +23,9 @@ export async function getUserData(username: string, category: string): Promise<U
         } else {
             // Document does not exist
             return null;
-        }
+        };
     } catch (error) {
         console.error("Error fetching user data:", error);
         return null;
-    }
-}
+    };
+};

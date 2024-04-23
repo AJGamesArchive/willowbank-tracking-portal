@@ -25,7 +25,7 @@ const AdminPortalMobile: React.FC = () => {
   // Event handler to perform action upon initial render
   useEffect(() => {
     async function confirmLoginHandler() {
-      const confirmed: boolean = await confirmLogin("admins", params.username, params.token);
+      const confirmed: boolean = await confirmLogin("admins", params.snowflake, params.token);
       if (confirmed) { setIsLoggedIn(true); return; }
       window.location.href = `/home`;
       return;
@@ -39,7 +39,8 @@ const AdminPortalMobile: React.FC = () => {
       <>
         <h1>Mobile UI Code</h1>
         <h1>Admin Portal</h1>
-        <h2>{params.username}</h2>
+        <h2>{params.name}</h2>
+        <h2>{params.snowflake}</h2>
         <h2>{params.token}</h2>
         <Button label="Sign-Out" icon="pi pi-sign-out" onClick={() => {
           window.location.href = `/home`

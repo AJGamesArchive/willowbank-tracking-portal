@@ -1,5 +1,6 @@
 // Type declaration for password reset request
 export type PasswordRequest = {
+  snowflake: string;
   username: string;
   accountType: string;
   created: string;
@@ -7,6 +8,7 @@ export type PasswordRequest = {
 
 // Type declaration for password reset request logs
 export type PasswordRequestLog = {
+  snowflake: string;
   username: string;
   accountType: string;
   created: string;

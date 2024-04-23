@@ -10,10 +10,12 @@ import { useParams } from 'react-router';
 // Import CSS
 import './TeacherPortalDesktop.css'
 import './TeacherPortalGlobal.css'
-import TeacherCard from '../../components/Teacher/TeacherCard';
 
 // Import functions
 import { confirmLogin } from '../../functions/Global/ConfirmLogin';
+
+// Importing UI components
+import TeacherCard from '../../components/Teacher/TeacherCard';
 
 // React function to render the Teacher Portal page for desktop devices
 const TeacherPortalDesktop: React.FC = () => {
@@ -26,7 +28,7 @@ const TeacherPortalDesktop: React.FC = () => {
   // Event handler to perform action upon initial render
   useEffect(() => {
     async function confirmLoginHandler() {
-      const confirmed: boolean = await confirmLogin("teachers", params.username, params.token);
+      const confirmed: boolean = await confirmLogin("teachers", params.snowflake, params.token);
       if (confirmed) { setIsLoggedIn(true); return; }
       window.location.href = `/home`;
       return;
@@ -40,7 +42,8 @@ const TeacherPortalDesktop: React.FC = () => {
       <>
         <h1>Desktop UI Code</h1>
         <h1>Teacher Portal</h1>
-        <h2>{params.username}</h2>
+        <h2>{params.name}</h2>
+        <h2>{params.snowflake}</h2>
         <h2>{params.token}</h2>
         <TeacherCard
           title= "By Program"

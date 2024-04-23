@@ -25,7 +25,7 @@ const TeacherPortalMobile: React.FC = () => {
   // Event handler to perform action upon initial render
   useEffect(() => {
     async function confirmLoginHandler() {
-      const confirmed: boolean = await confirmLogin("teachers", params.username, params.token);
+      const confirmed: boolean = await confirmLogin("teachers", params.snowflake, params.token);
       if (confirmed) { setIsLoggedIn(true); return; }
       window.location.href = `/home`;
       return;
@@ -39,11 +39,12 @@ const TeacherPortalMobile: React.FC = () => {
       <>
         <h1>Mobile UI Code</h1>
         <h1>Teacher Portal</h1>
-        <h2>{params.username}</h2>
+        <h2>{params.name}</h2>
+        <h2>{params.snowflake}</h2>
         <h2>{params.token}</h2>
         <Button label="Sign-Out" icon="pi pi-sign-out" onClick={() => {
           window.location.href = `/home`
-        }} severity="warning"/>
+        }} severity="danger"/>
       </>
     );
   } else {

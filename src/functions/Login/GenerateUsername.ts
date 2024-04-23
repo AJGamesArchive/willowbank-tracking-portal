@@ -2,35 +2,27 @@
 import { UsernameGen } from "../../types/Login/UsernameGen";
 
 // Import functions
-import { retrieveDocumentIDs } from "../Global/RetrieveDocumentIDs";
+import { isUniqueUsernameName } from "../Validation/IsUniqueUsername";
 
 // Async function to generate a username based on a students first name and surname initial
 export async function generateUsername(firstName: string, surnameInitial: string): Promise<UsernameGen> {
-  // Retrieve an array of all existing usernames
-  const studentUsernames: string | string[] = await retrieveDocumentIDs("students");
-  if (typeof studentUsernames === "string") {
-    const error: UsernameGen = {
-      success: false,
-      name: "",
-    };
-    return Promise.resolve(error);
-  };
-
   // Generated a username and ensure it's unique - keeps generating usernames until it's get a unique username
   let counter: number = 1;
   let genUsername: string;
   while (true) {
-    genUsername = `${firstName[0]}${surnameInitial}${counter}`
-    let isUnique: boolean = true;
-    studentUsernames.forEach((existingUsername) => {
-      if (existingUsername === genUsername) {
-        counter++;
-        isUnique = false;
-      };
-    });
-    if (isUnique) {
-      break;
+    genUsername = `${firstName[0].toUpperCase()}${surnameInitial.toUpperCase()}${counter}`
+    let isUnique: boolean | string = await isUniqueUsernameName(genUsername);
+    if(typeof isUnique === "string") {
+      return Promise.resolve({
+        success: false,
+        name: "",
+      });
     };
+    if(!isUnique) {
+      counter++;
+      continue;
+    };
+    break;
   };
 
   // Return generated username

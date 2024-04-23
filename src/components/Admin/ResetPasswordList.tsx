@@ -1,5 +1,4 @@
 import './ResetPasswordList.css'
-import '../../functions/Global/GetResetRequests.ts'
 import React from 'react';
 import { ListBox } from 'primereact/listbox';
 import { PasswordRequest } from '../../types/Global/PasswordRequest.ts';
@@ -24,6 +23,7 @@ const ResetList : React.FC<IResetList> = ({requests}) => {
     const [passwordDisplayVisible, setPasswordDisplayVisible] = useState<boolean>(false);
     const [password, setPassword] = useState<string>("")
     const [account, setAccount] = useState<PasswordRequest>({
+        snowflake: "",
         username: "test",
         accountType: "",
         created: ""
@@ -33,7 +33,7 @@ const ResetList : React.FC<IResetList> = ({requests}) => {
     // from the request array and update the database
     // Returns void
     async function removeResetRequestHandler( account : PasswordRequest ) {    
-        const output = await removeResetRequest(account, true);
+        const output = await removeResetRequest(account, true, "");
         if (!output) {
             setPopupVisible(true)
         }
@@ -42,32 +42,31 @@ const ResetList : React.FC<IResetList> = ({requests}) => {
 
     async function resetPasswordHandler ( account : PasswordRequest )
     {
-        const newPassword = await resetPassword (account)
-        console.log(newPassword)
+        const newPassword = await resetPassword(account);
         if (newPassword === "") {
-            setPopupVisible(true)
+            setPopupVisible(true);
         }
         else
         {
-            setPassword(newPassword)
-            setPasswordDisplayVisible(true)
-            removeResetRequest(account, false);
-        }
-        return
-    }
+            setPassword(newPassword);
+            setPasswordDisplayVisible(true);
+            removeResetRequest(account, false, newPassword);
+        };
+        return;
+    };
     
     // Called by Dialog if admin chooses to reset the user's password
     const accept = async () => {
         await resetPasswordHandler(account);
         // update log with new password
-        return
-    }
+        return;
+    };
 
     // Called by Dialog if admin chooses to ignore the user's request
     const reject = async () => {
         await removeResetRequestHandler(account);
         return;
-    }
+    };
 
     return (
         <>

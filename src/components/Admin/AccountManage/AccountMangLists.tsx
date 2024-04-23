@@ -1,6 +1,4 @@
 // Import core functions
-// --import { useState } from 'react';
-
 import React, { useEffect, useState } from 'react';
 import { retrieveDocumentIDs } from '../../../functions/Global/RetrieveDocumentIDs';
 import { ListBox } from 'primereact/listbox';

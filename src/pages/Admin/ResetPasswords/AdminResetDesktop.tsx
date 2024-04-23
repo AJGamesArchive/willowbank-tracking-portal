@@ -10,12 +10,15 @@ import { useParams } from 'react-router';
 // Import CSS
 import './AdminResetDesktop.css'
 import './AdminResetGlobal.css'
-import '../../../components/Admin/AdminCard.tsx'
-import { getResetRequests } from '../../../functions/Global/GetResetRequests.ts';
+
+// Import types
 import { PasswordRequest } from '../../../types/Global/PasswordRequest.ts'
 
 // Import functions
 import { confirmLogin } from '../../../functions/Global/ConfirmLogin.ts';
+import { getResetRequests } from '../../../functions/Global/GetResetRequests.ts';
+
+// Import UI components
 import ResetList from '../../../components/Admin/ResetPasswordList.tsx';
 
 // React function to render the Admin Portal page for desktop devices
@@ -30,7 +33,7 @@ const AdminResetDesktop: React.FC = () => {
   // Event handler to perform action upon initial render
   useEffect(() => {
     async function confirmLoginHandler() {
-      const confirmed: boolean = await confirmLogin("admins", params.username, params.token);
+      const confirmed: boolean = await confirmLogin("admins", params.snowflake, params.token);
       if (confirmed) { setIsLoggedIn(true); return; }
       window.location.href = `/home`;
       var username: string[] = [];

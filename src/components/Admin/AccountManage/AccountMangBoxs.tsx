@@ -33,51 +33,34 @@ interface AccountListBoxProps {
     }, []);
 
     return (
-
-            <div>
-                {selectedUsername !== "" && (
-
-                    <div className="textBoxContainer">
-                        <h3> {selectedUsername} Account </h3>
-
-                        <label htmlFor="username:  ">Username</label>
-                        <InputText 
-                        id="username"
-                        value={userData?.firstName}
-                        />
-                        <label htmlFor="First Name:  ">FirstName</label>
-                        <InputText 
-                        id="FirstName"
-                        value={userData?.firstName}
-                        />
-                        <label htmlFor="Last Name Intl:  ">LastName</label>
-                        <InputText 
-                        id="LastName"
-                        value={userData?.lastName}
-                        />
-                        <label htmlFor="School:  ">School</label>
-                        <InputText 
-                        id="School"
-                        value={userData?.school}
-                        />
-                    </div>
-                    
-
-
-
-                )}
-            </div>
-
-            );
-
-
-
-
-
-
-
-
-
-}
+        <div>
+            {selectedUsername !== "" && (
+                <div className="textBoxContainer">
+                    <h3> {selectedUsername} Account </h3>
+                    <label htmlFor="username:  ">Username</label>
+                    <InputText 
+                    id="username"
+                    value={userData?.username}
+                    />
+                    <label htmlFor="First Name:  ">FirstName</label>
+                    <InputText 
+                    id="FirstName"
+                    value={userData?.firstName}
+                    />
+                    <label htmlFor="Last Name Intl:  ">LastName</label>
+                    <InputText 
+                    id="LastName"
+                    value={userData?.lastName}
+                    />
+                    <label htmlFor="School:  ">School</label>
+                    <InputText 
+                    id="School"
+                    value={userData?.school}
+                    />
+                </div>
+            )}
+        </div>
+    );
+};
 
 export default AccountManageBoxs;

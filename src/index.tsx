@@ -13,9 +13,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
 );
 
 //TODO -------- Alex Fix Your Shit! --------
-//TODO Update all user accounts (students, teachers, admins) in the database to use tokens as document names
-//TODO While updating student database details, setup the XP tracking data for all existing students and update the student account creation system to create this tracking data upon account creation.
+//TODO Update the activity IDing system to store what the next activity ID for a given program should be and then use and increment that ID each time an activity is created
 //TODO Update program creation code to add the new programs to all students and setup the corresponding skeleton tracking data
-//TODO Update all user account database connection code to use tokens as user document names
-//TODO Ensure all code is updated to work with these data changes
-//TODO Ensure all account username and program name unique validation code is updated to ensure these still need to be unique even though there not used as unique identifiers anymore
+//TODO Update program deletion code to delete the respective program from all students who have not made any progress in the program
+//TODO Using an example from the program and activity management CSS, see if you can apply the card hover effect to only specific CSS classes.

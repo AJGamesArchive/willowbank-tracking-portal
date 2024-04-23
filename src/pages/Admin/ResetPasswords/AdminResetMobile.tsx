@@ -10,7 +10,6 @@ import { useParams } from 'react-router';
 // Import CSS
 import './AdminResetDesktop.css'
 import './AdminResetGlobal.css'
-import '../../../components/Admin/AdminCard.css'
 
 // Import functions
 import { confirmLogin } from '../../../functions/Global/ConfirmLogin';
@@ -26,7 +25,7 @@ const AdminResetMobile: React.FC = () => {
   // Event handler to perform action upon initial render
   useEffect(() => {
     async function confirmLoginHandler() {
-      const confirmed: boolean = await confirmLogin("admins", params.username, params.token);
+      const confirmed: boolean = await confirmLogin("admins", params.snowflake, params.token);
       if (confirmed) { setIsLoggedIn(true); return; }
       window.location.href = `/home`;
       return;
@@ -42,8 +41,6 @@ const AdminResetMobile: React.FC = () => {
         <p>Please approve or decline the following password reset requests.</p>
         <br />
         
-        
-
         <br />
         <Button label="[DEV] Back" icon="pi pi-arrow-left" onClick={() => {
           window.location.href = `/home` //! DEV button to return to login page - remove later

@@ -117,13 +117,13 @@ const LoginForm: React.FC<LoginFormProps> = ({accountType, visible, setVisible, 
     // Send the user to their respective portal
     switch(accountType) {
       case ("Admin"): // Send to admin portal
-        window.location.href = `/adminportal/${loginState.username}/${loginState.token}`;
+        window.location.href = `/adminportal/${loginState.snowflake}/${loginState.token}/${loginState.name}`;
         break;
       case ("Teacher"): // Send to teacher portal
-        window.location.href = `/teacherportal/${loginState.username}/${loginState.token}`;
+        window.location.href = `/teacherportal/${loginState.snowflake}/${loginState.token}/${loginState.name}`;
         break;
       default: // Send to student portal
-        window.location.href = `/studenthome/${loginState.username}/${loginState.token}`;
+        window.location.href = `/studenthome/${loginState.snowflake}/${loginState.token}/${loginState.name}`;
         break;
     };
 
@@ -159,17 +159,19 @@ const LoginForm: React.FC<LoginFormProps> = ({accountType, visible, setVisible, 
         <Button label={`[DEV] ${accountType} Details`} icon="pi pi-exclamation-triangle" onClick={() => {
           switch (accountType) {
             case ("Teacher"):
-              console.log("Username: TestTeacher\nPassword: teacher1");
-              setUsername("TestTeacher");
+              console.log("Username: Test Teacher\nPassword: teacher1");
+              setUsername("Test Teacher");
               setPassword("teacher1");
               break;
             case ("Admin"):
-              console.log("Username: TestAdmin\nPassword: Admin");
-              setUsername("TestAdmin");
+              console.log("Username: Test Admin\nPassword: Admin");
+              setUsername("Test Admin");
               setPassword("Admin");
               break;
             default:
-              console.log("Make your own student account!!");
+              console.log("Username: Test School\nPassword: School");
+              setUsername("Test School");
+              setPassword("School");
               break;
           };
         }} raised severity="help"/>

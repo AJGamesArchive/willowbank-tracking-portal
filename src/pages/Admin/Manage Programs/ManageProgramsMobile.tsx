@@ -26,7 +26,7 @@ const ManageProgramsMobile: React.FC = () => {
   // Event handler to perform action upon initial render
   useEffect(() => {
     async function confirmLoginHandler() {
-      const confirmed: boolean = await confirmLogin("admins", params.username, params.token);
+      const confirmed: boolean = await confirmLogin("admins", params.snowflake, params.token);
       if (confirmed) { setIsLoggedIn(true); return; }
       window.location.href = `/home`;
       return;
@@ -38,7 +38,8 @@ const ManageProgramsMobile: React.FC = () => {
   if (isLoggedIn) {
     return (
       <>
-        <h1>Welcome {params.username}</h1>
+        <h1>Welcome {params.name}</h1>
+        <h1>{params.snowflake}</h1>
         <h1>{params.token}</h1>
         <Divider />
         <Button label="[DEV] Back" icon="pi pi-arrow-left" onClick={() => {

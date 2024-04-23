@@ -50,7 +50,7 @@ const ManageProgramsDesktop: React.FC = () => {
   // Event handler to perform action upon initial render
   useEffect(() => {
     async function confirmLoginHandler() {
-      const confirmed: boolean = await confirmLogin("admins", params.username, params.token);
+      const confirmed: boolean = await confirmLogin("admins", params.snowflake, params.token);
       if (confirmed) { setIsLoggedIn(true); return; }
       window.location.href = `/home`;
       return;
@@ -103,7 +103,7 @@ const ManageProgramsDesktop: React.FC = () => {
         />
         <div className='manage-programs-buttons'>
           <Button label="Back to Portal" icon="pi pi-arrow-left" onClick={() => {
-            window.location.href = `/adminportal/${params.username}/${params.token}`;
+            window.location.href = `/adminportal/${params.snowflake}/${params.token}/${params.name}`;
           }} raised severity="warning"/>
         </div>
         <Divider />

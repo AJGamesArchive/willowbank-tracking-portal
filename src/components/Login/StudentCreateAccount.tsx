@@ -17,7 +17,7 @@ import { createStudentAccount } from '../../functions/Login/CreateStudentAccount
 import { schoolSearcher } from '../../functions/Login/SchoolSearcher';
 import { generateUsername } from '../../functions/Login/GenerateUsername';
 import { generatePassword } from '../../functions/Login/GeneratePassword';
-import { retrieveDocumentIDs } from '../../functions/Global/RetrieveDocumentIDs';
+import { isUniqueUsernameName } from '../../functions/Validation/IsUniqueUsername';
 
 // Import types
 import { SchoolSearch } from '../../types/Login/SchoolSearch';
@@ -165,30 +165,23 @@ const StudentCreationForm: React.FC<StudentAccountCreationProps> = ({accountType
       unlock(); return;
     };
 
-    // Ensure a unique username has been entered and ensure the username contains no spaces
+    // Ensure a unique username has been entered
     if (username === "") {
       detailValidationError("warn", "Invalid Username", "You have not entered a username. Please enter a username and try again.");
       setUsernameStyle("p-invalid");
       unlock(); return;
     };
-    if (/\s/.test(username)) {
-      detailValidationError("warn", "Invalid Username", "Usernames must not contain a space. Please remove any spaces from your username.");
-      setUsernameStyle("p-invalid");
-      unlock(); return;
-    };
-    const allUsernames: string | string[] = await retrieveDocumentIDs("students");
-    if (typeof allUsernames === "string") {
+    const isUnique: boolean | string = await isUniqueUsernameName(username);
+    if (typeof isUnique === "string") {
       detailValidationError("error", "An Unexpected Error Occurred", "An unexpected error occurred while validating the username uniques. Please try again.");
       setUsernameStyle("p-invalid");
       unlock(); return;
     };
-    allUsernames.forEach((n) => {
-      if (n === username) {
-        detailValidationError("warn", "Invalid Username", "The username you have entered is not unique. Please enter a different username and try again.");
-        setUsernameStyle("p-invalid");
-        unlock(); return;
-      };
-    });
+    if(!isUnique) {
+      detailValidationError("warn", "Invalid Username", "The username you have entered is not unique. Please enter a different username and try again.");
+      setUsernameStyle("p-invalid");
+      unlock(); return;
+    };
 
     // Ensure that a password has been provided and ensure it matches the confirmation password
     if (password === "" || confirmPassword === "") {

@@ -1,5 +1,6 @@
 // Declaring global parameters
 export interface GlobalParams extends Record<string, string> {
-  username: string;
+  snowflake: string;
   token: string;
+  name: string;
 };

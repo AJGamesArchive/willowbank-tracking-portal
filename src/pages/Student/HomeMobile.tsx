@@ -1,4 +1,4 @@
-// Import core functions
+// Import core UI components
 import { useState, useEffect } from 'react';
 import { Divider } from 'primereact/divider';
 import { Button } from 'primereact/button';
@@ -11,9 +11,6 @@ import { useParams } from 'react-router';
 // Import CSS
 import './HomeMobile.css';
 import './HomeGlobal.css';
-
-// Import core UI components
-// ---
 
 // Import UI components
 import Badge from '../../components/StudentHome/Badge';
@@ -33,7 +30,7 @@ const HomeMobile: React.FC = () => {
   // Event handler to perform action upon initial render
   useEffect(() => {
     async function confirmLoginHandler() {
-      const confirmed: boolean = await confirmLogin("students", params.username, params.token);
+      const confirmed: boolean = await confirmLogin("students", params.snowflake, params.token);
       if (confirmed) { setIsLoggedIn(true); return; }
       window.location.href = `/home`;
       return;
@@ -45,7 +42,7 @@ const HomeMobile: React.FC = () => {
   if (isLoggedIn) {
     return (
       <>
-        <h1>Welcome (name)</h1>
+        <h1>Welcome {params.name}</h1>
         <h2>My Journey</h2>
         <Journey level={5} experience={10} badges={3}></Journey>
         <Divider />
