@@ -3,7 +3,6 @@ import { useState, useRef } from 'react';
 import { Card } from 'primereact/card';
 import { Button } from 'primereact/button';
 import { InputText } from 'primereact/inputtext';
-import { Toast } from 'primereact/toast';
 import { BlockUI } from 'primereact/blockui';
 import { Messages } from 'primereact/messages';
 import { Divider } from 'primereact/divider';
@@ -26,8 +25,6 @@ interface LoginFormProps {
   setForgotPasswordVisible: (value: boolean) => void;
 };
 
-//TODO Maybe remove the Toast component from this form as I'm pretty sure it's not being used?
-
 // React function to render the student login form
 const LoginForm: React.FC<LoginFormProps> = ({accountType, visible, setVisible, setOptionMenuVisible, setForgotPasswordVisible}) => {
   // Variables to store the required login credentials
@@ -47,9 +44,6 @@ const LoginForm: React.FC<LoginFormProps> = ({accountType, visible, setVisible, 
 
   // Variable to control blocking certain sections of the UI
   const [blockForm, setBlockForm] = useState<boolean>(false);
-
-  // Variables to control toast messages
-  const toast = useRef<Toast>(null);
 
   // Async function to handel the form submission
   async function loginHandler(): Promise<void> {
@@ -183,7 +177,6 @@ const LoginForm: React.FC<LoginFormProps> = ({accountType, visible, setVisible, 
           ! --------------------------------------------
         */
       }
-      <Toast ref={toast} />
       <Card title={`${accountType} Login`} subTitle='Enter your credentials:' style={{ display: visible ? 'block' : 'none' }}>
         <div className="p-inputgroup flex-1">
           <span className="p-float-label">

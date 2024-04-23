@@ -42,7 +42,6 @@ interface ViewActivitiesProps {
 };
 
 // React function to render the view activities components
-// TODO Work out why a firebase error occurs if this page is left open for to long - nothing seems to brake?
 const ViewActivities: React.FC<ViewActivitiesProps> = ({visible, setVisible, setProgramsVisible, programName, snowflake}) => {
   //? Default object(s)
   // Defining an empty activity object

@@ -156,11 +156,6 @@ const ForgotPassword: React.FC<ForgotPasswordFormProps> = ({ accountType, visibl
             <Button label="Submit" icon="pi pi-check" loading={loadingSubmit} onClick={passwordResetRequestHandler} raised severity="info"/>
           </div>
           <div className="pass-reset-form-button">
-            {
-              /*
-                TODO Maybe swap this field out for the Toggle Button component?
-              */
-            }
             <Button label={moreInfoButton} icon={moreInfoButtonIcon} loading={false} onClick={() => {
               setVisibleMoreInfo((visibleMoreInfo) ? false : true);
               setMoreInfoButton((visibleMoreInfo) ? "More Info" : "Hide Info");

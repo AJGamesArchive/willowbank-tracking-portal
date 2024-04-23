@@ -24,20 +24,6 @@ const ProgramCard: React.FC<ProgramCardProps> = ({snowflake, name, description, 
     <>
       <Card title={`${name}`} subTitle={`${description}`} className='card-props'>
         <br/><br/>
-        {/* <div className='program-cards-button'>
-          <Button label="View Activities" icon="pi pi-search" onClick={() => {onProgramClick(name)}} raised/>
-        </div>
-        <div className='program-cards-button'>
-          <Button severity='info' label="Edit Details" icon="pi pi-pencil" onClick={() => {onProgramClick(name)}} raised/>
-        </div>
-        <div className='program-cards-button'>
-          <Button severity='danger' label="Delete Program" icon="pi pi-trash" onClick={() => {onProgramClick(name)}} raised/>
-        </div> */}
-        {
-          /*
-            TODO Decide which button formate to use and remove the unneeded code
-          */
-        }
         <div className='program-card-button-colum'>
           <p>#{colour}</p>
           <div className='program-card-button-row'>
