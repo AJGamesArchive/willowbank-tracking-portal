@@ -1,3 +1,7 @@
 /* .p-card:hover{
     background-color: var(--hover-color);
 } */
+
+.teacher-menu-card:hover {
+    background-color: var(--hover-color);
+}

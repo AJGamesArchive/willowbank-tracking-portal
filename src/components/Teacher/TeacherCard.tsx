@@ -17,7 +17,7 @@ interface ITeacher {
 const TeacherCard: React.FC<ITeacher> = ({title, description, destinationPage}) => {
     return(
         <Card
-        className="student-badge"
+        className="teacher-menu-card"
         onClick={() => { window.location.href = destinationPage;}}>
         <h2>{title}</h2>
         <p>{description}</p>

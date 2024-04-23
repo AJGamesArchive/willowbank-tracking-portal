@@ -1,4 +1,4 @@
-import './AdminCard.css';
+import './AdminCard.css'
 import React from 'react';
 
 // Import primereact features
@@ -13,7 +13,7 @@ interface IAdmin {
 
 const AdminCard : React.FC<IAdmin> = ({title, description, destinationPage}) => {
     return <Card 
-        className="student-badge" 
+        className="admin-menu-card"
         onClick={() => { window.location.href = destinationPage;}}>
         <h2>{title}</h2>
         <p>{description}</p>
