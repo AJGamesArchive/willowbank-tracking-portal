@@ -10,13 +10,8 @@ import { useParams } from 'react-router';
 // Import CSS
 import './AdminResetDesktop.css'
 import './AdminResetGlobal.css'
-
-// Import types
-import { PasswordRequest } from '../../../types/Global/PasswordRequest.ts'
-
 // Import functions
 import { confirmLogin } from '../../../functions/Global/ConfirmLogin.ts';
-import { getResetRequests } from '../../../functions/Global/GetResetRequests.ts';
 
 // Import UI components
 import ResetList from '../../../components/Admin/ResetPasswordList.tsx';
@@ -25,7 +20,6 @@ import ResetList from '../../../components/Admin/ResetPasswordList.tsx';
 const AdminResetDesktop: React.FC = () => {
   // Setting up global params on this page
   const params = useParams<GlobalParams>();
-  const [request, setRequests] = useState<PasswordRequest[]>([]);
 
   // Variable to force confirmation of the account login state
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
@@ -36,24 +30,11 @@ const AdminResetDesktop: React.FC = () => {
       const confirmed: boolean = await confirmLogin("admins", params.snowflake, params.token);
       if (confirmed) { setIsLoggedIn(true); return; }
       window.location.href = `/home`;
-      var username: string[] = [];
-      request.forEach(element => { username.push(element.username); });
       return;
     };
     confirmLoginHandler();
-    aGetRequests();
   }, []); // Emptying process array to ensure handler only runs on initial render
 
-  async function aGetRequests ()
-  {
-    const requestsArray = await getResetRequests();
-    if ( typeof requestsArray === "string")
-    {
-      return;
-    }
-    setRequests(requestsArray)
-    return;
-  }
   // Return JSX based on login state
   if (isLoggedIn) {
     return (
@@ -61,7 +42,7 @@ const AdminResetDesktop: React.FC = () => {
         <h1>Reset student's password</h1>
         <p>Please approve or ignore the following password reset requests.</p>
         <br />
-        <ResetList requests={request}/>
+        <ResetList/>
         <br />
         <Button label="[DEV] Back" icon="pi pi-arrow-left" onClick={() => {
           window.location.href = `/home` //! DEV button to return to login page - remove later
