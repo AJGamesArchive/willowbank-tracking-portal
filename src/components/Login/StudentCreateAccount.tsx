@@ -29,10 +29,11 @@ interface StudentAccountCreationProps {
   visible: boolean;
   setVisible: (value: boolean) => void;
   setOptionMenuVisible: (value: boolean) => void;
+  userPOV: 'student' | 'admin';
 };
 
 // React function to render the student login form
-const StudentCreationForm: React.FC<StudentAccountCreationProps> = ({accountType, visible, setVisible, setOptionMenuVisible}) => {
+const StudentCreationForm: React.FC<StudentAccountCreationProps> = ({accountType, visible, setVisible, setOptionMenuVisible, userPOV}) => {
   // Variables to store the required login credentials
   const [schoolCode, setSchoolCode] = useState<any>(null);
   const [schoolName, setSchoolName] = useState<string>("");
@@ -58,7 +59,9 @@ const StudentCreationForm: React.FC<StudentAccountCreationProps> = ({accountType
   const [passwordStyle, setPasswordStyle] = useState<string>("");
   const [confirmPasswordStyle, setConfirmPasswordStyle] = useState<string>("");
 
-  // Variable to store password generated message
+  const [personPossession] = useState<string>(userPOV === 'student' ? 'your' : `the student's`)
+  const [personPOV] = useState<string>(userPOV === 'student' ? 'you' : 'the student')
+  // Variable to store password generated messag`
   const msg = useRef<Messages>(null);
 
   // Variable to control blocking certain sections of the UI
@@ -146,7 +149,7 @@ const StudentCreationForm: React.FC<StudentAccountCreationProps> = ({accountType
 
     // Ensure a valid school has been detected and assigned
     if (schoolName === "") {
-      detailValidationError("warn", "No School Detected", "Ensure you detect your school by searching with a school code before creating your account.");
+      detailValidationError("warn", "No School Detected", `Ensure you detect your school by searching with a school code before creating ${personPossession} account.`);
       setSchoolNameStyle("p-invalid");
       unlock(); return;
     };
@@ -208,7 +211,7 @@ const StudentCreationForm: React.FC<StudentAccountCreationProps> = ({accountType
       toast.current?.show({
         severity: `success`,
         summary: `Account Creation Successful`,
-        detail: `The account '${username}' was created successfully. You should now be able to login from the student login page.`,
+        detail: `The account '${username}' was created successfully. '${personPOV}' should now be able to login from the student login page.`,
         closeIcon: 'pi pi-times',
         life: 7000,
       });
@@ -260,7 +263,7 @@ const StudentCreationForm: React.FC<StudentAccountCreationProps> = ({accountType
       toast.current?.show({
         severity: `success`,
         summary: `School Name Retrieved`,
-        detail: `The given school code was valid and '${results.schoolName}' has been detected as your school.`,
+        detail: `The given school code was valid and '${results.schoolName}' has been detected as ${personPossession} school.`,
         closeIcon: 'pi pi-times',
         life: 7000,
       });
@@ -279,7 +282,7 @@ const StudentCreationForm: React.FC<StudentAccountCreationProps> = ({accountType
         toast.current?.show({
           severity: `warn`,
           summary: `Missing Details`,
-          detail: `Please ensure you enter your first name and surname initial before trying to generate a username.`,
+          detail: `Please ensure you enter ${personPossession} first name and surname initial before trying to generate a username.`,
           closeIcon: 'pi pi-times',
           life: 7000,
         });
@@ -331,7 +334,7 @@ const StudentCreationForm: React.FC<StudentAccountCreationProps> = ({accountType
         toast.current?.show({
           severity: `warn`,
           summary: `Missing Details`,
-          detail: `Please ensure you enter your first name and surname initial before trying to generate a password.`,
+          detail: `Please ensure you enter ${personPossession} first name and surname initial before trying to generate a password.`,
           closeIcon: 'pi pi-times',
           life: 7000,
         });
@@ -388,7 +391,7 @@ const StudentCreationForm: React.FC<StudentAccountCreationProps> = ({accountType
   return (
     <BlockUI blocked={blockForm}>
     <Toast ref={toast} />
-    <Card title={`Create New ${accountType} Account`} subTitle='Enter your details:' style={{ display: visible ? 'block' : 'none' }}>
+    <Card title={`Create New ${accountType} Account`} subTitle={`Enter ${personPossession} details:`} style={{ display: visible ? 'block' : 'none' }}>
       <div className="p-inputgroup flex-1">
         <span className="p-float-label">
           <InputMask 
@@ -411,7 +414,7 @@ const StudentCreationForm: React.FC<StudentAccountCreationProps> = ({accountType
         </span>
       </div>
       <small id="school-code-help" className='creation-form-help-text'>
-        Enter the 6-digit code that your school or instructor has provided.
+        Enter the 6-digit code that {personPossession} school or instructor has provided.
       </small>
 
       <div className="student-creation-form-field">
@@ -436,7 +439,7 @@ const StudentCreationForm: React.FC<StudentAccountCreationProps> = ({accountType
           </span>
         </div>
         <small id="school-name-help" className='creation-form-help-text'>
-          Your schools name will be filled in automatically.
+          {personPossession[0].toUpperCase()}{personPossession.substring(1)} schools name will be filled in automatically.
         </small>
       </div>
 
@@ -455,7 +458,7 @@ const StudentCreationForm: React.FC<StudentAccountCreationProps> = ({accountType
           </span>
         </div>
         <small id="first-name-help" className='creation-form-help-text'>
-          Enter just your first name.
+          Enter just {personPossession} first name.
         </small>
       </div>
 
@@ -474,7 +477,7 @@ const StudentCreationForm: React.FC<StudentAccountCreationProps> = ({accountType
           </span>
         </div>
         <small id="surname-help" className='creation-form-help-text'>
-          Enter just the first letter of your surname.
+          Enter just the first letter of {personPossession} surname.
         </small>
       </div>
 
@@ -499,7 +502,7 @@ const StudentCreationForm: React.FC<StudentAccountCreationProps> = ({accountType
           </span>
         </div>
         <small id="username-help" className='creation-form-help-text'>
-          Create your own username or have one generated based on your name.
+          Create {personPossession} username or have one generated based on {personPossession} name.
         </small>
       </div>
 
@@ -530,7 +533,7 @@ const StudentCreationForm: React.FC<StudentAccountCreationProps> = ({accountType
           </span>
         </div>
         <small id="password-help" className='creation-form-help-text'>
-          Create your own memorable password or have one generated.
+          Create {personPossession} password or have one generated.
         </small>
       </div>
 
@@ -557,7 +560,7 @@ const StudentCreationForm: React.FC<StudentAccountCreationProps> = ({accountType
           </span>
         </div>
         <small id="confirm-password-help" className='creation-form-help-text'>
-          Re-enter your password to confirm it's correct.
+          Re-enter {personPossession} password to confirm it's correct.
         </small>
       </div>
 

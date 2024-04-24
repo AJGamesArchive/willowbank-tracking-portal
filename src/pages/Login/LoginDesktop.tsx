@@ -52,6 +52,7 @@ const LoginDesktop: React.FC = () => {
         visible={visibleCreationForm}
         setVisible={setVisibleCreationForm}
         setOptionMenuVisible={setVisibleOptionsMenu}
+        userPOV='student'
       />
     </>
   );

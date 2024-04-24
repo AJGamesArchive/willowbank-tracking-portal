@@ -38,6 +38,7 @@ const AdminCreateStudentDesktop: React.FC = () => {
               visible={true} 
               setVisible={() => {}} 
               setOptionMenuVisible={() => {}}
+              userPOV='admin'
             />
         </>
       );
