@@ -67,8 +67,16 @@ const AdminAccMangDesktop: React.FC = () => {
 
         <h1>Create a new account</h1>
         <div>
-          <CreateStudentButton AccountType='student' />
-          <CreateStudentButton AccountType='teacher' />
+          <CreateStudentButton 
+            AccountType='student' 
+            Snowflake={params.snowflake || ''}
+            Name={params.name || ''}
+            Token={params.token || ''} />
+          <CreateStudentButton 
+            AccountType='teacher'
+            Snowflake={params.snowflake || ''}
+            Name={params.name || ''}
+            Token={params.token || ''} />
         </div>
         <div></div>
         
