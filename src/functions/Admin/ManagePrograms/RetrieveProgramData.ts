@@ -21,6 +21,8 @@ export async function retrieveProgramData(): Promise<string | ProgramData[]> {
       name: docData.name,
       description: docData.description,
       colour: docData.colour,
+      badgeShape: docData.badgeShape,
+      badgeTextColor: docData.badgeTextColor,
     };
     data.push(programData);
   });

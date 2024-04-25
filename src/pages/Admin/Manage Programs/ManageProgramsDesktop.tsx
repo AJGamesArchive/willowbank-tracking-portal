@@ -19,6 +19,7 @@ import { Divider } from 'primereact/divider';
 import ViewProgress from '../../../components/Admin/Manage Programs/ViewPrograms';
 import NewProgramForm from '../../../components/Admin/Manage Programs/NewProgramForm';
 import ViewActivities from '../../../components/Admin/Manage Programs/ViewActivities';
+import { ProgramData } from '../../../types/Admin/ProgramData';
 
 // React function to render the Admin Portal page for desktop devices
 const ManageProgramsDesktop: React.FC = () => {
@@ -28,9 +29,14 @@ const ManageProgramsDesktop: React.FC = () => {
   // Variables to add program data between the view programs page and program details form
   const [formHeader, setFormHeader] = useState<string>("");
   const [formSubheader, setFormSubheader] = useState<string>("");
-  const [existingName, setExistingName] = useState<string>("");
-  const [existingDescription, setExistingDescription] = useState<string>("");
-  const [existingColour, setExistingColour] = useState<string>("");
+  const [existingData, setExistingData] = useState<ProgramData>({
+    snowflake: '',
+    name: '',
+    description: '',
+    colour: '',
+    badgeShape: '',
+    badgeTextColor: '',
+  });
   const [programSnowflake, setProgramSnowflake] = useState<string>("");
   const [isNew, setIsNew] = useState<boolean>(true);
 
@@ -70,10 +76,7 @@ const ManageProgramsDesktop: React.FC = () => {
           setProgramAdded={setProgramAdded}
           formHeader={formHeader}
           formSubheader={formSubheader}
-          existingName={existingName}
-          existingDescription={existingDescription}
-          existingColour={existingColour}
-          programSnowflake={programSnowflake}
+          existingData={existingData}
           isNew={isNew}
         />
         <ViewProgress
@@ -89,9 +92,7 @@ const ManageProgramsDesktop: React.FC = () => {
           setSelectedProgramSnowflake={setProgramSnowflake}
           setFormHeader={setFormHeader}
           setFormSubheader={setFormSubheader}
-          setExistingName={setExistingName}
-          setExistingDescription={setExistingDescription}
-          setExistingColour={setExistingColour}
+          setExistingData={setExistingData}
           setIsNew={setIsNew}
         />
         <ViewActivities

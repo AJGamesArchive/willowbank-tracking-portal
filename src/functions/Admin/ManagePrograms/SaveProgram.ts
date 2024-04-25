@@ -4,7 +4,7 @@ import { snowflake } from "../../../classes/Snowflake";
 import { XPStudentAccountDetails } from "../../../types/Global/UserAccountDetails";
 
 // Async function to add a new program to the system
-export async function saveProgram(programSnowflake: string, programName: string, programDescription: string, programColour: string, isNew: boolean): Promise<boolean> {
+export async function saveProgram(programSnowflake: string, programName: string, programDescription: string, programColour: string, programShape: string, programTextColor: string, isNew: boolean): Promise<boolean> {
   try {
     if(isNew) {
       // Create the new program document
@@ -16,6 +16,8 @@ export async function saveProgram(programSnowflake: string, programName: string,
         colour: programColour,
         totalActivities: 0,
         activities: [],
+        badgeShape: programShape,
+        badgeTextColor: programTextColor,
       });
 
       // Define a blank XP tracking object for the new program
@@ -46,6 +48,8 @@ export async function saveProgram(programSnowflake: string, programName: string,
         name: programName,
         description: programDescription,
         colour: programColour,
+        badgeShape: programShape,
+        badgeTextColor: programTextColor,
       });
     };
   } catch (e) {

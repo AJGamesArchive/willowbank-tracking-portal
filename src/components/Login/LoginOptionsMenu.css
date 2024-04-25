@@ -6,3 +6,130 @@
   left: 50%;
   transform: translateX(-50%);
 }
+
+/* .badge-circle {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color:blue
+}
+
+.badge-square {
+  width: 50px;
+  height: 50px;
+  border-radius: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color:crimson
+}
+
+.badge-triangle {
+  width: 0;
+  height: 0;
+  border-left: 25px solid transparent;
+  border-right: 25px solid transparent;
+  border-bottom: 50px solid gold;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.badge-triangle .level {
+  color: white;
+  font-size: 20px;
+}
+
+.badge-diamond {
+  width: 50px;
+  height: 50px;
+  background-color: green;
+  transform: rotate(45deg);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.badge-diamond .level {
+  transform: rotate(-45deg);
+  color: white;
+  font-size: 20px;
+}
+
+.badge-star {
+  width: 0;
+  height: 0;
+  border-left: 25px solid transparent;
+  border-right: 25px solid transparent;
+  border-bottom: 50px solid darkcyan;
+  position: relative;
+  margin-right: 20px;
+}
+
+.badge-star:before {
+  content: '';
+  position: absolute;
+  top: 16px;
+  left: -25px;
+  width: 0;
+  height: 0;
+  border-left: 25px solid transparent;
+  border-right: 25px solid transparent;
+  border-bottom: 50px solid darkcyan;
+  transform: rotate(180deg);
+}
+
+.badge-star .level {
+  position: absolute;
+  color: white;
+  font-size: 20px;
+}
+
+.badge-rectangle {
+  width: 75px;
+  height: 50px;
+  border-radius: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: orange
+}
+
+.badge-parallelogram {
+  width: 75px;
+  height: 50px;
+  background-color: purple;
+  transform: skewX(-20deg);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.badge-parallelogram .level {
+  transform: skewX(20deg);
+  color: white;
+  font-size: 20px;
+}
+
+.badge-o-circle {
+  width: 75px;
+  height: 50px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color:pink;
+}
+
+.badge-o-circle .level {
+  color: black;
+  font-size: 20px;
+}
+
+.level {
+  color: white;
+  font-size: 20px;
+} */

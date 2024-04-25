@@ -33,14 +33,12 @@ interface ViewProgressProps {
   setSelectedProgramSnowflake: (value: string) => void;
   setFormHeader: (value: string) => void;
   setFormSubheader: (value: string) => void;
-  setExistingName: (value: string) => void;
-  setExistingDescription: (value: string) => void;
-  setExistingColour: (value: string) => void;
+  setExistingData: (value: ProgramData) => void;
   setIsNew: (value: boolean) => void;
 };
 
 // React function to render the login page for mobile devices
-const ViewProgress: React.FC<ViewProgressProps> = ({visible, setVisible, setVisibleForm, programRerender, setProgramRerender, programAdded, setProgramAdded, setVisibleActivities, setSelectedProgram, setSelectedProgramSnowflake, setFormHeader, setFormSubheader, setExistingName, setExistingDescription, setExistingColour, setIsNew}) => {
+const ViewProgress: React.FC<ViewProgressProps> = ({visible, setVisible, setVisibleForm, programRerender, setProgramRerender, programAdded, setProgramAdded, setVisibleActivities, setSelectedProgram, setSelectedProgramSnowflake, setFormHeader, setFormSubheader, setExistingData, setIsNew}) => {
   // State variable to store the program data as an array
   const [programData, setProgramData] = useState<ProgramData[]>([]);
 
@@ -142,9 +140,14 @@ const ViewProgress: React.FC<ViewProgressProps> = ({visible, setVisible, setVisi
   const openNewProgramForm = () => {
     setFormHeader('Add New Program');
     setFormSubheader('Enter details for the new program:');
-    setExistingName('');
-    setExistingDescription('');
-    setExistingColour('');
+    setExistingData({
+      snowflake: '',
+      name: '',
+      description: '',
+      colour: '',
+      badgeShape: '',
+      badgeTextColor: '',
+    });
     setSelectedProgramSnowflake('----------');
     setIsNew(true);
     setVisible(false);
@@ -152,13 +155,10 @@ const ViewProgress: React.FC<ViewProgressProps> = ({visible, setVisible, setVisi
   };
 
   // Function to handel opening the program details form for an existing program
-  const openExistingProgramForm = (name: string, description: string, colour: string, snowflake: string) => {
+  const openExistingProgramForm = (data: ProgramData) => {
     setFormHeader('Update Program');
-    setFormSubheader(`Update details for the program '${name}':`);
-    setExistingName(name);
-    setExistingDescription(description);
-    setExistingColour(colour);
-    setSelectedProgramSnowflake(snowflake);
+    setFormSubheader(`Update details for the program '${data.name}':`);
+    setExistingData(data);
     setIsNew(false);
     setVisible(false);
     setVisibleForm(true);
@@ -220,10 +220,7 @@ const ViewProgress: React.FC<ViewProgressProps> = ({visible, setVisible, setVisi
         {programData.map((item, index) => (
           <div className='grid-item' key={index}>
             <ProgramCard
-              snowflake={item.snowflake}
-              name={item.name}
-              description={item.description}
-              colour={item.colour}
+              data={item}
               onProgramClick={onProgramCardClick}
               onEditClick={openExistingProgramForm}
               onDeleteClick={onDeleteClick}
