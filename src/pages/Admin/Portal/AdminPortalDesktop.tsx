@@ -17,6 +17,8 @@ import { Divider } from 'primereact/divider';
 
 // Importing UI components
 import AdminCard from '../../../components/Admin/AdminCard';
+import Banner from "../../../components/Admin/AdminPortal/Banner";
+import MenuOption from '../../../components/Admin/AdminPortal/AdminMenuOption';
 
 // React function to render the Admin Portal page for desktop devices
 const AdminPortalDesktop: React.FC = () => {
@@ -41,11 +43,39 @@ const AdminPortalDesktop: React.FC = () => {
   if (isLoggedIn) {
     return (
       <>
-        <h1>Welcome {params.name}</h1>
-        <h2>{params.snowflake}</h2>
-        <h2>{params.token}</h2>
+        <Banner 
+          backgroundimage='https://marketplace.canva.com/EAENvp21inc/1/0/1600w/canva-simple-work-linkedin-banner-qt_TMRJF4m0.jpg' 
+          text={`WELCOME ${params.name?.toUpperCase()}`} 
+        />
         <p>Please select from the following options.</p>
         <br />
+
+        <ul className="list">
+          <li className="listItem">
+            <MenuOption 
+              imageSRC='https://cdn-icons-png.flaticon.com/256/747/747305.png'
+              imageAltText='Key'
+              destinationPage={`/adminportal/resetpassword/${params.snowflake}/${params.token}/${params.name}`}
+              title='Reset password'
+            />
+          </li>
+          <li className="listItem">
+            <MenuOption 
+            imageSRC='https://cdn-icons-png.flaticon.com/256/747/747305.png'
+            imageAltText='Padlock image'
+            destinationPage={`/adminportal/resetpassword/${params.snowflake}/${params.token}/${params.name}`}
+            title='Reset password'
+            />
+          </li>
+          <li className='listItem'>
+          <MenuOption 
+            imageSRC='https://cdn-icons-png.flaticon.com/256/747/747305.png'
+            imageAltText='Padlock image'
+            destinationPage={`/adminportal/resetpassword/${params.snowflake}/${params.token}/${params.name}`}
+            title='Reset password' />
+          </li>
+        </ul>
+
         <AdminCard title="View password request resets" 
         description="Reset passwords for teachers and students."
         destinationPage={`/adminportal/resetpassword/${params.snowflake}/${params.token}/${params.name}`} />
