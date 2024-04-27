@@ -20,10 +20,9 @@ const Header : React.FC<IHeader> = ({altText, src}) => {
 
 const MenuOption : React.FC<IMenu> = ({imageSRC, imageAltText, destinationPage, title}) => {
     return <Card className="menuOption"
-        header={<Header 
-            altText={imageAltText} 
-            src={imageSRC}
-        />}
+        header={
+            <Header altText={imageAltText} src={imageSRC} />
+        }
         title={title}
         onClick={() => {window.location.href = destinationPage;}}
     />

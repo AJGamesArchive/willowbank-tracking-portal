@@ -1,19 +1,27 @@
 .list { 
     list-style-type: none;
+    margin:auto;
     padding: 0;
     display: flex;
-    width: 100%
+    width: 95%;
+    text-align:center
+
 }
 
 .listItem { 
     display: inline;
-    text-align: left;
-    max-width: 30%;
-    max-height: max-content;
-    margin: 1%
+    text-align: center;
+    margin:auto;
+    padding: 0;
+    max-width: min-content;
 }
 
 .listItem:hover {
-    filter: drop-shadow(0 0 0.75rem white);
+    filter:brightness(150%);
     transition: 0.2s;  
+}
+
+.footer {
+    background-color: #264A5E;
+    margin-top: 3%
 }

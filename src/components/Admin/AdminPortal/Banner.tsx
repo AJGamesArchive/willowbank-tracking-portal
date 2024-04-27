@@ -8,8 +8,15 @@ interface IBanner {
 
 const Banner : React.FC<IBanner> = ({backgroundimage, text}) => {
     return <div className="banner">
-        <img src={backgroundimage} alt="Banner image"/>
-        <div className="text"><h2>{text}</h2></div>
+        <img 
+            className='bannerimage'
+            src={backgroundimage} 
+            alt="Banner image"/>
+        <div 
+            className="text"
+        >
+            <h2>{text}</h2>
+        </div>
     </div>
 }
 

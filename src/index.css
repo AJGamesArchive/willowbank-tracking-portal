@@ -21,6 +21,7 @@ a {
   color: #64fffc;
   text-decoration: inherit;
 }
+
 a:hover {
   color: #9ee8e7;
 }
@@ -31,6 +32,16 @@ body {
   place-items: center;
   min-width: 320px;
   min-height: 100vh;
+}
+
+:root .banner {
+  background-color: var(--primary-colour);
+  position: relative;
+  width: 100vw;
+  display: flex;
+  height: auto;
+  margin: 0;
+  padding: 0;
 }
 
 h1 {

@@ -1,9 +1,13 @@
 .image {
-    width: 30%;
     height: auto;
     min-width: 225px;
     min-height: auto;
-    max-width: fit-content;
-    max-height: fit-content;
     margin: 1%
+}
+
+.menuOption {
+    max-width: 40%;
+    height: auto;
+    min-width: 225px;
+    min-height: auto;
 }

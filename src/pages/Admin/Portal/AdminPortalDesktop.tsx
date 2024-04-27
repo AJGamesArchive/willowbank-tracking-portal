@@ -16,7 +16,6 @@ import { confirmLogin } from '../../../functions/Global/ConfirmLogin';
 import { Divider } from 'primereact/divider';
 
 // Importing UI components
-import AdminCard from '../../../components/Admin/AdminCard';
 import Banner from "../../../components/Admin/AdminPortal/Banner";
 import MenuOption from '../../../components/Admin/AdminPortal/AdminMenuOption';
 
@@ -42,57 +41,59 @@ const AdminPortalDesktop: React.FC = () => {
   // Return JSX based on login state
   if (isLoggedIn) {
     return (
-      <>
-        <Banner 
+      <div className='allContent'>
+        <Banner
           backgroundimage='https://marketplace.canva.com/EAENvp21inc/1/0/1600w/canva-simple-work-linkedin-banner-qt_TMRJF4m0.jpg' 
           text={`WELCOME ${params.name?.toUpperCase()}`} 
         />
-        <p>Please select from the following options.</p>
-        <br />
 
-        <ul className="list">
-          <li className="listItem">
+        <div className="mainContent">
+          <p>Please select from the following options.</p>
+          <br />
+          <ul className="list">
+            <li className="listItem">
+              <MenuOption 
+                imageSRC='https://cdn-icons-png.flaticon.com/256/747/747305.png'
+                imageAltText='Key'
+                destinationPage={`/adminportal/resetpassword/${params.snowflake}/${params.token}/${params.name}`}
+                title='Reset password'
+              />
+            </li>
+            <li className="listItem">
+              <MenuOption 
+                imageSRC='https://cdn-icons-png.flaticon.com/256/747/747305.png'
+                imageAltText='Padlock image'
+                destinationPage={`/adminportal/manageprograms/${params.snowflake}/${params.token}/${params.name}`}
+                title='Program management'
+              />
+            </li>
+            <li className='listItem'>
             <MenuOption 
               imageSRC='https://cdn-icons-png.flaticon.com/256/747/747305.png'
-              imageAltText='Key'
-              destinationPage={`/adminportal/resetpassword/${params.snowflake}/${params.token}/${params.name}`}
-              title='Reset password'
-            />
-          </li>
-          <li className="listItem">
+              imageAltText='Padlock image'
+              destinationPage={`/AccManagement/${params.snowflake}/${params.token}/${params.name}`}
+              title="Account management" />
+            </li>
+            <li className='listItem'>
             <MenuOption 
-            imageSRC='https://cdn-icons-png.flaticon.com/256/747/747305.png'
-            imageAltText='Padlock image'
-            destinationPage={`/adminportal/resetpassword/${params.snowflake}/${params.token}/${params.name}`}
-            title='Reset password'
-            />
-          </li>
-          <li className='listItem'>
-          <MenuOption 
-            imageSRC='https://cdn-icons-png.flaticon.com/256/747/747305.png'
-            imageAltText='Padlock image'
-            destinationPage={`/adminportal/resetpassword/${params.snowflake}/${params.token}/${params.name}`}
-            title='Reset password' />
-          </li>
-        </ul>
-
-        <AdminCard title="View password request resets" 
-        description="Reset passwords for teachers and students."
-        destinationPage={`/adminportal/resetpassword/${params.snowflake}/${params.token}/${params.name}`} />
-        <AdminCard title="Manage Programs & Activities" 
-        description="Add, Edit, Remove, and update programs and program activities."
-        destinationPage={`/adminportal/manageprograms/${params.snowflake}/${params.token}/${params.name}`} />
-        <AdminCard title="Manage accounts"
-        description="Create, modify or delete accounts. Modify a student's progress."
-        destinationPage={`/AccManagement/${params.snowflake}/${params.token}/${params.name}`}/> 
-        <AdminCard title="Manage schools"
-        description="Create, modify or delete schools."
-        destinationPage=""/>
+              imageSRC='https://cdn-icons-png.flaticon.com/256/747/747305.png'
+              imageAltText='Padlock image'
+              destinationPage={`/adminportal/resetpassword/${params.snowflake}/${params.token}/${params.name}`}
+              title="School management" />
+            </li>
+          </ul>
+        </div>
+      
         <Divider />
         <Button label="Sign-Out" icon="pi pi-sign-out" onClick={() => {
           window.location.href = `/home`
         }} severity="danger"/>
-      </>
+
+        <footer className="footer">
+          <p>Willowbank Tracking Portal v0.0.1</p>
+          <p>Group 1</p>
+        </footer>
+      </div>
     );
   } else {
     return (
