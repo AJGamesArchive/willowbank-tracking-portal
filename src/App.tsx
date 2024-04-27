@@ -28,6 +28,8 @@ import AdminAccMangDesktop from './pages/Admin/Manage Accounts/AdminAccMangDeskt
 import AdminAccMangMobile from './pages/Admin/Manage Accounts/AdminAccMangMobile';
 import ManageProgramsDesktop from './pages/Admin/Manage Programs/ManageProgramsDesktop';
 import ManageProgramsMobile from './pages/Admin/Manage Programs/ManageProgramsMobile';
+import AdminCreateStudentDesktop from './pages/Admin/Create Accounts/AdminCreateStudentDesktop';
+import AdminCreateStudentMobile from './pages/Admin/Create Accounts/AdminCreateStudentMobile';
 
 // Teacher Portal
 import TeacherPortalDesktop from './pages/Teacher/TeacherPortalDesktop';
@@ -50,6 +52,7 @@ const App: React.FC = () => {
         <Route path="/adminportal/manageprograms/:snowflake/:token/:name" Component={ManageProgramsMobile}/>
         <Route path="/teacherportal/:snowflake/:token/:name" Component={TeacherPortalMobile} />
         <Route path="/AccManagement/:snowflake/:token/:name" Component={AdminAccMangMobile} />
+        <Route path="/AddStudent/:snowflake/:token/:name" Component={AdminCreateStudentMobile}/>
       </Routes>
     );
   } else if (windowSize.width >= 768 && windowSize.width <= 1024) {
@@ -65,6 +68,7 @@ const App: React.FC = () => {
         <Route path="/adminportal/manageprograms/:snowflake/:token/:name" Component={ManageProgramsDesktop}/>
         <Route path="/teacherportal/:snowflake/:token/:name" Component={TeacherPortalDesktop} />
         <Route path="/AccManagement/:snowflake/:token/:name" Component={AdminAccMangDesktop} />
+        <Route path="/AddStudent/:snowflake/:token/:name" Component={AdminCreateStudentDesktop}/>
       </Routes>
     );
   } else {
@@ -79,6 +83,7 @@ const App: React.FC = () => {
         <Route path="/adminportal/manageprograms/:snowflake/:token/:name" Component={ManageProgramsDesktop}/>
         <Route path="/teacherportal/:snowflake/:token/:name" Component={TeacherPortalDesktop} />
         <Route path="/AccManagement/:snowflake/:token/:name" Component={AdminAccMangDesktop} />
+        <Route path="/AddStudent/:snowflake/:token/:name" Component={AdminCreateStudentDesktop}/>
       </Routes>
     );
   };

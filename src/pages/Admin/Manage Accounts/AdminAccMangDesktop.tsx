@@ -7,6 +7,7 @@ import { ProgressSpinner } from 'primereact/progressspinner';
 // Importing UI components
 import AccountListBox from '../../../components/Admin/AccountManage/AccountMangLists';
 import AccountManageBoxs from '../../../components/Admin/AccountManage/AccountMangBoxs';
+import CreateStudentButton from '../../../components/Admin/AccountManage/NavCreateAccount';
 
 // Import global parameters
 import { GlobalParams } from '../../../interfaces/GlobalParams';
@@ -18,6 +19,7 @@ import './AdminAccMangGlobal.css'
 
 // Import functions
 import { confirmLogin } from '../../../functions/Global/ConfirmLogin';
+import { Divider } from 'primereact/divider';
 
 // React function to render the Account Manager page for desktop devices
 const AdminAccMangDesktop: React.FC = () => {
@@ -46,6 +48,7 @@ const AdminAccMangDesktop: React.FC = () => {
     return (
       <>
         <div>
+          <h1>Existing accounts</h1>
           <AccountListBox 
             selectedUsername={selectedUsername}
             setSelectedUsername={setSelectedUsername}
@@ -59,11 +62,30 @@ const AdminAccMangDesktop: React.FC = () => {
             setSelectedCategory={setSelectedCategory}
           />
         </div>
+
+        <Divider />
+
+        <h1>Create a new account</h1>
+        <div>
+          <CreateStudentButton 
+            AccountType='student' 
+            Snowflake={params.snowflake || ''}
+            Name={params.name || ''}
+            Token={params.token || ''} />
+          <CreateStudentButton 
+            AccountType='teacher'
+            Snowflake={params.snowflake || ''}
+            Name={params.name || ''}
+            Token={params.token || ''} />
+        </div>
+        <div></div>
+        
         <div className='buttonContainer'>
           <Button label="Back" icon="pi pi-arrow-left" onClick={() => {
           setSelectedUsername(""); //goes back to the list pages
           }} severity="secondary"/>
         </div>
+
         <Button label="[DEV] Back" icon="pi pi-arrow-left" onClick={() => {
           window.location.href = `/home` //! DEV button to return to login page - remove later
         }} severity="help"/>

@@ -1,0 +1,31 @@
+.list { 
+    list-style-type: none;
+    margin:auto;
+    padding: 0;
+    display: flex;
+    width: 95%;
+    text-align:center
+}
+
+.listItem { 
+    display: inline;
+    text-align: center;
+    margin:auto;
+    padding: 0;
+    max-width: min-content;
+}
+
+.subheading h3 {
+    text-align: left !important;
+}
+
+.listItem:hover {
+    filter:brightness(150%);
+    transition: 0.2s;  
+}
+
+.footer {
+    background-color: #264A5E;
+    margin-top: 3%;
+    padding: 1%
+}

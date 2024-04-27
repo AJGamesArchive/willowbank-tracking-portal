@@ -7,6 +7,8 @@ export type ProgramData = {
     name: string;
     description: string;
     colour: string;
+    badgeShape: string,
+    badgeTextColor: string;
 };
 
 // Type declaration for a complete program data object
@@ -16,4 +18,6 @@ export type FullProgramData = {
     colour: string;
     description: string;
     name: string;
+    badgeShape: string,
+    badgeTextColor: string;
 };

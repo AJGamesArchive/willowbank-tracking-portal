@@ -92,9 +92,9 @@ const LoginOptionsMenu: React.FC<LoginOptionsMenuProps> = ({setLoginType, visibl
       </div>
       <Divider/>
       <Button label={`[DEV] Token & Snowflake`} icon="pi pi-exclamation-triangle" onClick={() => {
-          console.log(generateToken()); //! Remove later
-          console.log(snowflake.generate()); //! Remove later
-        }} raised severity="help"/>
+        console.log(generateToken()); //! Remove later
+        console.log(snowflake.generate()); //! Remove later
+      }} raised severity="help"/>
     </div>
   );
 };

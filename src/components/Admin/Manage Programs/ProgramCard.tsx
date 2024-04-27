@@ -6,30 +6,30 @@ import { Button } from 'primereact/button';
 // Import CSS
 import './ProgramCard.css'
 
+// Importing types
+import { ProgramData } from '../../../types/Admin/ProgramData';
+
 // Interface to define the props for the Program Details Card
 interface ProgramCardProps {
-  snowflake: string;
-  name: string;
-  description: string;
-  colour: string;
+  data: ProgramData;
   onProgramClick: (name: string, snowflake: string) => void;
-  onEditClick: (name: string, description: string, colour: string, snowflake: string) => void;
+  onEditClick: (data: ProgramData) => void;
   onDeleteClick: (name: string, snowflake: string) => void;
   lockDelete: boolean;
 };
 
 // React function to render the login page for mobile devices
-const ProgramCard: React.FC<ProgramCardProps> = ({snowflake, name, description, colour, onProgramClick, onDeleteClick, onEditClick, lockDelete}) => {
+const ProgramCard: React.FC<ProgramCardProps> = ({data, onProgramClick, onDeleteClick, onEditClick, lockDelete}) => {
   return (
     <>
-      <Card title={`${name}`} subTitle={`${description}`} className='card-props'>
+      <Card title={`${data.name}`} subTitle={`${data.description}`} className='card-props'>
         <br/><br/>
         <div className='program-card-button-colum'>
-          <p>#{colour}</p>
+          <p>#{data.colour}</p>
           <div className='program-card-button-row'>
-            <Button icon="pi pi-search" onClick={() => {onProgramClick(name, snowflake)}} outlined/>
-            <Button severity='info' icon="pi pi-pencil" onClick={() => {onEditClick(name, description, colour, snowflake)}} outlined/>
-            <Button severity='danger' icon="pi pi-trash" onClick={() => {onDeleteClick(name, snowflake)}} disabled={lockDelete} outlined/>
+            <Button icon="pi pi-search" onClick={() => {onProgramClick(data.name, data.snowflake)}} outlined/>
+            <Button severity='info' icon="pi pi-pencil" onClick={() => {onEditClick(data)}} outlined/>
+            <Button severity='danger' icon="pi pi-trash" onClick={() => {onDeleteClick(data.name, data.snowflake)}} disabled={lockDelete} outlined/>
           </div>
         </div>
       </Card>

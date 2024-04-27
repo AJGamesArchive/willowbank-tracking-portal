@@ -15,6 +15,9 @@ import './HomeGlobal.css';
 // Import UI components
 import Badge from '../../components/StudentHome/Badge';
 import Journey from '../../components/StudentHome/Journey';
+import StudentProgram from '../../components/StudentHome/StudentPrograms';
+import StudentActivitiesDialogue from '../../components/StudentHome/StudentActivities';
+import { Carousel } from 'primereact/carousel';
 
 // Import functions
 import { confirmLogin } from '../../functions/Global/ConfirmLogin';
@@ -26,6 +29,9 @@ const HomeDesktop: React.FC = () => {
 
   // Variable to force confirmation of the account login state
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
+
+  // State variable to control the visibility of the activities dialogue box
+  const [visibleActivities, setVisibleActivities] = useState<boolean>(false);
 
   // Event handler to perform action upon initial render
   useEffect(() => {
@@ -43,6 +49,62 @@ const HomeDesktop: React.FC = () => {
     return (
       <>
         <h1>Welcome {params.name}</h1>
+        {
+          /* 
+            TODO Put the student program cards on a Carousel when generated from an array
+          */
+        }
+        <StudentProgram
+          image='/assets/placeholder.png'
+          title='[Program Title]'
+          description='[Program Description]'
+          progress={{
+            programName: '',
+            dateStarted: '27/04/2024 - 01:38',
+            currentLevel: 5,
+            previousTargetXP: 500,
+            currentXP: 587,
+            targetXP: 600,
+            completedActivities: [],
+          }}
+          setVisibleActivities={setVisibleActivities}
+        />
+        <StudentActivitiesDialogue
+          title='[Dialogue Box Title Placeholder]'
+          activities={[
+            {
+              id: 1,
+              description: 'Test Activity 1',
+              xpValue: 10,
+              dateAdded: "27/04/2024",
+              difficulty: "Easy",
+            },
+            {
+              id: 2,
+              description: 'Test Activity 2',
+              xpValue: 20,
+              dateAdded: "27/04/2024",
+              difficulty: "Medium",
+            },
+            {
+              id: 3,
+              description: 'Test Activity 3',
+              xpValue: 30,
+              dateAdded: "27/04/2024",
+              difficulty: "Hard",
+            },
+            {
+              id: 4,
+              description: 'Test Activity 4',
+              xpValue: 40,
+              dateAdded: "27/04/2024",
+              difficulty: "Very Hard",
+            },
+          ]}
+          visible={visibleActivities}
+          setVisible={setVisibleActivities}
+        />
+        <Divider />
         <h2>My Journey</h2>
         <Journey level={5} experience={10} badges={3}></Journey>
         <Divider />
