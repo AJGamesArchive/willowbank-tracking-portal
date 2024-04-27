@@ -21,7 +21,7 @@ import { confirmLogin } from '../../../functions/Global/ConfirmLogin';
 
 // React function to render the Account Manager page for desktop devices
 const AdminAccMangDesktop: React.FC = () => {
-  const [selectedUsername, setSelectedUsername] = useState<string>(""); 
+  const [selectedUsername, setSelectedUsername] = useState<any>(); 
   const [selectedCategory, setSelectedCategory] = useState<string>("");
 
   // Setting up global params on this page

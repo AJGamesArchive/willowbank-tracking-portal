@@ -1,59 +1,66 @@
 // Import core functions
 import React, { useEffect, useState } from 'react';
-import { retrieveDocumentIDs } from '../../../functions/Global/RetrieveDocumentIDs';
 import { ListBox } from 'primereact/listbox';
+import { getStudentAccountInfo } from '../../../functions/Admin/getstudentAccountInfo';
+import { getstaffAccountInfo } from '../../../functions/Admin/getstaffAccountInfo';
+
+// Import types
+import { CoreStaffAccountDetails } from '../../../types/Global/UserAccountDetails';
+import { CoreStudentAccountDetails } from '../../../types/Global/UserAccountDetails';
 
 // Import CSS
 import './AccountMangLists.css';
 
 interface AccountListBoxProps {
-    selectedUsername: string;
+    selectedUsername: CoreStudentAccountDetails | CoreStaffAccountDetails;
     setSelectedUsername: (value: string) => void;
     selectedCategory: string;
     setSelectedCategory: (value: string) => void;
 }
 
     const AccountListBox: React.FC<AccountListBoxProps> = ({selectedUsername, setSelectedUsername,selectedCategory,setSelectedCategory}) => {
-    //declaring state variables, ready to store the usernames for teachers, students and admins and selected user
-    // const [selectedUsername, setSelectedUsername] = useState<string | null>(null); 
-    const [studentUsernames, setStudentUsernames] = useState<string[]>([]);
-    const [teacherUsernames, setTeacherUsernames] = useState<string[]>([]);
-    const [adminUsernames, setAdminUsernames] = useState<string[]>([]);
+    //declaring state variables, ready to store teachers, students and admins and selected user
+    const [students, setStudents] = useState<CoreStudentAccountDetails[]>([]);
+    const [teachers, setTeachers] = useState<CoreStaffAccountDetails[]>([]);
+    const [admins, setAdmins] = useState<CoreStaffAccountDetails[]>([]);
 
     // Function to handle username selection
     const handleUsernameSelect = (e: any) => {
         const selectedUsername = e.value;
         setSelectedUsername(selectedUsername); 
         // Determine the category based on the selected username
-        if (studentUsernames.includes(selectedUsername)) {
-            setSelectedCategory('students');
-        } else if (teacherUsernames.includes(selectedUsername)) {
-            setSelectedCategory('teachers');
-        } else if (adminUsernames.includes(selectedUsername)) {
-            setSelectedCategory('admins');
-        } else {
-            setSelectedCategory(""); // If the category is unknown or not found
-        }
+    const isStudent = students.some(student => student.username === selectedUsername.username);
+    const isTeacher = teachers.some(teacher => teacher.username === selectedUsername.username);
+    const isAdmin = admins.some(admin => admin.username === selectedUsername.username);
+
+    if (isStudent) {
+        setSelectedCategory('students');
+    } else if (isTeacher) {
+        setSelectedCategory('teachers');
+    } else if (isAdmin) {
+        setSelectedCategory('admins');
+    } else {
+        setSelectedCategory(""); // If the category is unknown or not found
+    }
     };
     //use effects runs when component is called
     useEffect(() => {
         const fetchData = async () => {
             try {
 
-                //fetches the usernames for Students, teachers and admins
-                const studentUsernamesResponse = await retrieveDocumentIDs('students');
-                const teacherUsernamesResponse = await retrieveDocumentIDs('teachers');
-                const adminUsernamesResponse = await retrieveDocumentIDs('admins');
+                //sets arrays to store student , teacher and admin data
+                const studentData: CoreStudentAccountDetails[] | string = await getStudentAccountInfo("S")
+                const teacherData: CoreStaffAccountDetails[] | string = await getstaffAccountInfo("T")
+                const adminData:  CoreStaffAccountDetails[]  | string = await getstaffAccountInfo("A")
 
-                //converts responeses into arrays if they are not already one to negate data type error
-                const studentUsernamesArray = Array.isArray(studentUsernamesResponse) ? studentUsernamesResponse : [studentUsernamesResponse];
-                const teacherUsernamesArray = Array.isArray(teacherUsernamesResponse) ? teacherUsernamesResponse : [teacherUsernamesResponse];
-                const adminUsernamesArray = Array.isArray(adminUsernamesResponse) ? adminUsernamesResponse : [adminUsernamesResponse];
+                if(typeof studentData === "string" || typeof teacherData === "string" || typeof adminData === "string") {
+                    // Return some error here
+                    return;
+                };
 
-                //updates the state variables
-                setStudentUsernames(studentUsernamesArray);
-                setTeacherUsernames(teacherUsernamesArray);
-                setAdminUsernames(adminUsernamesArray);
+                setStudents(studentData);
+                setTeachers(teacherData);
+                setAdmins(adminData);
             } catch (error) {
                 //runs error if a problem arrises with fetching usernames
                 console.error('Error fetching usernames:', error);
@@ -67,13 +74,14 @@ interface AccountListBoxProps {
     return (
         
         <div> {/* Wrap everything in a div */}
-        {selectedUsername === "" && (
+        {selectedUsername !== null && (
             <>
                 <div className="listBoxContainer">
                     <h3>Student Usernames</h3>
                     <ListBox
                         filter
-                        options={studentUsernames}
+                        options={students}
+                        optionLabel='username'
                         onChange={handleUsernameSelect}
                     />
                 </div>
@@ -82,7 +90,8 @@ interface AccountListBoxProps {
                     <h3>Teacher Usernames</h3>
                     <ListBox
                         filter
-                        options={teacherUsernames}
+                        options={teachers}
+                        optionLabel='username'
                         onChange={handleUsernameSelect}
                     />
                 </div>
@@ -91,7 +100,8 @@ interface AccountListBoxProps {
                     <h3>Admin Usernames</h3>
                     <ListBox
                         filter
-                        options={adminUsernames}
+                        options={admins}
+                        optionLabel='username'
                         onChange={handleUsernameSelect}
                     />
                 </div>
