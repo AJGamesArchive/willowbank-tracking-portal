@@ -45,8 +45,7 @@ const AdminPortalDesktop: React.FC = () => {
       <div>
         <Banner
           backgroundimage='https://marketplace.canva.com/EAENvp21inc/1/0/1600w/canva-simple-work-linkedin-banner-qt_TMRJF4m0.jpg' 
-          text={`WELCOME ${params.name?.toUpperCase()}`} 
-        />
+          text={`WELCOME ${params.name?.toUpperCase()}`} />
 
         <div>
           <div className="subheading">
@@ -57,7 +56,7 @@ const AdminPortalDesktop: React.FC = () => {
           <ul className="list">
             <li className="listItem">
               <MenuOption 
-                imageSRC='https://cdn-icons-png.flaticon.com/256/747/747305.png'
+                imageSRC={`/public/assets/admin-portal-images/Padlock.png`}
                 imageAltText='Key'
                 destinationPage={`/adminportal/resetpassword/${params.snowflake}/${params.token}/${params.name}`}
                 title='Reset password'
@@ -65,7 +64,7 @@ const AdminPortalDesktop: React.FC = () => {
             </li>
             <li className="listItem">
               <MenuOption 
-                imageSRC='https://static.thenounproject.com/png/3427435-200.png'
+                imageSRC={`/public/assets/admin-portal-images/Course.png`}
                 imageAltText='Program image'
                 destinationPage={`/adminportal/manageprograms/${params.snowflake}/${params.token}/${params.name}`}
                 title='Program management'
@@ -73,14 +72,14 @@ const AdminPortalDesktop: React.FC = () => {
             </li>
             <li className='listItem'>
             <MenuOption 
-              imageSRC='https://www.veryicon.com/download/png/miscellaneous/common-icons-10/customer-management-15?s=256'
+              imageSRC={`/public/assets/admin-portal-images/Account.png`}
               imageAltText='Account image'
               destinationPage={`/AccManagement/${params.snowflake}/${params.token}/${params.name}`}
               title="Account management" />
             </li>
             <li className='listItem'>
             <MenuOption 
-              imageSRC='https://icons.veryicon.com/png/o/object/material-design-icons/school-9.png'
+              imageSRC={`/public/assets/admin-portal-images/School.png`}
               imageAltText='School image'
               destinationPage={`/adminportal/resetpassword/${params.snowflake}/${params.token}/${params.name}`}
               title="School management" />
@@ -92,11 +91,6 @@ const AdminPortalDesktop: React.FC = () => {
         <Button label="Sign-Out" icon="pi pi-sign-out" onClick={() => {
           window.location.href = `/home`
         }} severity="danger"/>
-
-        <footer className="footer">
-          <p>Willowbank Tracking Portal v0.0.1</p>
-          <p>Group 1</p>
-        </footer>
       </div>
     );
   } else {
