@@ -1,5 +1,9 @@
-.textBoxContainer label,
+.textBoxContainer {
+    display: grid;
+    grid-template-columns: auto;
+    grid-gap: 5px 0; /* Optional: Adjust spacing between label and input */
+}
+
 .textBoxContainer input {
-    display: block;
-    margin-bottom: 10px; /* Optional: Add some space between each label and input */
+    margin-top: 5px; /* Optional: Adjust spacing between inputs */
 }

@@ -70,7 +70,8 @@ const HomeDesktop: React.FC = () => {
           setVisibleActivities={setVisibleActivities}
         />
         <StudentActivitiesDialogue
-          title='[Dialogue Box Title Placeholder]'
+          title='Fishing Activities'
+          programName='Fishing'
           activities={[
             {
               id: 1,
