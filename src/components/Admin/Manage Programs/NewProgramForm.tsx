@@ -6,6 +6,7 @@ import { Button } from 'primereact/button';
 import { Toast } from 'primereact/toast';
 import { ColorPicker, ColorPickerChangeEvent } from 'primereact/colorpicker';
 import { BlockUI } from 'primereact/blockui';
+import { Dropdown, DropdownChangeEvent } from 'primereact/dropdown';
 
 // Import CSS
 import './NewProgramForm.css';
@@ -14,6 +15,13 @@ import './NewProgramForm.css';
 import { saveProgram } from '../../../functions/Admin/ManagePrograms/SaveProgram';
 import { classNames } from 'primereact/utils';
 import { isUniqueProgramName } from '../../../functions/Validation/IsUniqueProgramName';
+import { generateBadgeSVG } from '../../../functions/Badges/GenerateBadgeSVG';
+
+// Importing data
+import { badgeShapes } from '../../../data/BadgeShapes';
+
+// Importing types
+import { ProgramData } from '../../../types/Admin/ProgramData';
 
 // Interface to define props for the new program form
 interface NewProgramFormProps {
@@ -24,19 +32,18 @@ interface NewProgramFormProps {
   setProgramAdded:(value: boolean) => void;
   formHeader: string;
   formSubheader: string;
-  existingName: string;
-  existingDescription: string;
-  existingColour: string;
-  programSnowflake: string;
+  existingData: ProgramData
   isNew: boolean;
 };
 
 // React function to render the login page for mobile devices
-const NewProgramForm: React.FC<NewProgramFormProps> = ({visible, setVisible, setVisiblePrograms, setProgramRerender, setProgramAdded, formHeader, formSubheader, existingName, existingDescription, existingColour, programSnowflake, isNew}) => {
+const NewProgramForm: React.FC<NewProgramFormProps> = ({visible, setVisible, setVisiblePrograms, setProgramRerender, setProgramAdded, formHeader, formSubheader, existingData, isNew}) => {
   // State variables to store form input data
   const [programName, setProgramName] = useState<string>("");
   const [programDescription, setProgramDescription] = useState<string>("");
   const [programColour, setProgramColour] = useState<string>("ffffff");
+  const [programShape, setProgramShape] = useState<string>("Square");
+  const [programTextColor, setProgramTextColor] = useState<string>("black");
 
   // Variable to hold the CSS colour variable for the colour picker display box
   const colourPickerDisplayBox = document.getElementById('program-colour-picker-display');
@@ -54,10 +61,12 @@ const NewProgramForm: React.FC<NewProgramFormProps> = ({visible, setVisible, set
   // UseEffect hook to set the details of an existing program if the user is updating an existing program
   useEffect(() => {
     if(visible && !isNew) {
-      setProgramName(existingName);
-      setProgramDescription(existingDescription);
-      setProgramColour(existingColour);
-      colourPickerDisplayBox?.style.setProperty('--colour-picker-display-block', `#${existingColour}`);
+      setProgramName(existingData.name);
+      setProgramDescription(existingData.description);
+      setProgramColour(existingData.colour);
+      setProgramShape(existingData.badgeShape);
+      setProgramTextColor(existingData.badgeTextColor);
+      colourPickerDisplayBox?.style.setProperty('--colour-picker-display-block', `#${existingData.colour}`); //! Maybe remove later? I don't think it's used anymore. Same oes for corresponding CSS.
     };
   }, [visible]);
 
@@ -86,8 +95,23 @@ const NewProgramForm: React.FC<NewProgramFormProps> = ({visible, setVisible, set
       setBlockUI(false);
       return;
     };
+    if(!programColour) {
+      invalidData("badge color");
+      setBlockUI(false);
+      return;
+    };
+    if(!programShape) {
+      invalidData("badge shape");
+      setBlockUI(false);
+      return;
+    };
+    if(!programTextColor) {
+      invalidData("badge text color");
+      setBlockUI(false);
+      return;
+    };
     // Ensure the entered program name is unique if either; the program is new or the existing program has had a name change
-    if(programName.toUpperCase() !== existingName.toUpperCase()) {
+    if(programName.toUpperCase() !== existingData.name.toUpperCase()) {
       const isUnique: boolean | string = await isUniqueProgramName(programName);
       if(typeof isUnique === "string") {
         // Output an error message for the existing programs could not be retrieved
@@ -117,7 +141,7 @@ const NewProgramForm: React.FC<NewProgramFormProps> = ({visible, setVisible, set
     };
     
     // Attempted to add the entered program data to the system
-    const successful: boolean = await saveProgram(programSnowflake, programName, programDescription, programColour, isNew);
+    const successful: boolean = await saveProgram(existingData.snowflake, programName, programDescription, programColour, programShape, programTextColor, isNew);
     if(!successful) {
       // Output an error message for the program failing to add to the system
       toast.current?.show({
@@ -150,6 +174,8 @@ const NewProgramForm: React.FC<NewProgramFormProps> = ({visible, setVisible, set
     setProgramName("");
     setProgramDescription("");
     setProgramColour("ffffff");
+    setProgramShape("Square");
+    setProgramTextColor("Black");
     colourPickerDisplayBox?.style.setProperty('--colour-picker-display-block', `#ffffff`);
     setUniqueProgramName(true);
     setVisible(false);
@@ -167,7 +193,7 @@ const NewProgramForm: React.FC<NewProgramFormProps> = ({visible, setVisible, set
             <span className="p-float-label">
               <InputText
                 id="program-snowflake"
-                value={programSnowflake}
+                value={existingData.snowflake}
                 disabled
                 required
               />
@@ -215,20 +241,70 @@ const NewProgramForm: React.FC<NewProgramFormProps> = ({visible, setVisible, set
           </small>
           {submitted && !programDescription && <small className="p-error">A program description is required.</small>}
         </div>
+
+        <div className='add-program-form-field'>
+          <label htmlFor="cp-hex" className="font-bold block mb-2">
+            Program Badge Designer:
+          </label>
+        </div>
+
+        <div className='add-program-form-field'>
+          <div className='p-inputgroup-flex-l'>
+            <span className='p-float-label'>
+              <Dropdown 
+                  value={programShape}
+                  options={badgeShapes}
+                  onChange={(e: DropdownChangeEvent) => setProgramShape(e.value)}
+                  placeholder="Select Badge SHape"
+                  className={classNames({ 'p-invalid': submitted && !programShape })}
+                  style={{ minWidth: '24rem' }}
+                />
+                <label htmlFor="program-badge-shape">Program Badge Shape</label>
+            </span>
+            <small id="program-badge-shape-help" className='add-program-form-help-text'>
+              Select the shape you want to use for this programs badges.
+            </small>
+          </div>
+          {submitted && !programShape && <small className="p-error">Program badge shape is required.</small>}
+        </div>
+
+        <div className='add-program-form-field'>
+          <div className='p-inputgroup-flex-l'>
+            <span className='p-float-label'>
+              <Dropdown 
+                  value={programTextColor}
+                  options={["Black", "White"]}
+                  onChange={(e: DropdownChangeEvent) => setProgramTextColor(e.value)}
+                  placeholder="Select Badge Text Color"
+                  className={classNames({ 'p-invalid': submitted && !programTextColor })}
+                  style={{ minWidth: '24rem' }}
+                />
+                <label htmlFor="program-badge-text-color">Program Badge Shape</label>
+            </span>
+            <small id="program-badge-text-color-help" className='add-program-form-help-text'>
+              Select the color you want the badge level text to display in.
+            </small>
+          </div>
+          {submitted && !programTextColor && <small className="p-error">Program badge text color is required.</small>}
+        </div>
         
         <div className="add-program-form-field">
           <div className='program-colour-picker-colum'>
             <label htmlFor="cp-hex" className="font-bold block mb-2">
-              Program Colour:
+              Program Badge Color:
             </label>
+            <br/>
             <div className='program-colour-picker-row'>
               <ColorPicker 
-                inputId="cp-hex" 
+                inputId="cp-hex"
                 inline format="hex" 
                 value={programColour} 
                 onChange={(e: ColorPickerChangeEvent) => handleHexInput(e)} 
               />
-              <div id='program-colour-picker-display' className='program-colour-picker-display'/>
+              {/* <div id='program-colour-picker-display' className='program-colour-picker-display'/> */}
+              <div>
+                <img src={generateBadgeSVG(programShape, programColour, programTextColor.toLowerCase(), "1")} alt="Badge.svg"/>
+              </div>
             </div>
             <span>#{programColour}</span>
             <small id="program-description-help" className='add-program-form-help-text'>

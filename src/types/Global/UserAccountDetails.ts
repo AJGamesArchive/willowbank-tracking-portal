@@ -1,5 +1,6 @@
 // Importing types
 import { Activity } from "./Activity";
+import { BadgeData } from "./Bdges";
 
 // Type definition for the details required for a user account (student, teacher, admin)
 
@@ -12,10 +13,13 @@ export type CoreStudentAccountDetails = {
   password: string;
   school: string; //99-99-99
   token: string;
+  badges: BadgeData[];
 };
 export type XPStudentAccountDetails = {
   programName: string;
+  dateStarted: string;
   currentLevel: number;
+  previousTargetXP: number;
   currentXP: number;
   targetXP: number; // Amount required to reach next level
   completedActivities: Activity[];
