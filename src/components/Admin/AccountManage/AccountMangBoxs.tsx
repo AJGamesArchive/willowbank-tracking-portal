@@ -24,7 +24,6 @@ interface AccountListBoxProps {
 
     //use effects runs when component is called
     useEffect(() => {
-        console.log(selectedUsername)
         if (selectedUsername && selectedCategory) {
             getUserData(selectedUsername.snowflake, selectedCategory)
                 .then((data) => {
@@ -36,14 +35,17 @@ interface AccountListBoxProps {
                 .catch((error) => {
                     console.error('Error fetching user data:', error);
                 });
-        }
+            } else {
+                // Clear userData when selectedUsername is null
+                setUserData(null as unknown as UserData | undefined);
+            }
     },[selectedUsername, selectedCategory]);
 
     return (
         <div>
-            {userData && (
+            {userData ? (
                 <div className="textBoxContainer">
-                    <h3> {selectedUsername.username} Account </h3>
+                    <h3> {userData.username} Account </h3>
                     <label htmlFor="username:  ">Username</label>
                     <InputText 
                     id="username"
@@ -65,7 +67,7 @@ interface AccountListBoxProps {
                     value={userData?.school}
                     />
                 </div>
-            )}
+            ): null}
         </div>
     );
 };

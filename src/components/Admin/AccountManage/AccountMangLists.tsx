@@ -74,7 +74,7 @@ interface AccountListBoxProps {
     return (
         
         <div> {/* Wrap everything in a div */}
-        {selectedUsername !== null && (
+        {(!selectedUsername) && (
             <>
                 <div className="listBoxContainer">
                     <h3>Student Usernames</h3>

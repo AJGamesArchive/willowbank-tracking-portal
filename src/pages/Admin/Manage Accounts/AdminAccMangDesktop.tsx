@@ -82,7 +82,7 @@ const AdminAccMangDesktop: React.FC = () => {
         
         <div className='buttonContainer'>
           <Button label="Back" icon="pi pi-arrow-left" onClick={() => {
-          setSelectedUsername(""); //goes back to the list pages
+          setSelectedUsername(null); //goes back to the list pages
           }} severity="secondary"/>
         </div>
 
