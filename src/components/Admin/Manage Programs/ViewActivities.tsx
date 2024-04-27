@@ -544,7 +544,7 @@ const ViewActivities: React.FC<ViewActivitiesProps> = ({visible, setVisible, set
           </DataTable>
         </div>
 
-        <Dialog visible={activityDialog} closeIcon='pi pi-times' style={{ width: '32rem' }} breakpoints={{ '960px': '75vw', '641px': '90vw' }} header={`Activity ${activity.id} Details`} modal className="p-fluid" footer={activityDialogFooter} onHide={hideDialog}>
+        <Dialog visible={activityDialog} resizable={false} draggable={false} closeIcon='pi pi-times' style={{ width: '32rem' }} breakpoints={{ '960px': '75vw', '641px': '90vw' }} header={`Activity ${activity.id} Details`} modal className="p-fluid" footer={activityDialogFooter} onHide={hideDialog}>
           <div>
             <label htmlFor="activity-description" className="font-bold">
               Description
@@ -620,7 +620,7 @@ const ViewActivities: React.FC<ViewActivitiesProps> = ({visible, setVisible, set
           </div>
         </Dialog>
 
-        <Dialog visible={deleteActivityDialog} closeIcon='pi pi-times' style={{ width: '32rem' }} breakpoints={{ '960px': '75vw', '641px': '90vw' }} header="Confirm" modal footer={deleteActivityDialogFooter} onHide={hideDeleteActivityDialog}>
+        <Dialog visible={deleteActivityDialog} resizable={false} draggable={false} closeIcon='pi pi-times' style={{ width: '32rem' }} breakpoints={{ '960px': '75vw', '641px': '90vw' }} header="Confirm" modal footer={deleteActivityDialogFooter} onHide={hideDeleteActivityDialog}>
           <div className="confirmation-content">
             <i className="pi pi-exclamation-triangle mr-3" style={{ fontSize: '2rem' }} />
             <br />
@@ -632,7 +632,7 @@ const ViewActivities: React.FC<ViewActivitiesProps> = ({visible, setVisible, set
           </div>
         </Dialog>
 
-        <Dialog visible={deleteActivitiesDialog} closeIcon='pi pi-times' style={{ width: '32rem' }} breakpoints={{ '960px': '75vw', '641px': '90vw' }} header="Confirm" modal footer={deleteActivitiesDialogFooter} onHide={hideDeleteActivitiesDialog}>
+        <Dialog visible={deleteActivitiesDialog} resizable={false} draggable={false} closeIcon='pi pi-times' style={{ width: '32rem' }} breakpoints={{ '960px': '75vw', '641px': '90vw' }} header="Confirm" modal footer={deleteActivitiesDialogFooter} onHide={hideDeleteActivitiesDialog}>
           <div className="confirmation-content">
             <i className="pi pi-exclamation-triangle mr-3" style={{ fontSize: '2rem' }} />
             <br />

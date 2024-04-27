@@ -7,6 +7,7 @@ import { XPStudentAccountDetails } from "../../types/Global/UserAccountDetails";
 // Import functions
 import { generateToken } from "../Global/GenerateToken";
 import { snowflake } from "../../classes/Snowflake";
+import { dateTimeReadable } from "../Global/GenerateTimestamp";
 
 // Async function to handle the creation of new student accounts and adding new students to existing schools when accounts are created
 export async function createStudentAccount(schoolCode: string, schoolName: string, firstName: string, surnameInitial: string, username: string, password: string): Promise<boolean> {
@@ -25,6 +26,7 @@ export async function createStudentAccount(schoolCode: string, schoolName: strin
     password: password,
     school: schoolCode,
     token: token,
+    badges: [],
   };
 
   // Create the account
@@ -61,7 +63,9 @@ export async function createStudentAccount(schoolCode: string, schoolName: strin
     for(let i = 0; i < programData.length; i++) {
       const xpDetails: XPStudentAccountDetails = {
         programName: programData[i].name,
+        dateStarted: dateTimeReadable(),
         currentLevel: 1,
+        previousTargetXP: 0,
         currentXP: 0,
         targetXP: 100,
         completedActivities: [],

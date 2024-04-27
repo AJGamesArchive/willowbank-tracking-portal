@@ -2,6 +2,7 @@ import { db } from "../../../database/Initalise"
 import { doc, setDoc, updateDoc, query, collection, getDocs } from "firebase/firestore";
 import { snowflake } from "../../../classes/Snowflake";
 import { XPStudentAccountDetails } from "../../../types/Global/UserAccountDetails";
+import { dateTimeReadable } from "../../Global/GenerateTimestamp";
 
 // Async function to add a new program to the system
 export async function saveProgram(programSnowflake: string, programName: string, programDescription: string, programColour: string, programShape: string, programTextColor: string, isNew: boolean): Promise<boolean> {
@@ -23,7 +24,9 @@ export async function saveProgram(programSnowflake: string, programName: string,
       // Define a blank XP tracking object for the new program
       const xpTracker: XPStudentAccountDetails = {
         programName: programName,
+        dateStarted: dateTimeReadable(),
         currentLevel: 1,
+        previousTargetXP: 0,
         currentXP: 0,
         targetXP: 100,
         completedActivities: [],
