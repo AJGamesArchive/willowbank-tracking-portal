@@ -1,0 +1,33 @@
+.student-activity-grid-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 20px;
+}
+
+.student-activity-grid-item {
+    background-color: #85d2f9;
+    padding: 5px;
+    border: 1px solid #85d2f9;
+}
+
+.student-activity-list-col {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.student-activity-list-row {
+    position: relative;
+    display: flex;
+    flex-direction: row;
+}
+
+.student-activity-list-right {
+    margin-left: auto;
+    margin-top: auto;
+}
+
+.student-activity-button-round {
+    border-radius: 20px;
+}

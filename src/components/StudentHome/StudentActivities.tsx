@@ -5,6 +5,8 @@ import { Button } from 'primereact/button';
 import { classNames } from 'primereact/utils';
 import { Tag } from 'primereact/tag';
 import { DataViewLayoutOptions, DataView } from 'primereact/dataview';
+import { Card } from 'primereact/card';
+import { Divider } from 'primereact/divider';
 
 // Import CSS
 import './StudentActivities.css'
@@ -15,13 +17,14 @@ import { Activity } from '../../types/Global/Activity';
 // Defining data interface for student activity dialogue box
 interface StudentActivitiesDialogueProps {
   title: string;
+  programName: string;
   activities: Activity[];
   visible: boolean;
   setVisible: (value: boolean) => void;
 };
 
 // React function to render the activities dialogue box for the student portal
-const StudentActivitiesDialogue: React.FC<StudentActivitiesDialogueProps> = ({title, activities, visible, setVisible}) => {
+const StudentActivitiesDialogue: React.FC<StudentActivitiesDialogueProps> = ({title, programName, activities, visible, setVisible}) => {
   //? Dialogue Box Templates
   // Defining template for the dialogue header
   const dialogueHeader = (
@@ -33,12 +36,12 @@ const StudentActivitiesDialogue: React.FC<StudentActivitiesDialogueProps> = ({ti
     </div>
   );
 
-  // Defining template for the dialogue footer
-  const dialogueFooter = (
-    <div>
-      <Button label="[Button Label]" icon="pi pi-check" severity='secondary' onClick={() => {}} autoFocus />
-    </div>
-  );
+  // Defining template for the dialogue footer //! Remove later if is still not in use
+  // const dialogueFooter = (
+  //   <div>
+  //     <Button label="[Button Label]" icon="pi pi-check" severity='secondary' onClick={() => {}} autoFocus />
+  //   </div>
+  // );
 
   //? Data View Templates
   // State variable to control the layout of the data view
@@ -60,74 +63,79 @@ const StudentActivitiesDialogue: React.FC<StudentActivitiesDialogueProps> = ({ti
     };
   };
 
+  // Defining activity card header template
+  const cardHeader = (
+    <img alt="activity-image" src='/assets/placeholdersmall.png' style={{ width: '100%', height: 'auto' }}/>
+  );
+  
+  // Defining activity card footer template //! Remove later if still not in use
+  // const cardFooter = (
+  //   <>
+  //     <Button outlined severity="success" icon="pi pi-send" />
+  //   </>
+  // );
+
   const listItem = (activity: Activity, index: number) => {
+    
+    const tag = (
+      <Tag value={activity.difficulty} severity={getSeverity(activity.difficulty)}/>
+    );
+
     return (
-      <div className="col-12" key={index}>
-        <div className={classNames('flex flex-column xl:flex-row xl:align-items-start p-4 gap-4', { 'border-top-1 surface-border': index !== 0 })}>
-          <img className="w-9 sm:w-16rem xl:w-10rem shadow-2 block xl:block mx-auto border-round" src='/assets/placeholdersmall.png' alt={String(activity.id)} />
-          <div className="flex flex-column sm:flex-row justify-content-between align-items-center xl:align-items-start flex-1 gap-4">
-            <div className="flex flex-column align-items-center sm:align-items-start gap-3">
-              <div className="text-2xl font-bold text-900">{activity.description}</div>
-              {/* <Rating value={product.rating} readOnly cancel={false}></Rating> */}
-              <div className="flex align-items-center gap-3">
-                <span className="flex align-items-center gap-2">
-                  <i className="pi pi-tag"></i>
-                  {/* <span className="font-semibold">{product.category}</span> */}
-                </span>
-                <Tag value={activity.difficulty} severity={getSeverity(activity.difficulty)}></Tag>
-              </div>
-            </div>
-            <div className="flex sm:flex-column align-items-center sm:align-items-end gap-3 sm:gap-2">
-              <span className="text-2xl font-semibold">${activity.xpValue}</span>
-              <Button icon="pi pi-shopping-cart" className="p-button-rounded"/>
-            </div>
-          </div>
-        </div>
+      <div className="student-activity-grid-item" key={index}>
+        <Card title={`Activity ${activity.id}`} subTitle={tag} header={cardHeader} role={`Activity ${activity.id} Info Card`}>
+          <div><b>Details:</b></div>
+          <div>{activity.description}</div>
+          <div><b>Awarded XP:</b></div>
+          <div>{activity.xpValue}</div>
+          <br/>
+          <Button severity="success" icon="pi pi-send" outlined className='student-activity-button-round'/>
+        </Card>
       </div>
     );
   };
 
   const gridItem = (activity: Activity, index: number) => {
     return (
-      <div className="col-12 sm:col-6 lg:col-12 xl:col-4 p-2" key={index}>
-        <div className="p-4 border-1 surface-border surface-card border-round">
-          <div className="flex flex-wrap align-items-center justify-content-between gap-2">
-            <div className="flex align-items-center gap-2">
-              <i className="pi pi-tag"></i>
-              {/* <span className="font-semibold">{product.category}</span> */}
-            </div>
-            <Tag value={activity.difficulty} severity={getSeverity(activity.difficulty)}></Tag>
+      <div key={index}>
+        {index === 0 && (<br/>)}
+        <div className='student-activity-list-row'>
+          <div><img alt="activity-image" src='/assets/placeholdersmall.png' style={{ width: '100%', height: 'auto' }}/></div>
+          <div style={{ paddingLeft: '1rem' }}>
+            <p><b>Activity {activity.id}</b></p>
+            <div><b>Details:</b>{` ${activity.description}`}</div>
+            <div><b>Awarded XP:</b>{` ${activity.xpValue}`}</div>
+            <Tag value={activity.difficulty} severity={getSeverity(activity.difficulty)}/>
           </div>
-          <div className="flex flex-column align-items-center gap-3 py-5">
-            <img className="w-9 shadow-2 border-round" src='/assets/placeholdersmall.png' alt={String(activity.id)} />
-            <div className="text-2xl font-bold">{activity.description}</div>
-          </div>
-          <div className="flex align-items-center justify-content-between">
-            <span className="text-2xl font-semibold">${activity.xpValue}</span>
-            <Button icon="pi pi-shopping-cart" className="p-button-rounded"/>
+          <div className='student-activity-list-right'>
+            <Button severity="success" icon="pi pi-send" className='student-activity-button-round'/>
           </div>
         </div>
+        <Divider/>
       </div>
     );
   };
 
   const itemTemplate = (activity: Activity, layout: string, index: number) => {
     if (!activity) {return;};
-    if (layout === 'list') return listItem(activity, index);
-    else if (layout === 'grid') return gridItem(activity, index);
+    return (layout === 'grid') ? listItem(activity, index) : gridItem(activity, index);
   };
 
   const listTemplate = () => {
-    return <div className="grid grid-nogutter">{activities.map((activity, index) => itemTemplate(activity, layout, index))}</div>;
+    return <div className={(layout === "grid" ? "student-activity-grid-container" : "student-activity-list-col")}>{activities.map((activity, index) => itemTemplate(activity, layout, index))}</div>;
   };
-
+  
   const dataViewHeader = () => {
     return (
-      <div className="flex justify-content-end">
-        <DataViewLayoutOptions 
-          layout={(layout === "grid") ? 'grid' : 'list'}
-          onChange={(e) => setLayout(e.value)}
-        />
+      // <div className="flex justify-content-end">
+      //   <DataViewLayoutOptions 
+      //     layout={(layout === "grid") ? 'grid' : 'list'}
+      //     onChange={(e) => setLayout(e.value)}
+      //   />
+      // </div>
+      <div style={{ textAlign: 'right' }}>
+        <Button outlined icon="pi pi-list" severity='info' onClick={() => setLayout("list")} />
+        <Button outlined icon="pi pi-table" severity='help' onClick={() => setLayout("grid")} />
       </div>
     );
   };
@@ -138,16 +146,16 @@ const StudentActivitiesDialogue: React.FC<StudentActivitiesDialogueProps> = ({ti
       visible={visible} 
       onHide={() => {setVisible(false)}} 
       header={dialogueHeader}
-      footer={dialogueFooter}
       closeIcon='pi pi-times'
       blockScroll={true}
       draggable={false}
-      resizable={false}
-      style={{ width: '32rem' }} 
+      resizable={false} 
+      style={{ minWidth: '52rem' }} 
       breakpoints={{ '960px': '75vw', '641px': '90vw' }} 
     >
-      <div className="card">
-        <DataView value={activities} itemTemplate={listTemplate} layout={(layout === "grid") ? 'grid' : 'list'} header={dataViewHeader()} />
+      <p>View all the activities for {programName} and submit any completed activities for admin approval. Once submitted, if approved by an admin, you'll gain the stated XP for this program.</p>
+      <div className="">
+        <DataView value={[1]} itemTemplate={listTemplate} layout={(layout === "grid") ? 'grid' : 'list'} header={dataViewHeader()} />
       </div>
     </Dialog>
   );

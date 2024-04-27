@@ -51,31 +51,31 @@ const StudentProgram: React.FC<StudentProgramProps> = ({image, title, descriptio
   return (
     <Card title={title} subTitle={description} header={cardHeader} footer={cardFooter} role={"[Program Name] Program Card"}>
       <div><b>My Journey</b></div>
-      <StudentProgramRowProps
+      <StudentProgramRow
         boldText={true}
         leftContent={`Badges Awarded:`}
         centerContent={``}
         rightContent={`Date Started:`}
       />
-      <StudentProgramRowProps
+      <StudentProgramRow
         boldText={false}
         leftContent={`${progress.currentLevel}`}
         centerContent={``}
         rightContent={`${progress.dateStarted}`}
       />
-      <StudentProgramRowProps
+      <StudentProgramRow
         boldText={true}
         leftContent={`Current Level:`}
         centerContent={`Current XP:`}
         rightContent={`Next Level:`}
       />
-      <StudentProgramRowProps
+      <StudentProgramRow
         boldText={false}
         leftContent={`Lvl ${progress.currentLevel}:`}
         centerContent={`${progress.currentXP}xp / ${progress.targetXP}xp`}
         rightContent={`Lvl ${progress.currentLevel + 1}:`}
       />
-      <StudentProgramRowProps
+      <StudentProgramRow
         boldText={false}
         leftContent={`${progress.previousTargetXP}xp`}
         centerContent={``}
@@ -95,7 +95,7 @@ interface StudentProgramRowProps {
 };
 
 // React function to render the row card component for the student program cards
-const StudentProgramRowProps: React.FC<StudentProgramRowProps> = ({boldText, leftContent, centerContent, rightContent}) => {
+const StudentProgramRow: React.FC<StudentProgramRowProps> = ({boldText, leftContent, centerContent, rightContent}) => {
   // Returning core JSX
   return (
     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '7px' }}>
