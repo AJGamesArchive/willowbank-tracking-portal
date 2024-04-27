@@ -71,7 +71,36 @@ const HomeDesktop: React.FC = () => {
         />
         <StudentActivitiesDialogue
           title='[Dialogue Box Title Placeholder]'
-          activities={[]}
+          activities={[
+            {
+              id: 1,
+              description: 'Test Activity 1',
+              xpValue: 10,
+              dateAdded: "27/04/2024",
+              difficulty: "Easy",
+            },
+            {
+              id: 2,
+              description: 'Test Activity 2',
+              xpValue: 20,
+              dateAdded: "27/04/2024",
+              difficulty: "Medium",
+            },
+            {
+              id: 3,
+              description: 'Test Activity 3',
+              xpValue: 30,
+              dateAdded: "27/04/2024",
+              difficulty: "Hard",
+            },
+            {
+              id: 4,
+              description: 'Test Activity 4',
+              xpValue: 40,
+              dateAdded: "27/04/2024",
+              difficulty: "Very Hard",
+            },
+          ]}
           visible={visibleActivities}
           setVisible={setVisibleActivities}
         />
