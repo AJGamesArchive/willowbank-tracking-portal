@@ -56,7 +56,7 @@ const AdminPortalDesktop: React.FC = () => {
           <ul className="list">
             <li className="listItem">
               <MenuOption 
-                imageSRC={`/public/assets/admin-portal-images/Padlock.png`}
+                imageSRC={`/assets/admin-portal-images/Padlock.png`}
                 imageAltText='Key'
                 destinationPage={`/adminportal/resetpassword/${params.snowflake}/${params.token}/${params.name}`}
                 title='Reset password'
@@ -64,7 +64,7 @@ const AdminPortalDesktop: React.FC = () => {
             </li>
             <li className="listItem">
               <MenuOption 
-                imageSRC={`/public/assets/admin-portal-images/Course.png`}
+                imageSRC={`/assets/admin-portal-images/Course.png`}
                 imageAltText='Program image'
                 destinationPage={`/adminportal/manageprograms/${params.snowflake}/${params.token}/${params.name}`}
                 title='Program management'
@@ -72,14 +72,14 @@ const AdminPortalDesktop: React.FC = () => {
             </li>
             <li className='listItem'>
             <MenuOption 
-              imageSRC={`/public/assets/admin-portal-images/Account.png`}
+              imageSRC={`/assets/admin-portal-images/Account.png`}
               imageAltText='Account image'
               destinationPage={`/AccManagement/${params.snowflake}/${params.token}/${params.name}`}
               title="Account management" />
             </li>
             <li className='listItem'>
             <MenuOption 
-              imageSRC={`/public/assets/admin-portal-images/School.png`}
+              imageSRC={`/assets/admin-portal-images/School.png`}
               imageAltText='School image'
               destinationPage={`/adminportal/resetpassword/${params.snowflake}/${params.token}/${params.name}`}
               title="School management" />
