@@ -8,11 +8,12 @@
 }
 
 .listItem { 
-    display: inline;
+    display: inline-block;
     text-align: center;
     margin:auto;
     padding: 0;
     max-width: min-content;
+    float: none
 }
 
 .subheading h3 {

@@ -2,13 +2,12 @@
     height: auto;
     min-width: 225px;
     min-height: auto;
-    margin: 1%
 }
 
 .menuOption {
     max-width: 40%;
+    width: 20%;
     height: auto;
     min-width: 225px;
-    min-height: auto;
     color: #e8edeb;
 }

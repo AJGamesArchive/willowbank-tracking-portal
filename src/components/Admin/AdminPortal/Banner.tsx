@@ -15,7 +15,7 @@ const Banner : React.FC<IBanner> = ({backgroundimage, text}) => {
         <div 
             className="text"
         >
-            <h2>{text}</h2>
+            <h1>{text}</h1>
         </div>
     </div>
 }
