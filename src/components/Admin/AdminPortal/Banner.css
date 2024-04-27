@@ -1,17 +1,13 @@
 .banner {
     background-color: var(--primary-colour);
     position: relative;
-    width: 100vw;
-    display: flex;
+    width: fit-content;
     height: auto;
-    margin: 0;
-    padding: 0;
 }
 
-.bannerimage:root {
-    margin: 0;
-    padding: 0;
-    width: 100vw;
+.bannerimage {
+    display:block;
+    width: 100%;
     height: auto;
 }
 
@@ -24,11 +20,6 @@
     color: white; 
     font-size: auto;
     font-weight: bold; 
-}
-
-.allContent:root {
-    margin: 0;
-    padding: 0
 }
 
 .mainContent {

@@ -36,19 +36,23 @@ const AdminPortalDesktop: React.FC = () => {
       return;
     };
     confirmLoginHandler();
+    
   }, []); // Emptying process array to ensure handler only runs on initial render
 
   // Return JSX based on login state
   if (isLoggedIn) {
     return (
-      <div className='allContent'>
+      <div>
         <Banner
           backgroundimage='https://marketplace.canva.com/EAENvp21inc/1/0/1600w/canva-simple-work-linkedin-banner-qt_TMRJF4m0.jpg' 
           text={`WELCOME ${params.name?.toUpperCase()}`} 
         />
 
-        <div className="mainContent">
-          <p>Please select from the following options.</p>
+        <div>
+          <div className="subheading">
+          <h3>Please select from the following options.</h3>
+          </div>
+          
           <br />
           <ul className="list">
             <li className="listItem">
@@ -61,23 +65,23 @@ const AdminPortalDesktop: React.FC = () => {
             </li>
             <li className="listItem">
               <MenuOption 
-                imageSRC='https://cdn-icons-png.flaticon.com/256/747/747305.png'
-                imageAltText='Padlock image'
+                imageSRC='https://static.thenounproject.com/png/3427435-200.png'
+                imageAltText='Program image'
                 destinationPage={`/adminportal/manageprograms/${params.snowflake}/${params.token}/${params.name}`}
                 title='Program management'
               />
             </li>
             <li className='listItem'>
             <MenuOption 
-              imageSRC='https://cdn-icons-png.flaticon.com/256/747/747305.png'
-              imageAltText='Padlock image'
+              imageSRC='https://www.veryicon.com/download/png/miscellaneous/common-icons-10/customer-management-15?s=256'
+              imageAltText='Account image'
               destinationPage={`/AccManagement/${params.snowflake}/${params.token}/${params.name}`}
               title="Account management" />
             </li>
             <li className='listItem'>
             <MenuOption 
-              imageSRC='https://cdn-icons-png.flaticon.com/256/747/747305.png'
-              imageAltText='Padlock image'
+              imageSRC='https://icons.veryicon.com/png/o/object/material-design-icons/school-9.png'
+              imageAltText='School image'
               destinationPage={`/adminportal/resetpassword/${params.snowflake}/${params.token}/${params.name}`}
               title="School management" />
             </li>

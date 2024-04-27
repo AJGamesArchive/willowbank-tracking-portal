@@ -5,7 +5,6 @@
     display: flex;
     width: 95%;
     text-align:center
-
 }
 
 .listItem { 
@@ -16,6 +15,10 @@
     max-width: min-content;
 }
 
+.subheading h3 {
+    text-align: left !important;
+}
+
 .listItem:hover {
     filter:brightness(150%);
     transition: 0.2s;  
@@ -23,5 +26,6 @@
 
 .footer {
     background-color: #264A5E;
-    margin-top: 3%
+    margin-top: 3%;
+    padding: 1%
 }
