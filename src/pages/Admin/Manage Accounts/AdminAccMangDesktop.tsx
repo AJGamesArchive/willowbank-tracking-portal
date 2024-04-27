@@ -23,7 +23,7 @@ import { Divider } from 'primereact/divider';
 
 // React function to render the Account Manager page for desktop devices
 const AdminAccMangDesktop: React.FC = () => {
-  const [selectedUsername, setSelectedUsername] = useState<string>(""); 
+  const [selectedUsername, setSelectedUsername] = useState<any>(); 
   const [selectedCategory, setSelectedCategory] = useState<string>("");
 
   // Setting up global params on this page
@@ -82,7 +82,7 @@ const AdminAccMangDesktop: React.FC = () => {
         
         <div className='buttonContainer'>
           <Button label="Back" icon="pi pi-arrow-left" onClick={() => {
-          setSelectedUsername(""); //goes back to the list pages
+          setSelectedUsername(null); //goes back to the list pages
           }} severity="secondary"/>
         </div>
 

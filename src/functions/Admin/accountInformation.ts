@@ -5,27 +5,29 @@ import { doc, getDoc } from "firebase/firestore";
 export interface UserData {
     username: string;
     firstName: string;
-    lastName: string;
+    surnameInitial: string;
     school: string;
     // Add more fields as needed
 }
 
 // Function to retrieve user data from the database
-export async function getUserData(snowflake: string, category: string): Promise<UserData | null> {
+export async function getUserData(snowflake: string, category: string): Promise<UserData | string> {
     try {
-        debugger //! Remember to remove this later
         const docRef = doc(db, category, snowflake);
         const docSnap = await getDoc(docRef);
         if (docSnap.exists()) {
             // Extract data from the document snapshot
             const userData: UserData = docSnap.data() as UserData;
-            return userData;
+            console.log("here: ",userData)
+            return Promise.resolve(userData);
         } else {
             // Document does not exist
-            return null;
+            console.log("error")
+            return Promise.resolve("Error");
         };
     } catch (error) {
         console.error("Error fetching user data:", error);
-        return null;
+        console.log("error")
+        return Promise.resolve("Error");
     };
 };

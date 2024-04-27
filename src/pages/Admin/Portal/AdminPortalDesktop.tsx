@@ -16,7 +16,8 @@ import { confirmLogin } from '../../../functions/Global/ConfirmLogin';
 import { Divider } from 'primereact/divider';
 
 // Importing UI components
-import AdminCard from '../../../components/Admin/AdminCard';
+import Banner from "../../../components/Admin/AdminPortal/Banner";
+import MenuOption from '../../../components/Admin/AdminPortal/AdminMenuOption';
 
 // React function to render the Admin Portal page for desktop devices
 const AdminPortalDesktop: React.FC = () => {
@@ -35,34 +36,68 @@ const AdminPortalDesktop: React.FC = () => {
       return;
     };
     confirmLoginHandler();
+    
   }, []); // Emptying process array to ensure handler only runs on initial render
 
   // Return JSX based on login state
   if (isLoggedIn) {
     return (
-      <>
-        <h1>Welcome {params.name}</h1>
-        <h2>{params.snowflake}</h2>
-        <h2>{params.token}</h2>
-        <p>Please select from the following options.</p>
-        <br />
-        <AdminCard title="View password request resets" 
-        description="Reset passwords for teachers and students."
-        destinationPage={`/adminportal/resetpassword/${params.snowflake}/${params.token}/${params.name}`} />
-        <AdminCard title="Manage Programs & Activities" 
-        description="Add, Edit, Remove, and update programs and program activities."
-        destinationPage={`/adminportal/manageprograms/${params.snowflake}/${params.token}/${params.name}`} />
-        <AdminCard title="Manage accounts"
-        description="Create, modify or delete accounts. Modify a student's progress."
-        destinationPage={`/AccManagement/${params.snowflake}/${params.token}/${params.name}`}/> 
-        <AdminCard title="Manage schools"
-        description="Create, modify or delete schools."
-        destinationPage=""/>
+      <div>
+        <Banner
+          backgroundimage='https://marketplace.canva.com/EAENvp21inc/1/0/1600w/canva-simple-work-linkedin-banner-qt_TMRJF4m0.jpg' 
+          text={`WELCOME ${params.name?.toUpperCase()}`} 
+        />
+
+        <div>
+          <div className="subheading">
+          <h3>Please select from the following options.</h3>
+          </div>
+          
+          <br />
+          <ul className="list">
+            <li className="listItem">
+              <MenuOption 
+                imageSRC='https://cdn-icons-png.flaticon.com/256/747/747305.png'
+                imageAltText='Key'
+                destinationPage={`/adminportal/resetpassword/${params.snowflake}/${params.token}/${params.name}`}
+                title='Reset password'
+              />
+            </li>
+            <li className="listItem">
+              <MenuOption 
+                imageSRC='https://static.thenounproject.com/png/3427435-200.png'
+                imageAltText='Program image'
+                destinationPage={`/adminportal/manageprograms/${params.snowflake}/${params.token}/${params.name}`}
+                title='Program management'
+              />
+            </li>
+            <li className='listItem'>
+            <MenuOption 
+              imageSRC='https://www.veryicon.com/download/png/miscellaneous/common-icons-10/customer-management-15?s=256'
+              imageAltText='Account image'
+              destinationPage={`/AccManagement/${params.snowflake}/${params.token}/${params.name}`}
+              title="Account management" />
+            </li>
+            <li className='listItem'>
+            <MenuOption 
+              imageSRC='https://icons.veryicon.com/png/o/object/material-design-icons/school-9.png'
+              imageAltText='School image'
+              destinationPage={`/adminportal/resetpassword/${params.snowflake}/${params.token}/${params.name}`}
+              title="School management" />
+            </li>
+          </ul>
+        </div>
+      
         <Divider />
         <Button label="Sign-Out" icon="pi pi-sign-out" onClick={() => {
           window.location.href = `/home`
         }} severity="danger"/>
-      </>
+
+        <footer className="footer">
+          <p>Willowbank Tracking Portal v0.0.1</p>
+          <p>Group 1</p>
+        </footer>
+      </div>
     );
   } else {
     return (
