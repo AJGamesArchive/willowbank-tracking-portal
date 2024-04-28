@@ -1,31 +1,21 @@
-.list { 
-    list-style-type: none;
-    margin:auto;
-    padding: 0;
-    display: flex;
-    width: 95%;
-    text-align:center
-}
-
-.listItem { 
-    display: inline;
-    text-align: center;
-    margin:auto;
-    padding: 0;
-    max-width: min-content;
-}
-
 .subheading h3 {
     text-align: left !important;
 }
 
-.listItem:hover {
-    filter:brightness(150%);
-    transition: 0.2s;  
+.list { 
+    list-style-type: none;
+    display: block;
+    align-self: center;
+    padding : auto;
 }
 
-.footer {
-    background-color: #264A5E;
-    margin-top: 3%;
-    padding: 1%
-}
+    .listItem { 
+        display: inline;
+        text-align: center;
+        vertical-align: middle;
+    }
+
+        .listItem:hover {
+            filter:brightness(150%);
+            transition: 0.2s;  
+        }   

@@ -11,11 +11,10 @@ const Banner : React.FC<IBanner> = ({backgroundimage, text}) => {
         <img 
             className='bannerimage'
             src={backgroundimage} 
-            alt="Banner image"/>
-        <div 
-            className="text"
-        >
-            <h2>{text}</h2>
+            alt="Banner image"
+        />
+        <div className="text">
+            <h1>{text}</h1>
         </div>
     </div>
 }

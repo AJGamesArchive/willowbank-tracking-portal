@@ -1,13 +1,14 @@
-.image {
-    height: auto;
-    min-width: 225px;
-    min-height: auto;
-    margin: 1%
+.menuOption {
+    color: #e8edeb;
+    width: 225px;
+    margin: 8px;
+    height: 361px;
 }
 
-.menuOption {
-    max-width: 40%;
-    height: auto;
-    min-width: 225px;
-    min-height: auto;
+.signOutMenuOption {
+    background-color: #C60606;
+    width: 225px;
+    margin: 8px;
+    height: 361px;
+    
 }
