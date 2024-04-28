@@ -1,9 +1,14 @@
-.image {
-    height: auto;
-}
-
 .menuOption {
     color: #e8edeb;
     width: 225px;
     margin: 8px;
+    height: 361px;
+}
+
+.signOutMenuOption {
+    background-color: #C60606;
+    width: 225px;
+    margin: 8px;
+    height: 361px;
+    
 }

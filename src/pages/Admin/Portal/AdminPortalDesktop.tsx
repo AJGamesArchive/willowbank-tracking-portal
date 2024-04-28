@@ -1,6 +1,5 @@
 // Import core functions
 import { useState, useEffect } from 'react';
-import { Button } from 'primereact/button';
 import { ProgressSpinner } from 'primereact/progressspinner';
 
 // Import global parameters
@@ -13,11 +12,11 @@ import './AdminPortalGlobal.css'
 
 // Import functions
 import { confirmLogin } from '../../../functions/Global/ConfirmLogin';
-import { Divider } from 'primereact/divider';
 
 // Importing UI components
 import Banner from "../../../components/Admin/AdminPortal/Banner";
 import MenuOption from '../../../components/Admin/AdminPortal/AdminMenuOption';
+import SignOutOption from '../../../components/Admin/AdminPortal/AdminMenuSignOutOption';
 
 // React function to render the Admin Portal page for desktop devices
 const AdminPortalDesktop: React.FC = () => {
@@ -92,13 +91,11 @@ const AdminPortalDesktop: React.FC = () => {
               destinationPage={``}
               title="Activity Requests" />
             </li>
+            <li className="listItem">
+            <SignOutOption />
+            </li>
           </ul>
         </div>
-      
-        <Divider />
-        <Button label="Sign-Out" icon="pi pi-sign-out" onClick={() => {
-          window.location.href = `/home`
-        }} severity="danger"/>
       </div>
     );
   } else {
