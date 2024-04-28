@@ -1,3 +1,9 @@
 .progress-card-content {
     margin-top: auto;
 }
+ 
+.progress-card {
+    margin: 10px;
+    height: 100%;
+    /*position: relative*/
+}

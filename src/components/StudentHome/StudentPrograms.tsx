@@ -50,7 +50,7 @@ const StudentProgram: React.FC<StudentProgramProps> = ({image, title, descriptio
 
   // Returning core JSX
   return (
-    <Card title={title} subTitle={description} header={cardHeader} footer={cardFooter} role={"[Program Name] Program Card"} style={{margin: '10px', height: '100%'}}>
+    <Card title={title} subTitle={description} header={cardHeader} footer={cardFooter} role={"[Program Name] Program Card"} className='progress-card'>
       <div className='progress-card-content'>
         <div style={{color: `#${colour}`}}><b>My Journey</b></div>
         <StudentProgramRow
