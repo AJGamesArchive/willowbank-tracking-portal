@@ -12,17 +12,19 @@ import { XPStudentAccountDetails } from '../../types/Global/UserAccountDetails';
 
 // Defining the data interface for the student program card
 interface StudentProgramProps {
+  programSnowflake: string;
   image: string;
   title: string;
   description: string;
   colour: string;
   progress: XPStudentAccountDetails;
-  setVisibleActivities: (value: boolean) => void;
+  fetchAndFilterActivities: (snowflake: string, programName: string) => void;
+  lockButton: boolean;
   //TODO Add props for the button functions
 };
 
 // React function to render the student programs component for the student portal
-const StudentProgram: React.FC<StudentProgramProps> = ({image, title, description, colour, progress, setVisibleActivities}) => {
+const StudentProgram: React.FC<StudentProgramProps> = ({programSnowflake, image, title, description, colour, progress, fetchAndFilterActivities, lockButton}) => {
   // Defining state variable to handel program process
   const [progressPercentage] = useState<number>(((progress.currentXP - progress.previousTargetXP) / (progress.targetXP - progress.previousTargetXP) * 100));
 
@@ -34,7 +36,7 @@ const StudentProgram: React.FC<StudentProgramProps> = ({image, title, descriptio
   // Defining card footer template
   const cardFooter = (
     <>
-      <Button label="View Activities" icon="pi pi-list" severity="info" onClick={() => setVisibleActivities(true)}/>
+      <Button label="View Activities" icon="pi pi-list" loading={lockButton} severity="info" onClick={() => fetchAndFilterActivities(programSnowflake, title)}/>
       <Button label="Awarded Badges" severity="success" icon="pi pi-star" style={{ margin: '0.5em' }} />
     </>
   );
@@ -46,7 +48,7 @@ const StudentProgram: React.FC<StudentProgramProps> = ({image, title, descriptio
         {progressPercentage}%
       </React.Fragment>
     );
-};
+  };
 
   // Returning core JSX
   return (
