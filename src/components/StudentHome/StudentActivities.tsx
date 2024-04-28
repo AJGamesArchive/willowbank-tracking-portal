@@ -12,12 +12,13 @@ import './StudentActivities.css'
 
 // Importing types
 import { Activity } from '../../types/Global/Activity';
+import { AssessedActivities } from '../../types/Student/AssessedActivities';
 
 // Defining data interface for student activity dialogue box
 interface StudentActivitiesDialogueProps {
   title: string;
   programName: string;
-  activities: Activity[];
+  activities: AssessedActivities[];
   visible: boolean;
   setVisible: (value: boolean) => void;
 };
@@ -74,7 +75,7 @@ const StudentActivitiesDialogue: React.FC<StudentActivitiesDialogueProps> = ({ti
   //   </>
   // );
 
-  const listItem = (activity: Activity, index: number) => {
+  const listItem = (activity: Activity, completed: boolean, index: number) => {
     
     const tag = (
       <Tag value={activity.difficulty} severity={getSeverity(activity.difficulty)}/>
@@ -93,8 +94,10 @@ const StudentActivitiesDialogue: React.FC<StudentActivitiesDialogueProps> = ({ti
       </div>
     );
   };
+  
+  //TODO Update both gridItem and listItem components to display activities differently if there completed
 
-  const gridItem = (activity: Activity, index: number) => {
+  const gridItem = (activity: Activity, completed: boolean, index: number) => {
     return (
       <div key={index}>
         {index === 0 && (<br/>)}
@@ -115,13 +118,13 @@ const StudentActivitiesDialogue: React.FC<StudentActivitiesDialogueProps> = ({ti
     );
   };
 
-  const itemTemplate = (activity: Activity, layout: string, index: number) => {
+  const itemTemplate = (activity: Activity, completed: boolean, layout: string, index: number) => {
     if (!activity) {return;};
-    return (layout === 'grid') ? listItem(activity, index) : gridItem(activity, index);
+    return (layout === 'grid') ? listItem(activity, completed, index) : gridItem(activity, completed, index);
   };
 
   const listTemplate = () => {
-    return <div className={(layout === "grid" ? "student-activity-grid-container" : "student-activity-list-col")}>{activities.map((activity, index) => itemTemplate(activity, layout, index))}</div>;
+    return <div className={(layout === "grid" ? "student-activity-grid-container" : "student-activity-list-col")}>{activities.map((activity, index) => itemTemplate(activity.activity, activity.completed, layout, index))}</div>;
   };
   
   const dataViewHeader = () => {

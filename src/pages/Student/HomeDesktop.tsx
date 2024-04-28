@@ -5,6 +5,7 @@ import { Divider } from 'primereact/divider';
 import { Button } from 'primereact/button';
 import { ProgressSpinner } from 'primereact/progressspinner';
 import { Toast } from 'primereact/toast';
+import { BlockUI } from 'primereact/blockui';
 
 // Import global parameters
 import { GlobalParams } from '../../interfaces/GlobalParams';
@@ -27,12 +28,13 @@ import { retrieveProgramData } from '../../functions/Admin/ManagePrograms/Retrie
 import { retrieveDocumentIDs } from '../../functions/Global/RetrieveDocumentIDs';
 import { retrieveXPData } from '../../functions/Student/RetrieveXPData';
 import { retrieveStudentData } from '../../functions/Student/RetrieveStudentData';
+import { retrieveAllActivities } from '../../functions/Admin/ManagePrograms/RetrieveActivityData';
 
 // Importing types
 import { XPStudentAccountDetails } from '../../types/Global/UserAccountDetails';
 import { CoreStudentAccountDetails } from '../../types/Global/UserAccountDetails';
 import { ProgramData } from '../../types/Admin/ProgramData';
-import { Activity } from '../../types/Global/Activity';
+import { AssessedActivities } from '../../types/Student/AssessedActivities';
 import { BadgeData } from '../../types/Global/Bdges';
 
 // React function to render the Student Portal page for desktop devices
@@ -42,7 +44,7 @@ const HomeDesktop: React.FC = () => {
 
   // State variables to store student data and program progress data
   const [coreProgramData, setCoreProgramData] = useState<ProgramData[]>([]);
-  const [programActivities, setProgramActivities] = useState<Activity[]>([]);
+  const [programActivities, setProgramActivities] = useState<AssessedActivities[]>([]);
   const [coreStudentData, setCoreStudentData] = useState<CoreStudentAccountDetails>();
   const [progress, setProgress] = useState<XPStudentAccountDetails[]>([]);
 
@@ -52,8 +54,62 @@ const HomeDesktop: React.FC = () => {
   // State variable to control the visibility of the activities dialogue box
   const [visibleActivities, setVisibleActivities] = useState<boolean>(false);
 
+  // State variable to block UI while processes are running
+  const [blockUI, setBlockUI] = useState<boolean>(false);
+
   // Variables to control toast messages
   const toast = useRef<Toast>(null);
+
+  // Async function to retrieve all activities for a given program and mark complete activities as completed when the activity dialogue box is called
+  async function fetchAndFilterActivities(snowflake: string, programName: string): Promise<void> {
+    setBlockUI(true);
+    const activities = await retrieveAllActivities(snowflake);
+    if(typeof activities == "string") {
+      toast.current?.show({
+        severity: 'error',
+        summary: 'Unexpected Error',
+        detail: `An unexpected error occurred while trying to retrieve activity data for this program. Please try again.`,
+        closeIcon: 'pi pi-times',
+        life: 7000,
+      });
+      setBlockUI(false); return;
+    };
+    let assessed: AssessedActivities[] = [];
+    let programIndex: number = -1;
+    for(let i = 0; i < progress.length; i++) {
+      if(progress[i].programName.toLocaleLowerCase() === programName.toLocaleLowerCase()) {
+        programIndex = i;
+      };
+    };
+    activities.forEach((a) => {
+      let completed: boolean = false;
+      try {
+        progress[programIndex].completedActivities.forEach((c) => {
+          if(a.id === c.id) {
+            completed = true;
+          };
+        });
+      } catch (e) {
+        console.log(e);
+        toast.current?.show({
+          severity: 'error',
+          summary: 'Unexpected Error',
+          detail: `An unexpected error occurred while trying to assess the activities. Please try again.`,
+          closeIcon: 'pi pi-times',
+          life: 7000,
+        });
+        setBlockUI(false); return;
+      };
+      const assessment: AssessedActivities = {
+        completed: completed,
+        activity: a,
+      };
+      assessed.push(assessment);
+    });
+    setProgramActivities(assessed);
+    setVisibleActivities(true);
+    setBlockUI(false);
+  };
 
   // Async function to retrieve all student data required for the portal
   async function retrieveStudentDataHandler(): Promise<void> {
@@ -114,30 +170,34 @@ const HomeDesktop: React.FC = () => {
   ];
 
   // Function to retrieve the description of a program
-  const getDescription = (name: string): [string, string] => {
+  const getDescription = (name: string): [string, string, string] => {
     let description: string = '';
     let colour: string = '';
+    let snowflake: string = '';
     for (let i = 0; i < coreProgramData.length; i++) {
       if(coreProgramData[i].name.toLowerCase() === name.toLowerCase()) {
         description = coreProgramData[i].description;
         colour = coreProgramData[i].colour;
+        snowflake = coreProgramData[i].snowflake;
       };
     };
-    return [description, colour]
+    return [description, colour, snowflake]
   };
 
   // Function to create the program progress cards for the program progress carousel
   const programProgressCardTemplate = (program: XPStudentAccountDetails) => {
-    const [description, colour] = getDescription(program.programName);
+    const [description, colour, snowflake] = getDescription(program.programName);
     return (
       <React.Fragment>
         <StudentProgram
+          programSnowflake={snowflake}
           image='/assets/placeholder.png'
           title={program.programName}
           description={description}
           colour={colour}
           progress={program}
-          setVisibleActivities={setVisibleActivities}
+          fetchAndFilterActivities={fetchAndFilterActivities}
+          lockButton={blockUI}
         />
       </React.Fragment>
     );
@@ -147,6 +207,7 @@ const HomeDesktop: React.FC = () => {
   if (isLoggedIn) {
     return (
       <>
+        <BlockUI blocked={blockUI}>
         <Toast ref={toast}/>
         <h1>Welcome {params.name}</h1>
         <div className='program-progress-carousel'>
@@ -161,36 +222,7 @@ const HomeDesktop: React.FC = () => {
         <StudentActivitiesDialogue
           title='Fishing Activities'
           programName='Fishing'
-          activities={[
-            {
-              id: 1,
-              description: 'Test Activity 1',
-              xpValue: 10,
-              dateAdded: "27/04/2024",
-              difficulty: "Easy",
-            },
-            {
-              id: 2,
-              description: 'Test Activity 2',
-              xpValue: 20,
-              dateAdded: "27/04/2024",
-              difficulty: "Medium",
-            },
-            {
-              id: 3,
-              description: 'Test Activity 3',
-              xpValue: 30,
-              dateAdded: "27/04/2024",
-              difficulty: "Hard",
-            },
-            {
-              id: 4,
-              description: 'Test Activity 4',
-              xpValue: 40,
-              dateAdded: "27/04/2024",
-              difficulty: "Very Hard",
-            },
-          ]}
+          activities={programActivities}
           visible={visibleActivities}
           setVisible={setVisibleActivities}
         />
@@ -209,6 +241,7 @@ const HomeDesktop: React.FC = () => {
         <Button label="Sign-Out" icon="pi pi-sign-out" onClick={() => {
           window.location.href = `/home`
         }} severity="danger"/>
+        </BlockUI>
       </>
     );
   } else {
