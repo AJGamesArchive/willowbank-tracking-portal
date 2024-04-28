@@ -43,7 +43,7 @@ const NewProgramForm: React.FC<NewProgramFormProps> = ({visible, setVisible, set
   const [programDescription, setProgramDescription] = useState<string>("");
   const [programColour, setProgramColour] = useState<string>("ffffff");
   const [programShape, setProgramShape] = useState<string>("Square");
-  const [programTextColor, setProgramTextColor] = useState<string>("black");
+  const [programTextColor, setProgramTextColor] = useState<string>("Black");
 
   // Variable to hold the CSS colour variable for the colour picker display box
   const colourPickerDisplayBox = document.getElementById('program-colour-picker-display');

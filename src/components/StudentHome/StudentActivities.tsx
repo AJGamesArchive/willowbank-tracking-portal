@@ -2,9 +2,8 @@
 import React, { useState } from 'react';
 import { Dialog } from 'primereact/dialog';
 import { Button } from 'primereact/button';
-import { classNames } from 'primereact/utils';
 import { Tag } from 'primereact/tag';
-import { DataViewLayoutOptions, DataView } from 'primereact/dataview';
+import { DataView } from 'primereact/dataview';
 import { Card } from 'primereact/card';
 import { Divider } from 'primereact/divider';
 

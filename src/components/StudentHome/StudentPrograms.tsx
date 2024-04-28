@@ -15,13 +15,14 @@ interface StudentProgramProps {
   image: string;
   title: string;
   description: string;
+  colour: string;
   progress: XPStudentAccountDetails;
   setVisibleActivities: (value: boolean) => void;
   //TODO Add props for the button functions
 };
 
 // React function to render the student programs component for the student portal
-const StudentProgram: React.FC<StudentProgramProps> = ({image, title, description, progress, setVisibleActivities}) => {
+const StudentProgram: React.FC<StudentProgramProps> = ({image, title, description, colour, progress, setVisibleActivities}) => {
   // Defining state variable to handel program process
   const [progressPercentage] = useState<number>(((progress.currentXP - progress.previousTargetXP) / (progress.targetXP - progress.previousTargetXP) * 100));
 
@@ -34,7 +35,7 @@ const StudentProgram: React.FC<StudentProgramProps> = ({image, title, descriptio
   const cardFooter = (
     <>
       <Button label="View Activities" icon="pi pi-list" severity="info" onClick={() => setVisibleActivities(true)}/>
-      <Button label="Awarded Badges" severity="success" icon="pi pi-star" style={{ marginLeft: '0.5em' }} />
+      <Button label="Awarded Badges" severity="success" icon="pi pi-star" style={{ margin: '0.5em' }} />
     </>
   );
 
@@ -49,39 +50,41 @@ const StudentProgram: React.FC<StudentProgramProps> = ({image, title, descriptio
 
   // Returning core JSX
   return (
-    <Card title={title} subTitle={description} header={cardHeader} footer={cardFooter} role={"[Program Name] Program Card"}>
-      <div><b>My Journey</b></div>
-      <StudentProgramRow
-        boldText={true}
-        leftContent={`Badges Awarded:`}
-        centerContent={``}
-        rightContent={`Date Started:`}
-      />
-      <StudentProgramRow
-        boldText={false}
-        leftContent={`${progress.currentLevel}`}
-        centerContent={``}
-        rightContent={`${progress.dateStarted}`}
-      />
-      <StudentProgramRow
-        boldText={true}
-        leftContent={`Current Level:`}
-        centerContent={`Current XP:`}
-        rightContent={`Next Level:`}
-      />
-      <StudentProgramRow
-        boldText={false}
-        leftContent={`Lvl ${progress.currentLevel}:`}
-        centerContent={`${progress.currentXP}xp / ${progress.targetXP}xp`}
-        rightContent={`Lvl ${progress.currentLevel + 1}:`}
-      />
-      <StudentProgramRow
-        boldText={false}
-        leftContent={`${progress.previousTargetXP}xp`}
-        centerContent={``}
-        rightContent={`${progress.targetXP}xp`}
-      />
-      <ProgressBar value={progressPercentage} displayValueTemplate={programProcess}></ProgressBar>
+    <Card title={title} subTitle={description} header={cardHeader} footer={cardFooter} role={"[Program Name] Program Card"} style={{margin: '10px', height: '100%'}}>
+      <div className='progress-card-content'>
+        <div style={{color: `#${colour}`}}><b>My Journey</b></div>
+        <StudentProgramRow
+          boldText={true}
+          leftContent={`Badges Awarded:`}
+          centerContent={` `}
+          rightContent={`Date Started:`}
+        />
+        <StudentProgramRow
+          boldText={false}
+          leftContent={`${progress.currentLevel}`}
+          centerContent={` `}
+          rightContent={`${progress.dateStarted}`}
+        />
+        <StudentProgramRow
+          boldText={true}
+          leftContent={`Current Level:`}
+          centerContent={`Current XP:`}
+          rightContent={`Next Level:`}
+        />
+        <StudentProgramRow
+          boldText={false}
+          leftContent={`Lvl ${progress.currentLevel}:`}
+          centerContent={`${progress.currentXP}xp / ${progress.targetXP}xp`}
+          rightContent={`Lvl ${progress.currentLevel + 1}:`}
+        />
+        <StudentProgramRow
+          boldText={false}
+          leftContent={`${progress.previousTargetXP}xp`}
+          centerContent={``}
+          rightContent={`${progress.targetXP}xp`}
+        />
+        <ProgressBar value={progressPercentage} displayValueTemplate={programProcess}/>
+      </div>
     </Card>
   );
 };

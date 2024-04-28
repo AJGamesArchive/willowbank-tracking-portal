@@ -3,15 +3,27 @@ import { db } from "../../database/Initalise"
 import { collection, query, getDocs } from "firebase/firestore";
 
 // Async function to retrieve all the document ID's for a given collection in the database
-export async function retrieveDocumentIDs(collectionName: string): Promise<string | string[]> {
+/**
+ * Retrieves all document IDs from a given collection in the database based on an entered file path. Supports main collections and first layer document collections.
+ * @param {string} collectionName The main top level collection in the database.
+ * @param {string} mainDocument The snowflake of the document with the main collection.
+ * @param {string} subCollection The collection ID of the sub collection within the specified document
+ * @returns {Promise<string | string[]>} Returns a string[] of all document IDs (usually snowflakes) or returns a string if an error occurred.
+ */
+export async function retrieveDocumentIDs(collectionName: string, mainDocument?: string, subCollection?: string): Promise<string | string[]> {
+  var q;
   let documentIDs: string[] = [];
-  const q = query(collection(db, collectionName));
+  if(mainDocument && subCollection) {
+    q = query(collection(db, collectionName, mainDocument, subCollection));
+  } else {
+    q = query(collection(db, collectionName));
+  };
   let documents;
   try {
     documents = await getDocs(q);
   } catch (e) {
-    const error: string = `An unexpected error occurred. (${e})`;
-    return Promise.resolve(error);
+    console.log(e);
+    return Promise.resolve("Error");
   };
   documents.forEach((doc) => {
     documentIDs.push(doc.id);
