@@ -16,14 +16,18 @@ import { confirmLogin } from '../../functions/Global/ConfirmLogin';
 
 // Importing UI components
 import TeacherCard from '../../components/Teacher/TeacherCard';
+import Banner from '../../components/Admin/AdminPortal/Banner';
+import { Divider } from 'primereact/divider';
 
 // React function to render the Teacher Portal page for desktop devices
 const TeacherPortalDesktop: React.FC = () => {
   // Setting up global params on this page
   const params = useParams<GlobalParams>();
-
+  
   // Variable to force confirmation of the account login state
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
+  
+  const name : string = String(params.name?.charAt(0).toUpperCase()) + String(params.name?.substring(1).toLowerCase());
 
   // Event handler to perform action upon initial render
   useEffect(() => {
@@ -40,16 +44,26 @@ const TeacherPortalDesktop: React.FC = () => {
   if (isLoggedIn) {
     return (
       <>
-        <h1>Desktop UI Code</h1>
-        <h1>Teacher Portal</h1>
-        <h2>{params.name}</h2>
-        <h2>{params.snowflake}</h2>
-        <h2>{params.token}</h2>
+        <Banner 
+          backgroundimage='/assets/teacher-portal-images/teacher-banner.png' 
+          text={`Welcome ${name}`}/>
+        <br />
         <TeacherCard
           title= "By Program"
           description='View Student Progress by Program'
           destinationPage={``}
         />
+        <TeacherCard
+          title= "By School"
+          description='View Student Progress by School'
+          destinationPage={``}
+        />
+        <TeacherCard
+          title= "Manage account"
+          description='Update account details'
+          destinationPage={``}
+        />
+        <Divider />
         <Button label="Sign-Out" icon="pi pi-sign-out" onClick={() => {
           window.location.href = `/home`
         }} severity="danger"/>

@@ -53,6 +53,7 @@ const AdminPortalDesktop: React.FC = () => {
           </div>
           
           <br />
+          
           <ul className="list">
             <li className="listItem">
               <MenuOption 
@@ -83,6 +84,13 @@ const AdminPortalDesktop: React.FC = () => {
               imageAltText='School image'
               destinationPage={`/adminportal/resetpassword/${params.snowflake}/${params.token}/${params.name}`}
               title="School management" />
+            </li>
+            <li className="listItem">
+            <MenuOption 
+              imageSRC={`/assets/admin-portal-images/Account.png`}
+              imageAltText='Account image'
+              destinationPage={``}
+              title="Activity Requests" />
             </li>
           </ul>
         </div>
