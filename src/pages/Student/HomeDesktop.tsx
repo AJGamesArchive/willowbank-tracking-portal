@@ -17,10 +17,10 @@ import './HomeGlobal.css';
 
 // Import UI components
 import Badge from '../../components/StudentHome/Badge';
-import Journey from '../../components/StudentHome/Journey';
 import StudentProgram from '../../components/StudentHome/StudentPrograms';
 import StudentActivitiesDialogue from '../../components/StudentHome/StudentActivities';
 import { Carousel, CarouselResponsiveOption } from 'primereact/carousel';
+import EditAccountDetails from '../../components/Global/EditAccountDetails';
 
 // Import functions
 import { confirmLogin } from '../../functions/Global/ConfirmLogin';
@@ -51,11 +51,15 @@ const HomeDesktop: React.FC = () => {
   // Variable to force confirmation of the account login state
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
 
-  // State variable to control the visibility of the activities dialogue box
+  // State variables to control the visibility of portal dialogue boxes
   const [visibleActivities, setVisibleActivities] = useState<boolean>(false);
+  const [visibleSettings, setVisibleSettings] = useState<boolean>(false);
 
   // State variable to block UI while processes are running
   const [blockUI, setBlockUI] = useState<boolean>(false);
+
+  // State variable to control the account details updated confirmation message
+  const [detailConfirmation, setDetailConfirmation] = useState<boolean>(false);
 
   // Variables to control toast messages
   const toast = useRef<Toast>(null);
@@ -150,6 +154,19 @@ const HomeDesktop: React.FC = () => {
     confirmLoginHandler();
   }, []); // Emptying process array to ensure handler only runs on initial render
 
+  // Event handler to handel showing detail confirmation messages
+  useEffect(() => {
+    if(detailConfirmation) {
+      toast.current?.show({
+        severity: `success`,
+        summary: `Details Updated`,
+        detail: `You're account details were updated successfully.`,
+        closeIcon: 'pi pi-times',
+        life: 7000,
+      });
+    };
+  }, [detailConfirmation]);
+
   // Const to define break points for how to display and operate the program progress carousel
   const responsiveOptions: CarouselResponsiveOption[] = [
     {
@@ -213,29 +230,43 @@ const HomeDesktop: React.FC = () => {
     return (
       <>
         <BlockUI blocked={blockUI}>
-        <Toast ref={toast}/>
-        <h1>Welcome {params.name}</h1>
-        <div className='program-progress-carousel'>
-          <Carousel 
-            value={progress}  
-            responsiveOptions={responsiveOptions} 
-            itemTemplate={programProgressCardTemplate} 
-            nextIcon='pi pi-angle-right'
-            prevIcon='pi pi-angle-left'
+          <Toast ref={toast}/>
+          <h1>Welcome {params.name}</h1>
+          <div className='program-progress-carousel'>
+            <Carousel 
+              value={progress}  
+              responsiveOptions={responsiveOptions} 
+              itemTemplate={programProgressCardTemplate} 
+              nextIcon='pi pi-angle-right'
+              prevIcon='pi pi-angle-left'
+            />
+          </div>
+          <StudentActivitiesDialogue
+            title='Fishing Activities'
+            programName='Fishing'
+            activities={programActivities}
+            visible={visibleActivities}
+            setVisible={setVisibleActivities}
           />
-        </div>
-        <StudentActivitiesDialogue
-          title='Fishing Activities'
-          programName='Fishing'
-          activities={programActivities}
-          visible={visibleActivities}
-          setVisible={setVisibleActivities}
-        />
-        <Divider />
-        
-        <Button label="Sign-Out" icon="pi pi-sign-out" onClick={() => {
-          window.location.href = `/home`
-        }} severity="danger"/>
+          <EditAccountDetails
+            accountType='students'
+            snowflake={(coreStudentData) ? coreStudentData.snowflake : ''}
+            token={(params.token) ? params.token : ''}
+            existingFirstName={(coreStudentData) ? coreStudentData.firstName : ''}
+            existingSurnameI={(coreStudentData) ? coreStudentData.surnameInitial : ''}
+            existingUsername={(coreStudentData) ? coreStudentData.username : ''}
+            existingPassword={(coreStudentData) ? coreStudentData.password : ''}
+            visible={visibleSettings}
+            setVisible={setVisibleSettings}
+            setIsLoggedIn={setIsLoggedIn}
+            setDetailConfirmation={setDetailConfirmation}
+          />
+          <Divider />
+          <Button label="Edit Account Details" icon="pi pi-cog" onClick={() => setVisibleSettings(true)} severity="success"/>
+          <Divider />
+          <Button label="Sign-Out" icon="pi pi-sign-out" onClick={() => {
+            window.location.href = `/home`
+          }} severity="danger"/>
         </BlockUI>
       </>
     );

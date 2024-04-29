@@ -6,6 +6,7 @@ import { InputText } from 'primereact/inputtext';
 import { BlockUI } from 'primereact/blockui';
 import { Messages } from 'primereact/messages';
 import { Divider } from 'primereact/divider';
+import { Password } from 'primereact/password';
 
 // Import CSS
 import './LoginForm.css';
@@ -196,17 +197,13 @@ const LoginForm: React.FC<LoginFormProps> = ({accountType, visible, setVisible, 
         <div className="student-login-form-field">
           <div className="p-inputgroup flex-1">
             <span className="p-float-label">
-              {
-                /*
-                  TODO Maybe swap this field out for the Password component, allowing you to add a feedback toggle
-                */
-              }
-              <InputText
+              <Password
                 id="login-password"
-                type="password"
                 value={password}
                 onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPassword(e.target.value)}
                 required
+                toggleMask
+                feedback={false}
                 className={passwordStyle}
               />
               <label htmlFor="login-password">Password</label>

@@ -8,9 +8,13 @@ import { Toast } from 'primereact/toast';
 import { BlockUI } from 'primereact/blockui';
 import { confirmDialog } from 'primereact/confirmdialog';
 import { Messages } from 'primereact/messages';
+import { Password } from 'primereact/password';
 
 // Import CSS
 import './StudentCreateAccount.css';
+
+// Importing <Password> UI Props
+import { passwordStrengthMsgs, passwordSuggestionsHeader, passwordSuggestionsFooter } from '../../data/PasswordSuggestions';
 
 // Import functions
 import { createStudentAccount } from '../../functions/Login/CreateStudentAccount';
@@ -509,17 +513,18 @@ const StudentCreationForm: React.FC<StudentAccountCreationProps> = ({accountType
       <div className="student-creation-form-field">
         <div className="p-inputgroup flex-1">
           <span className="p-float-label">
-            {
-              /*
-                TODO Maybe swap this field out for the Password component, allowing you to add a feedback toggle
-              */
-            }
-            <InputText
+            <Password
               id="creation-password"
-              type="password"
               value={password}
               onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPassword(e.target.value)}
               required
+              toggleMask
+              header={passwordSuggestionsHeader}
+              footer={passwordSuggestionsFooter}
+              promptLabel={passwordStrengthMsgs.prompt}
+              weakLabel={passwordStrengthMsgs.weak}
+              mediumLabel={passwordStrengthMsgs.medium}
+              strongLabel={passwordStrengthMsgs.strong}
               className={passwordStyle}
               aria-describedby='password-help'
             />
@@ -542,17 +547,13 @@ const StudentCreationForm: React.FC<StudentAccountCreationProps> = ({accountType
       <div className="student-creation-form-field">
         <div className="p-inputgroup flex-1">
           <span className="p-float-label">
-            {
-              /*
-                TODO Maybe swap this field out for the Password component, allowing you to add a feedback toggle
-              */
-            }
-            <InputText
+            <Password
               id="confirm-password"
-              type="password"
               value={confirmPassword}
               onChange={(e: React.ChangeEvent<HTMLInputElement>) => setConfirmPassword(e.target.value)}
               required
+              toggleMask
+              feedback={false}
               className={confirmPasswordStyle}
               aria-describedby='confirm-password-help'
             />

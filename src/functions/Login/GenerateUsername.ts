@@ -4,7 +4,14 @@ import { UsernameGen } from "../../types/Login/UsernameGen";
 // Import functions
 import { isUniqueUsernameName } from "../Validation/IsUniqueUsername";
 
-// Async function to generate a username based on a students first name and surname initial
+/**
+ * Async function to generate a username based on a students first name and surname initial
+ * Validates that the username is unique
+ * @param {string} firstName The entered first name of the user
+ * @param {string} surnameInitial The entered surname initial of the user
+ * @returns {UsernameGen} Returns a 'UsernameGen' object to callback whether the generation was successful and what the generated username is.
+ * @AJGamesArchive
+ */
 export async function generateUsername(firstName: string, surnameInitial: string): Promise<UsernameGen> {
   // Generated a username and ensure it's unique - keeps generating usernames until it's get a unique username
   let counter: number = 1;
