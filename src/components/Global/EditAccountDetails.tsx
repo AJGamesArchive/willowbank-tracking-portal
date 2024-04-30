@@ -378,7 +378,7 @@ const EditAccountDetails: React.FC<EditAccountDetailsProps> = ({accountType, sno
               {submitted && !firstName && <small className="p-error">First name must be filled in.</small>}
             </div>
 
-            <div className="edit-account-data">
+            {accountType === "students" && <div className="edit-account-data">
               <label htmlFor="edit-account-surname" className="font-bold">
                 Surname Initial
               </label>
@@ -390,7 +390,20 @@ const EditAccountDetails: React.FC<EditAccountDetailsProps> = ({accountType, sno
                 className={classNames({ 'p-invalid': submitted && !surnameInitial })} 
               />
               {submitted && !surnameInitial && <small className="p-error">Surname initial must be filled in.</small>}
-            </div>
+            </div>}
+
+            {accountType !== "students" && <div className="edit-account-data">
+              <label htmlFor="edit-account-surname" className="font-bold">
+                Surname
+              </label>
+              <InputText
+                id="edit-account-surname"
+                value={surnameInitial}
+                onChange={(e) => setSurnameInitial(e.target.value?.toUpperCase())}
+                className={classNames({ 'p-invalid': submitted && !surnameInitial })} 
+              />
+              {submitted && !surnameInitial && <small className="p-error">Surname initial must be filled in.</small>}
+            </div>}
 
             <div className="edit-account-data">
               <label htmlFor="edit-account-username" className="font-bold">

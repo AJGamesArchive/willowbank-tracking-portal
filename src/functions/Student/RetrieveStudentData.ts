@@ -3,7 +3,7 @@ import { getDoc, doc } from "firebase/firestore";
 import { CoreStudentAccountDetails } from "../../types/Global/UserAccountDetails";
 
 /**
- * Async function to retrieve all the awarded badge data for a given student.
+ * Async function to retrieve all the core student data for a given student.
  * @param {string} studentSnowflakes The snowflake ID of the student to retrieve awarded badge data for.
  * @returns {Promise<BadgeData[] | string>} Returns a BadgeData[] of all badges awarded to the given student (one element per badge) or returns string if an error occurred.
  * @AJGamesArchive
