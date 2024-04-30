@@ -179,7 +179,7 @@ const HomeDesktop: React.FC = () => {
         numScroll: 1
     },
     {
-        breakpoint: '1024px',
+        breakpoint: '1103px',
         numVisible: 2,
         numScroll: 1
     },

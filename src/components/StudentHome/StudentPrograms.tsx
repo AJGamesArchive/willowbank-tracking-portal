@@ -42,7 +42,7 @@ const StudentProgram: React.FC<StudentProgramProps> = ({programSnowflake, title,
   function getSRC ()
   {
     const filename = title.replace(/\s/g, "").toLowerCase();
-    return `/public/assets/program-images/${filename}.png`
+    return `/assets/program-images/${filename}.png`
   }
 
   function getBrightness()
@@ -50,7 +50,7 @@ const StudentProgram: React.FC<StudentProgramProps> = ({programSnowflake, title,
     if (textColour == "Black") { return 0 }
     return 100
   }
-  
+
   const programPopup = (
     <Dialog className="program-popup" header={title} onHide={() => {setProgramPopupVisible(false)}} visible={programPopupVisible} closeIcon="pi pi-times"> <p>{description}</p>  </Dialog>
   );
@@ -83,18 +83,17 @@ const StudentProgram: React.FC<StudentProgramProps> = ({programSnowflake, title,
           <p><b>Date Started: </b>{progress.dateStarted}</p>
         </div>
         <Divider />
-        <StudentProgramRow
-          leftContent={`Current Level: \nLvl ${progress.currentLevel}`}
-          rightContent={`Next Level:`}
-        />
-        <StudentProgramRow
-          leftContent={`Lvl ${progress.currentLevel}:`}
-          rightContent={`Lvl ${progress.currentLevel + 1}:`}
-        />
-        <StudentProgramRow
-          leftContent={`${progress.previousTargetXP}xp`}
-          rightContent={`${progress.targetXP}xp`}
-        />
+        <div style={{justifyContent: "center", padding: 0}}>
+        <div className='left-content'>
+          <p>Current Level: <br />Lvl {progress.currentLevel}<br />{progress.previousTargetXP}</p>
+        </div>
+        <div className='center-content'>
+          <p><br /><br />{progress.previousTargetXP}/{progress.targetXP}</p>
+        </div>
+        <div className='right-content'>
+          <p style={{textAlign: "right"}}>Next Level: <br />Lvl {progress.currentLevel + 1}<br />{progress.targetXP}</p>
+        </div>
+        </div>
         <ProgressBar value={progressPercentage} displayValueTemplate={programProcess}/>
       </div>
     </Card>

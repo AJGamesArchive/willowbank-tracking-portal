@@ -1,13 +1,22 @@
 .left-content {
     text-align: left;
+    display: inline-flex;
+    margin: auto;
+    align-items: left;
 }
 
 .center-content {
     text-align: center;
+    display: inline-flex;
+    margin: auto;
+    align-items: center;
 }
 
 .right-content {
     text-align: right;
+    display: inline-flex;
+    margin: auto;
+    align-items: right
 }
 
 .progress-card {
