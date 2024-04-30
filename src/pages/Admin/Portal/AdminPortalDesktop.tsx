@@ -8,8 +8,7 @@ import { GlobalParams } from '../../../interfaces/GlobalParams';
 import { useParams } from 'react-router';
 
 // Import CSS
-import './AdminPortalDesktop.css'
-import './AdminPortalGlobal.css'
+import '../../Shared CSS files/PortalDesktop.css'
 
 // Import functions
 import { confirmLogin } from '../../../functions/Global/ConfirmLogin';

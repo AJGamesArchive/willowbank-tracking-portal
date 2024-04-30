@@ -4,22 +4,19 @@
 
 .list { 
     list-style-type: none;
-    margin:auto;
     display: block;
-    width: 95%;
-    text-align:left
+    align-self: center;
+    padding: auto;
+    
 }
 
     .listItem { 
         display: inline-block;
         text-align: center;
-        max-width: min-content;
-        height: inherit;
+        vertical-align: middle;
     }
 
         .listItem:hover {
             filter:brightness(150%);
             transition: 0.2s;  
-        }
-
-/*fca5a5 hover */
+        }   
