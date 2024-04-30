@@ -69,7 +69,7 @@ const StudentProgram: React.FC<StudentProgramProps> = ({programSnowflake, image,
         />
         <StudentProgramRow
           boldText={true}
-          leftContent={`Current Level:`}
+          leftContent={`Current Level: \n`}
           centerContent={`Current XP:`}
           rightContent={`Next Level:`}
         />
@@ -104,9 +104,9 @@ const StudentProgramRow: React.FC<StudentProgramRowProps> = ({boldText, leftCont
   // Returning core JSX
   return (
     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '7px' }}>
-      {(boldText) ? <div style={{ textAlign: 'left' }}><b>{leftContent}</b></div> : <div style={{ textAlign: 'left' }}>{leftContent}</div> }
-      {(boldText) ? <div style={{ textAlign: 'center' }}><b>{centerContent}</b></div> : <div style={{ textAlign: 'center' }}>{centerContent}</div> }
-      {(boldText) ? <div style={{ textAlign: 'right' }}><b>{rightContent}</b></div> : <div style={{ textAlign: 'right' }}>{rightContent}</div> }
+      {(boldText) ? <div className="leftContent"><b>{leftContent}</b></div> : <div className="leftContent">{leftContent}</div> }
+      {(boldText) ? <div className="centerContent"><b>{centerContent}</b></div> : <div className="centerContent">{centerContent}</div> }
+      {(boldText) ? <div className="rightContent"><b>{rightContent}</b></div> : <div className="rightContent">{rightContent}</div> }
     </div>
   );
 };

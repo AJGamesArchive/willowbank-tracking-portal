@@ -1,9 +1,23 @@
-.progress-card-content {
-    margin-top: auto;
-}
- 
 .progress-card {
     margin: 10px;
     height: 100%;
-    /*position: relative*/
+    position: relative;
+    height: 680px
+}
+
+.description {
+    margin-top: 0;
+    padding-top: 0;
+}
+
+.leftContent {
+    text-align: left;
+}
+
+.centerContent {
+    text-align: center;
+}
+
+.rightContent {
+    text-align: right;
 }
