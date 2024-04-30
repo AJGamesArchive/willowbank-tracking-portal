@@ -7,7 +7,8 @@ export interface UserData {
     firstName: string;
     surnameInitial: string;
     school: string;
-    // Add more fields as needed
+    password: string;
+    snowflake: string;
 }
 
 // Function to retrieve user data from the database
