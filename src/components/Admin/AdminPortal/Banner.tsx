@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import './Banner.css'
 
 interface IBanner {
@@ -6,7 +6,7 @@ interface IBanner {
     text : string
 }
 
-const Banner : React.FC<IBanner> = ({backgroundimage, text}) => {
+const Banner : React.FC<IBanner> = ({backgroundimage, text}) => {    
     return <div className="banner">
         <img 
             className='bannerimage'

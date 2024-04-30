@@ -1,21 +1,22 @@
 .banner {
     background-color: var(--primary-colour);
     position: relative;
-    width: fit-content;
-    height: auto;
+    height: 25vw;
 }
 
 .bannerimage {
-    display: block;
-    width: 100%;
-    height: auto;
+    width: 100vw;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -65%);
 }
 
 .text {
     position: absolute;
-    top: 50%;
     left: 50%;
-    transform: translate(-50%, -50%);
+    top: 50%;
+    transform: translate(-50%, -85%);
     text-align: center; /* Centers the text horizontally */
     color: white;
     font-weight: bold; 

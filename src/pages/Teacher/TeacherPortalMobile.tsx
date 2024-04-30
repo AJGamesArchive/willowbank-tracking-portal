@@ -9,7 +9,6 @@ import { useParams } from 'react-router';
 
 // Import CSS
 import './TeacherPortalMobile.css'
-import './TeacherPortalGlobal.css'
 
 // Import functions
 import { confirmLogin } from '../../functions/Global/ConfirmLogin';

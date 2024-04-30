@@ -7,9 +7,7 @@ import { ProgressSpinner } from 'primereact/progressspinner';
 import { GlobalParams } from '../../../interfaces/GlobalParams';
 import { useParams } from 'react-router';
 
-// Import CSS
-import './AdminPortalMobile.css'
-import './AdminPortalGlobal.css'
+
 
 // Import functions
 import { confirmLogin } from '../../../functions/Global/ConfirmLogin';

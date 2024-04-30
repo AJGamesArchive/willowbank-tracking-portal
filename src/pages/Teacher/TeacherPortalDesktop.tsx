@@ -1,8 +1,6 @@
 // Import core functions
 import { useState, useEffect, useRef } from 'react';
-import { Button } from 'primereact/button';
 import { ProgressSpinner } from 'primereact/progressspinner';
-import { Divider } from 'primereact/divider';
 import { Toast } from 'primereact/toast';
 
 // Import global parameters
@@ -10,20 +8,21 @@ import { GlobalParams } from '../../interfaces/GlobalParams';
 import { useParams } from 'react-router';
 
 // Import CSS
-import './TeacherPortalDesktop.css'
-import './TeacherPortalGlobal.css'
+import '../Shared CSS files/PortalDesktop.css'
 
 // Import functions
 import { confirmLogin } from '../../functions/Global/ConfirmLogin';
 import { retrieveStaffData } from '../../functions/Teacher/RetrieveStaffData';
 
 // Importing UI components
-import TeacherCard from '../../components/Teacher/TeacherCard';
 import Banner from '../../components/Admin/AdminPortal/Banner';
 import EditAccountDetails from '../../components/Global/EditAccountDetails';
 
 // Import types
 import { CoreStaffAccountDetails } from '../../types/Global/UserAccountDetails';
+import MenuOption from '../../components/Admin/AdminPortal/AdminMenuOption';
+import ModifyOption from '../../components/Admin/AdminPortal/AdminMenuOptionChangeDetails';
+import SignOutOption from '../../components/Admin/AdminPortal/AdminMenuSignOutOption';
 
 // React function to render the Teacher Portal page for desktop devices
 const TeacherPortalDesktop: React.FC = () => {
@@ -97,21 +96,36 @@ const TeacherPortalDesktop: React.FC = () => {
           backgroundimage='/assets/teacher-portal-images/teacher-banner.png' 
           text={`Welcome ${name}`}/>
         <br />
-        <TeacherCard
-          title= "By Program"
-          description='View Student Progress by Program'
-          destinationPage={``}
-        />
-        <TeacherCard
-          title= "By School"
-          description='View Student Progress by School'
-          destinationPage={``}
-        />
-        <TeacherCard
-          title= "Manage account"
-          description='Update account details'
-          destinationPage={``}
-        />
+        <h3>Please select from the following options.</h3>
+        <br />
+        <ul className="list">
+          <li className="listItem">
+            <MenuOption 
+              imageSRC='/assets/teacher-portal-images/by-program.png'
+              imageAltText='Program image'
+              title='Students by program'
+              destinationPage=''
+            />
+          </li>
+          <li className="listItem">
+            <MenuOption
+              imageSRC='/assets/teacher-portal-images/by-school.png'
+              imageAltText='School image'
+              title='View students by school'
+              destinationPage='' />
+          </li>
+          <li className="listItem">
+            <div onClick={() => setVisibleEditDetails(true)}>
+              <ModifyOption
+                imageSRC={`/assets/teacher-portal-images/settings.png`}
+                imageAltText='Settings image'
+                title="Account details" />
+            </div>
+          </li>
+          <li className="listItem">
+            <SignOutOption />
+          </li>
+        </ul>
         <EditAccountDetails
           accountType='teachers'
           snowflake={(coreStaffData) ? coreStaffData.snowflake : ''}
@@ -125,12 +139,6 @@ const TeacherPortalDesktop: React.FC = () => {
           setIsLoggedIn={setIsLoggedIn}
           setDetailConfirmation={setDetailConfirmation}
         />
-        <Divider />
-        <Button label="Edit Account Details" icon="pi pi-cog" onClick={() => setVisibleEditDetails(true)} severity="success"/>
-        <Divider />
-        <Button label="Sign-Out" icon="pi pi-sign-out" onClick={() => {
-          window.location.href = `/home`
-        }} severity="danger"/>
       </>
     );
   } else {

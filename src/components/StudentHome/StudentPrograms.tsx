@@ -42,7 +42,7 @@ const StudentProgram: React.FC<StudentProgramProps> = ({programSnowflake, title,
   function getSRC ()
   {
     const filename = title.replace(/\s/g, "").toLowerCase();
-    return `/public/assets/program-images/${filename}.png`
+    return `/assets/program-images/${filename}.png`
   }
 
   function getBrightness()
@@ -50,7 +50,7 @@ const StudentProgram: React.FC<StudentProgramProps> = ({programSnowflake, title,
     if (textColour == "Black") { return 0 }
     return 100
   }
-  
+
   const programPopup = (
     <Dialog className="program-popup" header={title} onHide={() => {setProgramPopupVisible(false)}} visible={programPopupVisible} closeIcon="pi pi-times"> <p>{description}</p>  </Dialog>
   );
@@ -77,22 +77,36 @@ const StudentProgram: React.FC<StudentProgramProps> = ({programSnowflake, title,
     <Card header={cardHeader} footer={cardFooter} role={"[Program Name] Program Card"} className='progress-card'>
       {programPopup}
       <div className='progress-card-content'>
-        <h1 style={{fontSize:'xx-large', marginTop: 0}}>{title}</h1>
-        <div style={{padding: "7px", paddingBottom: "0"}}>
-          <p><b>Badges Awarded: </b>{progress.currentLevel}</p>
-          <p><b>Date Started: </b>{progress.dateStarted}</p>
-        </div>
+        <div style={{fontSize: "xx-large"}}><b>{title}</b></div>
+        <StudentProgramRow
+          boldText={true}
+          leftContent={`Badges Awarded:`}
+          centerContent={` `}
+          rightContent={`Date Started:`}
+        />
+        <StudentProgramRow
+          boldText={false}
+          leftContent={`${progress.currentLevel}`}
+          centerContent={` `}
+          rightContent={`${progress.dateStarted}`}
+        />
         <Divider />
         <StudentProgramRow
-          leftContent={`Current Level: \nLvl ${progress.currentLevel}`}
+          boldText={true}
+          leftContent={`Current Level: \n`}
+          centerContent={`Current XP:`}
           rightContent={`Next Level:`}
         />
         <StudentProgramRow
+          boldText={false}
           leftContent={`Lvl ${progress.currentLevel}:`}
+          centerContent={`${progress.currentXP}xp / ${progress.targetXP}xp`}
           rightContent={`Lvl ${progress.currentLevel + 1}:`}
         />
         <StudentProgramRow
+          boldText={false}
           leftContent={`${progress.previousTargetXP}xp`}
+          centerContent={``}
           rightContent={`${progress.targetXP}xp`}
         />
         <ProgressBar value={progressPercentage} displayValueTemplate={programProcess}/>
@@ -103,17 +117,20 @@ const StudentProgram: React.FC<StudentProgramProps> = ({programSnowflake, title,
 
 // Defining the data interface for a student program card row component
 interface StudentProgramRowProps {
+  boldText: boolean;
   leftContent: string;
+  centerContent: string;
   rightContent: string;
 };
 
 // React function to render the row card component for the student program cards
-const StudentProgramRow: React.FC<StudentProgramRowProps> = ({leftContent,  rightContent}) => {
+const StudentProgramRow: React.FC<StudentProgramRowProps> = ({boldText, leftContent, centerContent, rightContent}) => {
   // Returning core JSX
   return (
     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '7px' }}>
-      {<div className="left-content">{leftContent}</div> }
-      {<div className="right-content">{rightContent}</div> }
+      {(boldText) ? <div className="leftContent"><b>{leftContent}</b></div> : <div className="leftContent">{leftContent}</div> }
+      {(boldText) ? <div className="centerContent"><b>{centerContent}</b></div> : <div className="centerContent">{centerContent}</div> }
+      {(boldText) ? <div className="rightContent"><b>{rightContent}</b></div> : <div className="rightContent">{rightContent}</div> }
     </div>
   );
 };
