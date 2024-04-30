@@ -30,6 +30,7 @@ import ManageProgramsDesktop from './pages/Admin/Manage Programs/ManageProgramsD
 import ManageProgramsMobile from './pages/Admin/Manage Programs/ManageProgramsMobile';
 import AdminCreateStudentDesktop from './pages/Admin/Create Accounts/AdminCreateStudentDesktop';
 import AdminCreateStudentMobile from './pages/Admin/Create Accounts/AdminCreateStudentMobile';
+import ManageSchoolsDesktop from './pages/Admin/Manage Schools/ManageSchoolsDesktop';
 
 // Teacher Portal
 import TeacherPortalDesktop from './pages/Teacher/TeacherPortalDesktop';
@@ -84,6 +85,7 @@ const App: React.FC = () => {
         <Route path="/teacherportal/:snowflake/:token/:name" Component={TeacherPortalDesktop} />
         <Route path="/AccManagement/:snowflake/:token/:name" Component={AdminAccMangDesktop} />
         <Route path="/AddStudent/:snowflake/:token/:name" Component={AdminCreateStudentDesktop}/>
+        <Route path="/adminportal/manageschools/:snowflake/:token/:name" Component={ManageSchoolsDesktop}/>
       </Routes>
     );
   };
