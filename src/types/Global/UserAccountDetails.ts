@@ -30,7 +30,7 @@ export type CoreStaffAccountDetails = {
   snowflake: string;
   username: string;
   firstName: string;
-  surnameInitial: string;
+  surname: string;
   password: string;
   schools: string[]; //99-99-99
   token: string;
