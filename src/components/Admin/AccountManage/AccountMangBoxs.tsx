@@ -99,6 +99,17 @@ interface AccountListBoxProps {
                     setLoading(false); return;
                 }
             }
+        if (surnameInitial.length !== 1 && selectedCategory === 'students' )
+            {
+                toast.current?.show({
+                    severity: `warn`,
+                    summary: `Invalid surnameInitial`,
+                    detail: `You must only entet the first letter of your last name.`,
+                    closeIcon: 'pi pi-times',
+                    life: 7000,
+                    });
+                    setLoading(false); return;
+            }
             success = await updateCoreAccountDetails(selectedCategory,String(userData?.snowflake),firstName, surnameInitial, username, password,[school]);
             // Ensure process completed successfully
             if(!success) {
