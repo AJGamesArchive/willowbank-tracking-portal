@@ -99,7 +99,7 @@ interface AccountListBoxProps {
                     setLoading(false); return;
                 }
             }
-            success = await updateCoreAccountDetails(selectedCategory,String(userData?.snowflake),firstName, surnameInitial, username, password);
+            success = await updateCoreAccountDetails(selectedCategory,String(userData?.snowflake),firstName, surnameInitial, username, password,[school]);
             // Ensure process completed successfully
             if(!success) {
                 unexpected();
