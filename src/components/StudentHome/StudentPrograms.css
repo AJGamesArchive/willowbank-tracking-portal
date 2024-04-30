@@ -1,23 +1,34 @@
-.progress-card {
-    margin: 10px;
-    height: 100%;
-    position: relative;
-    height: 680px
-}
-
-.description {
-    margin-top: 0;
-    padding-top: 0;
-}
-
-.leftContent {
+.left-content {
     text-align: left;
 }
 
-.centerContent {
+.center-content {
     text-align: center;
 }
 
-.rightContent {
+.right-content {
     text-align: right;
+}
+
+.progress-card {
+    height: auto;
+    margin: 10px
+}
+
+.p-card-content {
+    padding-top: 0%;
+}
+
+.program-button {
+    margin: 0.5em;
+    display: inline
+}
+
+.button-set {
+    align-items: center;
+}
+
+.program-popup {
+    width: 50%;
+    height: auto
 }
