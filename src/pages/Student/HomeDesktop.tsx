@@ -35,7 +35,6 @@ import { XPStudentAccountDetails } from '../../types/Global/UserAccountDetails';
 import { CoreStudentAccountDetails } from '../../types/Global/UserAccountDetails';
 import { ProgramData } from '../../types/Admin/ProgramData';
 import { AssessedActivities } from '../../types/Student/AssessedActivities';
-import { BadgeData } from '../../types/Global/Bdges';
 
 // React function to render the Student Portal page for desktop devices
 const HomeDesktop: React.FC = () => {
@@ -192,23 +191,25 @@ const HomeDesktop: React.FC = () => {
   ];
 
   // Function to retrieve the description of a program
-  const getDescription = (name: string): [string, string, string] => {
+  const getDescription = (name: string): [string, string, string, string] => {
     let description: string = '';
     let colour: string = '';
     let snowflake: string = '';
+    let textColour: string = "";
     for (let i = 0; i < coreProgramData.length; i++) {
       if(coreProgramData[i].name.toLowerCase() === name.toLowerCase()) {
         description = coreProgramData[i].description;
         colour = coreProgramData[i].colour;
         snowflake = coreProgramData[i].snowflake;
+        textColour = coreProgramData[i].badgeTextColor;
       };
     };
-    return [description, colour, snowflake]
+    return [description, colour, snowflake, textColour]
   };
 
   // Function to create the program progress cards for the program progress carousel
   const programProgressCardTemplate = (program: XPStudentAccountDetails) => {
-    const [description, colour, snowflake] = getDescription(program.programName);
+    const [description, colour, snowflake, textColour] = getDescription(program.programName);
     return (
       <React.Fragment>
         <StudentProgram
@@ -217,6 +218,7 @@ const HomeDesktop: React.FC = () => {
           title={program.programName}
           description={description}
           colour={colour}
+          textColour={textColour}
           progress={program}
           fetchAndFilterActivities={fetchAndFilterActivities}
           lockButton={blockUI}

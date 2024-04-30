@@ -3,7 +3,6 @@ import React, { useState } from 'react';
 import { Card } from 'primereact/card';
 import { Button } from 'primereact/button';
 import { ProgressBar } from 'primereact/progressbar';
-import fs from 'fs'
 
 // Import CSS
 import './StudentPrograms.css'
@@ -20,6 +19,7 @@ interface StudentProgramProps {
   title: string;
   description: string;
   colour: string;
+  textColour: string;
   progress: XPStudentAccountDetails;
   fetchAndFilterActivities: (snowflake: string, programName: string) => void;
   lockButton: boolean;
@@ -27,14 +27,16 @@ interface StudentProgramProps {
 };
 
 // React function to render the student programs component for the student portal
-const StudentProgram: React.FC<StudentProgramProps> = ({programSnowflake, title, description, colour, progress, fetchAndFilterActivities, lockButton}) => {
+const StudentProgram: React.FC<StudentProgramProps> = ({programSnowflake, title, description, colour, textColour, progress, fetchAndFilterActivities, lockButton}) => {
   // Defining state variable to handle program process
   const [progressPercentage] = useState<number>(((progress.currentXP - progress.previousTargetXP) / (progress.targetXP - progress.previousTargetXP) * 100));
   const [programPopupVisible, setProgramPopupVisible] = useState<boolean>(false);
   
   // Defining card header template
   const cardHeader = (
-    <img style={{ width: '100%', backgroundColor: `#${colour}`}} src={getSRC()} alt='/public/assets/placeholder.png'/>
+    <div style={{backgroundColor: `#${colour}`}}>
+      <img style={{ width: '100%', filter:`brightness(${getBrightness()})`}} src={getSRC()} alt='Program image'/>
+    </div>
 );
   
   function getSRC ()
@@ -43,6 +45,12 @@ const StudentProgram: React.FC<StudentProgramProps> = ({programSnowflake, title,
     return `/public/assets/program-images/${filename}.png`
   }
 
+  function getBrightness()
+  {
+    if (textColour == "Black") { return 0 }
+    return 100
+  }
+  
   const programPopup = (
     <Dialog className="program-popup" header={title} onHide={() => {setProgramPopupVisible(false)}} visible={programPopupVisible} closeIcon="pi pi-times"> <p>{description}</p>  </Dialog>
   );
@@ -63,18 +71,6 @@ const StudentProgram: React.FC<StudentProgramProps> = ({programSnowflake, title,
       </React.Fragment>
     );
   };
-
-  function isLight(colour : string) {
-    // Convert to RGB
-    var rgb = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(colour);
-    if (rgb === null) {return }
-    var r = parseInt(rgb[1], 16);
-    var g = parseInt(rgb[2], 16);
-    var b = parseInt(rgb[3], 16);
-
-    var luminance = (0.2126 * r + 0.7152 * g + 0.0722 * b) / 255;
-    return luminance > 0.5
-  }
 
   // Returning core JSX
   return (
