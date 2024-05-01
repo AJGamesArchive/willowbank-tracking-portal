@@ -1,5 +1,6 @@
 // Importing types
-import { Activity } from "./Activity";
+import { CompletedActivity } from "./Activity";
+import { PendingActivity } from "./Activity";
 import { BadgeData } from "./Bdges";
 
 // Type definition for the details required for a user account (student, teacher, admin)
@@ -22,7 +23,8 @@ export type XPStudentAccountDetails = {
   previousTargetXP: number;
   currentXP: number;
   targetXP: number; // Amount required to reach next level
-  completedActivities: Activity[];
+  completedActivities: CompletedActivity[];
+  pendingActivities: PendingActivity[];
 };
 
 // Applicable to both teacher and admin

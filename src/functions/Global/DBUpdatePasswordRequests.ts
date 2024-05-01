@@ -3,7 +3,7 @@ import { db } from "../../database/Initalise"
 import { getDoc, setDoc, updateDoc, doc } from "firebase/firestore";
 import { PasswordRequest } from "../../types/Global/PasswordRequest";
 import { getResetRequests } from "./GetResetRequests";
-import { dateTime } from "./GenerateTimestamp";
+import { dateTimeReadable } from "./GenerateTimestamp";
 import { generatePassword } from '../../functions/Login/GeneratePassword.ts';
 
 // Async function to retrieve all the document ID's for a given collection in the database
@@ -37,7 +37,7 @@ export async function removeResetRequest(remove : PasswordRequest, ignore : Bool
         const logDocRef = doc(db, "requests", "password-resets", "request-logs", remove.created)
             updateDoc(logDocRef, {
                 ignored: ignore,
-                completed: dateTime(),
+                completed: dateTimeReadable(),
                 newPassword: newPassword,
             });
 
