@@ -28,6 +28,7 @@ export async function retrieveXPData(studentSnowflake: string): Promise<XPStuden
             currentXP: docDate.currentXP,
             targetXP: docDate.targetXP,
             completedActivities: docDate.completedActivities,
+            pendingActivities: docDate.pendingActivities,
         });
     });
     return Promise.resolve(data);

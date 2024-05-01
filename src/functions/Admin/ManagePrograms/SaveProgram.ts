@@ -30,6 +30,7 @@ export async function saveProgram(programSnowflake: string, programName: string,
         currentXP: 0,
         targetXP: 100,
         completedActivities: [],
+        pendingActivities: [],
       };
 
       // Retrieve all student snowflakes

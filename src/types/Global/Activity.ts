@@ -15,6 +15,26 @@ export type Activity = {
     difficulty: string;
 };
 
+// Type declaration for an individual completed activity
+export type CompletedActivity = {
+    dateCompleted: string;
+    id: number;
+    description: string;
+    xpValue: number;
+    dateAdded: string;
+    difficulty: string;
+};
+
+// Type declaration for an individual completed activity
+export type PendingActivity = {
+    dateSubmitted: string;
+    id: number;
+    description: string;
+    xpValue: number;
+    dateAdded: string;
+    difficulty: string;
+};
+
 // Type declaration for the original base activity data
 export type BaseActivity = {
     description: string;

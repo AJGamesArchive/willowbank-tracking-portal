@@ -69,6 +69,7 @@ export async function createStudentAccount(schoolCode: string, schoolName: strin
         currentXP: 0,
         targetXP: 100,
         completedActivities: [],
+        pendingActivities: [],
       };
       await setDoc(doc(db, "students", accountSnowflake, "programs", programData[i].snowflake), xpDetails);
     };
