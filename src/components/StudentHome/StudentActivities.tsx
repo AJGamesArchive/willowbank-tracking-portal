@@ -21,10 +21,11 @@ interface StudentActivitiesDialogueProps {
   activities: AssessedActivities[];
   visible: boolean;
   setVisible: (value: boolean) => void;
+  onActivityClick: (value: number) => void;
 };
 
 // React function to render the activities dialogue box for the student portal
-const StudentActivitiesDialogue: React.FC<StudentActivitiesDialogueProps> = ({title, programName, activities, visible, setVisible}) => {
+const StudentActivitiesDialogue: React.FC<StudentActivitiesDialogueProps> = ({title, programName, activities, visible, setVisible, onActivityClick}) => {
   //? Dialogue Box Templates
   // Defining template for the dialogue header
   const dialogueHeader = (
@@ -50,10 +51,12 @@ const StudentActivitiesDialogue: React.FC<StudentActivitiesDialogueProps> = ({ti
   // Function to set the colour of the activity difficulty tags
   const getSeverity = (difficulty: string) => {
     switch (difficulty) {
-      case 'Easy':
-        return 'success';
-      case 'Medium':
+      case 'Unset':
         return 'info';
+      case 'Easy':
+        return null;
+      case 'Medium':
+        return "success";
       case 'Hard':
         return 'warning';
       case "Very Hard":
@@ -75,7 +78,7 @@ const StudentActivitiesDialogue: React.FC<StudentActivitiesDialogueProps> = ({ti
   //   </>
   // );
 
-  const listItem = (activity: Activity, completed: boolean, index: number) => {
+  const listItem = (activity: Activity, completed: boolean, pending: boolean, index: number) => {
     
     const tag = (
       <Tag value={activity.difficulty} severity={getSeverity(activity.difficulty)}/>
@@ -89,7 +92,7 @@ const StudentActivitiesDialogue: React.FC<StudentActivitiesDialogueProps> = ({ti
           <div><b>Awarded XP:</b></div>
           <div>{activity.xpValue}</div>
           <br/>
-          <Button severity="success" icon="pi pi-send" outlined className='student-activity-button-round'/>
+          <Button severity="success" icon="pi pi-send" outlined className='student-activity-button-round' onClick={() => onActivityClick(activity.id)}/>
         </Card>
       </div>
     );
@@ -97,7 +100,7 @@ const StudentActivitiesDialogue: React.FC<StudentActivitiesDialogueProps> = ({ti
   
   //TODO Update both gridItem and listItem components to display activities differently if there completed
 
-  const gridItem = (activity: Activity, completed: boolean, index: number) => {
+  const gridItem = (activity: Activity, completed: boolean, pending: boolean, index: number) => {
     return (
       <div key={index}>
         {index === 0 && (<br/>)}
@@ -110,7 +113,7 @@ const StudentActivitiesDialogue: React.FC<StudentActivitiesDialogueProps> = ({ti
             <Tag value={activity.difficulty} severity={getSeverity(activity.difficulty)}/>
           </div>
           <div className='student-activity-list-right'>
-            <Button severity="success" icon="pi pi-send" className='student-activity-button-round'/>
+            <Button severity="success" icon="pi pi-send" className='student-activity-button-round' onClick={() => onActivityClick(activity.id)}/>
           </div>
         </div>
         <Divider/>
@@ -118,13 +121,13 @@ const StudentActivitiesDialogue: React.FC<StudentActivitiesDialogueProps> = ({ti
     );
   };
 
-  const itemTemplate = (activity: Activity, completed: boolean, layout: string, index: number) => {
+  const itemTemplate = (activity: Activity, completed: boolean, pending: boolean, layout: string, index: number) => {
     if (!activity) {return;};
-    return (layout === 'grid') ? listItem(activity, completed, index) : gridItem(activity, completed, index);
+    return (layout === 'grid') ? listItem(activity, completed, pending, index) : gridItem(activity, completed, pending, index);
   };
 
   const listTemplate = () => {
-    return <div className={(layout === "grid" ? "student-activity-grid-container" : "student-activity-list-col")}>{activities.map((activity, index) => itemTemplate(activity.activity, activity.completed, layout, index))}</div>;
+    return <div className={(layout === "grid" ? "student-activity-grid-container" : "student-activity-list-col")}>{activities.map((activity, index) => itemTemplate(activity.activity, activity.completed, activity.pending, layout, index))}</div>;
   };
   
   const dataViewHeader = () => {

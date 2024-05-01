@@ -4,6 +4,7 @@ import { getDoc, doc, setDoc, query, collection, getDocs, DocumentData } from "f
 
 // Import functions
 import { dateTime } from "../Global/GenerateTimestamp";
+import { dateTimeReadable } from "../Global/GenerateTimestamp";
 
 // Import types
 import { PasswordRequest } from "../../types/Global/PasswordRequest";
@@ -46,7 +47,7 @@ export async function createPasswordRequest(username: string, accountType: strin
       snowflake: accountSnowflake,
       username: username,
       accountType: accountType,
-      created: timestamp,
+      created: dateTimeReadable(),
       completed: "",
       newPassword: "",
       ignored: false,
