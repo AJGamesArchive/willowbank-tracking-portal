@@ -49,6 +49,7 @@ const HomeDesktop: React.FC = () => {
   const [coreStudentData, setCoreStudentData] = useState<CoreStudentAccountDetails>();
   const [progress, setProgress] = useState<XPStudentAccountDetails[]>([]);
   const [selectedProgram, setSelectProgram] = useState<string>("");
+  const [selectedProgramName, setSelectedProgramName] = useState<string>("");
 
   // Variable to force confirmation of the account login state
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
@@ -70,6 +71,7 @@ const HomeDesktop: React.FC = () => {
   async function fetchAndFilterActivities(snowflake: string, programName: string): Promise<void> {
     setBlockUI(true);
     setSelectProgram(snowflake);
+    setSelectedProgramName(programName);
     const activities = await retrieveAllActivities(snowflake);
     if(typeof activities == "string") {
       toast.current?.show({
@@ -293,8 +295,8 @@ const HomeDesktop: React.FC = () => {
             />
           </div>
           <StudentActivitiesDialogue
-            title='Fishing Activities'
-            programName='Fishing'
+            title={`${selectedProgramName} Activities`}
+            programName={selectedProgramName}
             activities={programActivities}
             visible={visibleActivities}
             setVisible={setVisibleActivities}
