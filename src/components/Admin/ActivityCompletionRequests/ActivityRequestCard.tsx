@@ -3,7 +3,6 @@
 import { Divider } from 'primereact/divider';
 import { Button } from 'primereact/button';
 import { Tag } from 'primereact/tag';
-import { Dropdown } from 'primereact/dropdown';
 
 // Import types
 import { ActivityRequests } from '../../../types/Global/ActivityCompletionRequests';
