@@ -96,7 +96,7 @@ const TeacherPortalDesktop: React.FC = () => {
           backgroundimage='/assets/teacher-portal-images/teacher-banner.png' 
           text={`Welcome ${name}`}/>
         <br />
-        <h3>Please select from the following options.</h3>
+        <h3 style={{textAlign : "left"}}>Please select from the following options.</h3>
         <br />
         <ul className="list">
           <li className="listItem">

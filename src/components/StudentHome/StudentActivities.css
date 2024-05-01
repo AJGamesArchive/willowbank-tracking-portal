@@ -2,12 +2,15 @@
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
     gap: 20px;
+    min-width: fit-content;
 }
 
 .student-activity-grid-item {
     background-color: #85d2f9;
+    margin: 5px;
     padding: 5px;
     border: 1px solid #85d2f9;
+    min-width: fit-content;
 }
 
 .student-activity-list-col {
@@ -33,19 +36,21 @@
 .student-activity-button-round {
     border-radius: 20px;
     vertical-align: middle;
-    padding: auto
+    padding: auto;
+    width: 200px
 }
 
 .header-row {
     display: inline-block;
     margin-top: 0;
+    margin-bottom: 5px
 }
 
 .header-item {
     margin-top: 0;
     display: inline;
     vertical-align: middle;
-    padding-right: 10px
+    margin-right : 5px
 }
 
 .header-item tag {
