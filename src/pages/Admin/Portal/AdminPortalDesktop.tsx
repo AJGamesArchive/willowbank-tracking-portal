@@ -13,15 +13,18 @@ import '../../Shared CSS files/PortalDesktop.css'
 // Import functions
 import { confirmLogin } from '../../../functions/Global/ConfirmLogin';
 import { retrieveStaffData } from '../../../functions/Teacher/RetrieveStaffData';
+import { retrieveActivityRequests } from '../../../functions/Admin/ActivityRequests/RetrieveAllActivityRequests';
 
 // Importing UI components
 import Banner from "../../../components/Admin/AdminPortal/Banner";
 import MenuOption from '../../../components/Admin/AdminPortal/AdminMenuOption';
 import SignOutOption from '../../../components/Admin/AdminPortal/AdminMenuSignOutOption';
 import EditAccountDetails from '../../../components/Global/EditAccountDetails';
+import ActivityCompletionRequestDialogue from '../../../components/Admin/ActivityCompletionRequests/ActivityRequestsDialogue';
 
 // Import types
 import { CoreStaffAccountDetails } from '../../../types/Global/UserAccountDetails';
+import { ActivityRequests } from '../../../types/Global/ActivityCompletionRequests';
 import ModifyOption from '../../../components/Admin/AdminPortal/AdminMenuOptionChangeDetails';
 
 // React function to render the Admin Portal page for desktop devices
@@ -32,6 +35,9 @@ const AdminPortalDesktop: React.FC = () => {
   // Variable to force confirmation of the account login state
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
 
+  // State variable to store all active activity completion requests
+  const [requests, setRequests] = useState<ActivityRequests[]>([]);
+
   // State variable o store the logged in users data
   const [coreStaffData, setCoreStaffData] = useState<CoreStaffAccountDetails>();
 
@@ -41,8 +47,30 @@ const AdminPortalDesktop: React.FC = () => {
   // State variable to control the visibility of the edit account details dialogue box
   const [visibleEditDetails, setVisibleEditDetails] = useState<boolean>(false);
 
+  // State variable to control the visibility of the activity completion requests dialogue box
+  const [visibleActivityRequests, setVisibleActivityRequests] = useState<boolean>(false);
+
   // Variables to control toast messages
   const toast = useRef<Toast>(null);
+
+  // Async function to handel retrieving all active activity completion requests
+  async function retrieveActivityRequestsHandler(): Promise<void> {
+    const retrievedRequests = await retrieveActivityRequests();
+    if(typeof retrievedRequests === "string") {
+      toast.current?.show({
+        severity: 'error',
+        summary: 'Error Retrieving Requests',
+        detail: `An error occurred while trying to retrieve all active activity completion requests. Please try again.`,
+        closeIcon: 'pi pi-times',
+        life: 7000,
+      });
+      setRequests([]);
+      return;
+    };
+    setRequests(retrievedRequests);
+    setVisibleActivityRequests(true)
+    return;
+  };
 
   // Async function to retrieve all staff data required for the portal
   async function retrieveStaffDataHandler(): Promise<void> {
@@ -142,11 +170,12 @@ const AdminPortalDesktop: React.FC = () => {
               title="School management" />
             </li>
             <li className="listItem">
-            <MenuOption 
-              imageSRC={`/assets/admin-portal-images/Activity.png`}
-              imageAltText='Account image'
-              destinationPage={``}
-              title="Actvitiy requests" />
+              <div onClick={() => retrieveActivityRequestsHandler()}>
+                <ModifyOption 
+                imageSRC={`/assets/admin-portal-images/Activity.png`}
+                imageAltText='Account image'
+                title="Actvitiy requests" />
+              </div>
             </li>
             <li className="listItem">
               <div onClick={() => setVisibleEditDetails(true)}>
@@ -173,6 +202,11 @@ const AdminPortalDesktop: React.FC = () => {
           setVisible={setVisibleEditDetails}
           setIsLoggedIn={setIsLoggedIn}
           setDetailConfirmation={setDetailConfirmation}
+        />
+        <ActivityCompletionRequestDialogue
+          visible={visibleActivityRequests}
+          setVisible={setVisibleActivityRequests}
+          requests={requests}
         />
       </div>
     );
