@@ -78,12 +78,23 @@ const StudentActivitiesDialogue: React.FC<StudentActivitiesDialogueProps> = ({ti
 
   const getStatusMessage = (completed : boolean, pending : boolean) =>
   {
-    if (completed)
-      return "Completed"
+    if (completed) 
+      {
+        return "Completed"
+      }
     else if (pending)
-      return "Pending approval"
+      {
+        return "Pending approval"
+      }
     else
+    {
       return "Not completed"
+    }
+  }
+
+  const checkDisabled = (completed : boolean, pending : boolean) =>
+  {
+    return (completed || pending)
   }
   // Defining activity card header template
   const cardHeader = (
@@ -108,7 +119,13 @@ const StudentActivitiesDialogue: React.FC<StudentActivitiesDialogueProps> = ({ti
           <div><b>Details:</b> {activity.description}</div>
           <div><b>Awarded XP:</b> {activity.xpValue}</div>
           <br/>
-          <Button label="Mark completed" icon="pi pi-check-square" outlined className='student-activity-button-round' onClick={() => onActivityClick(activity.id)}/>
+          <Button 
+            label="Mark completed" 
+            icon="pi pi-check-square" 
+            outlined 
+            className='student-activity-button-round' 
+            onClick={() => onActivityClick(activity.id)}
+            disabled={checkDisabled(completed, pending)}/>
         </Card>
       </div>
     );
@@ -132,7 +149,13 @@ const StudentActivitiesDialogue: React.FC<StudentActivitiesDialogueProps> = ({ti
             <div><b>Awarded XP:</b>{` ${activity.xpValue}`}</div>
           </div>
           <div className='student-activity-list-right'>
-            <Button label="Mark completed" icon="pi pi-check-square" className='student-activity-button-round' onClick={() => onActivityClick(activity.id)}/>
+            <Button 
+              label="Mark completed" 
+              icon="pi pi-check-square" 
+              outlined
+              className='student-activity-button-round' 
+              onClick={() => onActivityClick(activity.id)} 
+              disabled={checkDisabled(completed, pending)}/>
           </div>
         </div>
         <Divider/>

@@ -1,3 +1,6 @@
+// Import CSS
+import '../../Shared CSS files/PortalDesktop.css'
+
 // Import core functions
 import { useState, useEffect, useRef } from 'react';
 import { ProgressSpinner } from 'primereact/progressspinner';
@@ -7,8 +10,6 @@ import { Toast } from 'primereact/toast';
 import { GlobalParams } from '../../../interfaces/GlobalParams';
 import { useParams } from 'react-router';
 
-// Import CSS
-import '../../Shared CSS files/PortalDesktop.css'
 
 // Import functions
 import { confirmLogin } from '../../../functions/Global/ConfirmLogin';
@@ -44,8 +45,8 @@ const AdminPortalDesktop: React.FC = () => {
   // Variables to control toast messages
   const toast = useRef<Toast>(null);
 
-
   const name : string = String(params.name?.charAt(0).toUpperCase()) + String(params.name?.substring(1).toLowerCase());
+
   // Async function to retrieve all staff data required for the portal
   async function retrieveStaffDataHandler(): Promise<void> {
     const staffData = await retrieveStaffData((params.snowflake? params.snowflake : ''), "admins");
@@ -91,11 +92,11 @@ const AdminPortalDesktop: React.FC = () => {
   // Return JSX based on login state
   if (isLoggedIn) {
     return (
-      <div>
+      <>
         <Toast ref={toast}/>
         <Banner
           backgroundimage='/assets/admin-portal-images/banner.png' 
-          text={`WELCOME ${name}`} 
+          text={`Welcome ${name}`} 
         />
 
         <div>
@@ -104,7 +105,6 @@ const AdminPortalDesktop: React.FC = () => {
           </div>
           
           <br />
-          
           <ul className="list">
             <li className="listItem">
               <MenuOption 
@@ -176,7 +176,7 @@ const AdminPortalDesktop: React.FC = () => {
           setIsLoggedIn={setIsLoggedIn}
           setDetailConfirmation={setDetailConfirmation}
         />
-      </div>
+      </>
     );
   } else {
     return (
