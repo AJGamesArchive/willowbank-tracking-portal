@@ -7,7 +7,6 @@ import { ProgressSpinner } from 'primereact/progressspinner';
 // Importing UI components
 import AccountListBox from '../../../components/Admin/AccountManage/AccountMangLists';
 import AccountManageBoxs from '../../../components/Admin/AccountManage/AccountMangBoxs';
-import CreateStudentButton from '../../../components/Admin/AccountManage/NavCreateAccount';
 
 // Import global parameters
 import { GlobalParams } from '../../../interfaces/GlobalParams';
@@ -16,10 +15,12 @@ import { useParams } from 'react-router';
 // Import CSS
 import './AdminAccMangDesktop.css'
 import './AdminAccMangGlobal.css'
+import '../../Shared CSS files/PortalDesktop.css'
 
 // Import functions
 import { confirmLogin } from '../../../functions/Global/ConfirmLogin';
 import { Divider } from 'primereact/divider';
+import Banner from '../../../components/Admin/AdminPortal/Banner';
 
 // React function to render the Account Manager page for desktop devices
 const AdminAccMangDesktop: React.FC = () => {
@@ -48,7 +49,11 @@ const AdminAccMangDesktop: React.FC = () => {
     return (
       <>
         <div>
-          <h1>Existing accounts</h1>
+          <Banner 
+            backgroundimage=''
+            text=''
+          />
+          <h3>Please select from the existing accounts.</h3>
           <AccountListBox 
             selectedUsername={selectedUsername}
             setSelectedUsername={setSelectedUsername}
@@ -64,21 +69,6 @@ const AdminAccMangDesktop: React.FC = () => {
         </div>
 
         <Divider />
-
-        <h1>Create a new account</h1>
-        <div>
-          <CreateStudentButton 
-            AccountType='student' 
-            Snowflake={params.snowflake || ''}
-            Name={params.name || ''}
-            Token={params.token || ''} />
-          <CreateStudentButton 
-            AccountType='teacher'
-            Snowflake={params.snowflake || ''}
-            Name={params.name || ''}
-            Token={params.token || ''} />
-        </div>
-        <div></div>
         
         <div className='buttonContainer'>
           <Button label="Back" icon="pi pi-arrow-left" onClick={() => {

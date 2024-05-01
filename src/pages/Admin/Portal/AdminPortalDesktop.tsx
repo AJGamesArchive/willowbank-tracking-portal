@@ -120,12 +120,19 @@ const AdminPortalDesktop: React.FC = () => {
                 title='Program management'
               />
             </li>
+            <li className="listItem">
+            <MenuOption 
+              imageSRC={`/assets/admin-portal-images/create-student.png`}
+              imageAltText='Create account image'
+              destinationPage={`/adminportal/createaccount/${params.snowflake}/${params.token}/${params.name}`}
+              title="Create new account" />
+            </li>
             <li className='listItem'>
             <MenuOption 
               imageSRC={`/assets/admin-portal-images/Account.png`}
               imageAltText='Account image'
               destinationPage={`/AccManagement/${params.snowflake}/${params.token}/${params.name}`}
-              title="Account management" />
+              title="Manage Accounts" />
             </li>
             <li className='listItem'>
             <MenuOption 
