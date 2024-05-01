@@ -30,6 +30,7 @@ import { retrieveXPData } from '../../functions/Student/RetrieveXPData';
 import { retrieveStudentData } from '../../functions/Student/RetrieveStudentData';
 import { retrieveAllActivities } from '../../functions/Admin/ManagePrograms/RetrieveActivityData';
 import { createActivityCompleteRequest } from '../../functions/Student/CreateActivityCompleteRequest';
+import { getSchoolName } from '../../functions/Student/GetSchoolName';
 
 // Importing types
 import { XPStudentAccountDetails } from '../../types/Global/UserAccountDetails';
@@ -152,7 +153,6 @@ const HomeDesktop: React.FC = () => {
     setCoreProgramData((typeof programData !== "string") ? filteredProgramData : coreProgramData);
     setProgress((typeof programProgress !== "string") ? programProgress : progress);
     setCoreStudentData((typeof studentData !== "string") ? studentData : coreStudentData);
-    console.log(progress); //! Remove later
     return;
   };
 
@@ -179,7 +179,9 @@ const HomeDesktop: React.FC = () => {
       if(a.activity.id === activityId) activity = a.activity;
     });
     if(activity === undefined) {UnexpectedCreationError(); return;};
-    const success: boolean = await createActivityCompleteRequest((coreStudentData) ? coreStudentData.snowflake : '', studentName, selectedProgram, programName, activity);
+    const schoolName = await getSchoolName((coreStudentData) ? coreStudentData.school : '');
+    if(schoolName === undefined) {UnexpectedCreationError(); return;};
+    const success: boolean = await createActivityCompleteRequest((coreStudentData) ? coreStudentData.snowflake : '', studentName, selectedProgram, programName, activity, schoolName);
     if(!success) {UnexpectedCreationError(); return;}
     toast.current?.show({
       severity: 'success',

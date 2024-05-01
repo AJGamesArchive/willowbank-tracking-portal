@@ -14,10 +14,11 @@ import { dateTime } from "../Global/GenerateTimestamp";
  * @param {string} programSnowflake The snowflake ID of the program the activity request is for.
  * @param {string} programName The name of the program the activity request is for.
  * @param {Activity} activity An Activity object containing the details of the activity to create a request for.
+ * @param {string} schoolName The name of the school the student attends.
  * @returns {boolean} Returns a boolean to indicate whether or not the process was completed successfully.
  * @AJGamesArchive
  */
-export async function createActivityCompleteRequest(studentSnowflake: string, studentName: string, programSnowflake: string, programName: string, activity: Activity): Promise<boolean> {
+export async function createActivityCompleteRequest(studentSnowflake: string, studentName: string, programSnowflake: string, programName: string, activity: Activity, schoolName: string): Promise<boolean> {
   // Create timestamps for the request creation
   const submissionDate: string = dateTime();
   const submissionDateReadable: string = dateTimeReadable();
@@ -41,6 +42,7 @@ export async function createActivityCompleteRequest(studentSnowflake: string, st
     xpValue: activity.xpValue,
     dateSubmitted: submissionDateReadable,
     logDoc: submissionDate,
+    schoolName: schoolName,
   };
   const requestLog: ActivityRequestsLog = {
     studentSnowflake: studentSnowflake,
@@ -53,6 +55,7 @@ export async function createActivityCompleteRequest(studentSnowflake: string, st
     dateSubmitted: submissionDateReadable,
     dateActioned: '',
     approved: false,
+    schoolName: schoolName,
   };
   // Save all created objects to their respective place in the database
   const studentDocRef = doc(db, "students", studentSnowflake, "programs", programSnowflake);

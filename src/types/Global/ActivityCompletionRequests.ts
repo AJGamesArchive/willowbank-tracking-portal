@@ -9,6 +9,7 @@ export type ActivityRequests = {
   xpValue: number;
   dateSubmitted: string;
   logDoc: string;
+  schoolName: string;
 };
 
 // Type declaration for activity completion request logs
@@ -23,4 +24,5 @@ export type ActivityRequestsLog = {
   dateSubmitted: string;
   dateActioned: string;
   approved: boolean;
+  schoolName: string;
 };

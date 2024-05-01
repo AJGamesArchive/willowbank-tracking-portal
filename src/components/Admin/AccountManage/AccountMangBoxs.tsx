@@ -12,7 +12,8 @@ import { BlockUI } from 'primereact/blockui';
 import { Toast } from 'primereact/toast';
 import { InputMask, InputMaskChangeEvent } from 'primereact/inputmask';
 import { Button } from 'primereact/button';
-import { Password } from 'primereact/password';
+import { Chips } from 'primereact/chips';
+
 
 
 
@@ -44,7 +45,7 @@ interface AccountListBoxProps {
     const [firstName, setFirstName] = useState<string>("");
     const [surnameInitial, setSurnameInitial] = useState<any>("");
     const [password, setPassword] = useState<string>("");
-    const [school, setNewSchool] = useState<any>(null);
+    var [school, setNewSchool] = useState<string[]>([]);
 
     // State variable to control the submitted state of the form
     const [submitted, setSubmitted] = useState<boolean>(false);
@@ -110,7 +111,7 @@ interface AccountListBoxProps {
                     });
                     setLoading(false); return;
             }
-            success = await updateCoreAccountDetails(selectedCategory,String(userData?.snowflake),firstName, surnameInitial, username, password,[school]);
+            success = await updateCoreAccountDetails(selectedCategory,String(userData?.snowflake),firstName, surnameInitial, username, password,school);
             // Ensure process completed successfully
             if(!success) {
                 unexpected();
@@ -126,6 +127,8 @@ interface AccountListBoxProps {
         setLoading(false);
         setPassword("");
       };
+    
+      
 
     
     //use effects runs when component is called
@@ -139,7 +142,12 @@ interface AccountListBoxProps {
                         setFirstName(String(data?.firstName))
                         setSurnameInitial(String(data?.surnameInitial))
                         setUsername(String(data?.username))
-                        setNewSchool(data.school)
+                        if(selectedCategory === "students") {
+                            school = [data.school];
+                        } else {
+                            school = [data.school];
+                        }
+                        setNewSchool(school)
                         setPassword(String(data?.password))
                     }
                 })
@@ -151,6 +159,24 @@ interface AccountListBoxProps {
                 setUserData(null as unknown as UserData | undefined);
             }
     },[selectedUsername, selectedCategory]);
+    
+      const checkNewSchool = (e : any) => {
+        console.log(e)
+        console.log(school)
+        const regex = /^\d{2}-\d{2}-\d{2}$/;
+        if (regex.test(e) == true)
+            {
+                console.log(e)
+                school.push(e);
+                setNewSchool(school)
+                console.log(school)
+                return;
+            }
+        else {
+                return;
+             }
+      };
+    
 
     return (
         (userData && <div>
@@ -208,15 +234,32 @@ interface AccountListBoxProps {
                     <label>
                         School
                     </label>
-                    <InputMask
-                    id='edit-account-school'
-                    value={school}
-                    mask="99-99-99"
-                    slotChar='00-00-00'
-                    onChange={(e: InputMaskChangeEvent) => {
-                        setNewSchool(e.target.value);
-                    }}
+                    {selectedCategory === 'students' ? (
+                        <InputMask
+                            id='edit-account-school'
+                            value={school[0]}
+                            mask="99-99-99"
+                            slotChar='00-00-00'
+                            onChange={(e: InputMaskChangeEvent) => {
+                            school[0] = (e.target.value) ? e.target.value : '';
+                            setNewSchool(school);
+                        }}
                     />
+                    ) : (
+                           <Chips
+                           value={school}
+                           placeholder='Format: 00-00-00'
+                           onRemove={(e) => {
+                            let index: number = -1;
+                            for(let i = 0; i < school.length; i++) {
+                                if(school[i] === e.value) index = i;
+                            };
+                            school.splice(index, 1);
+                            setNewSchool(school)
+                           }}
+                           onAdd={(e) => checkNewSchool(e.value)}
+                           />
+                        )}
                 </div>
 
                 <div>
