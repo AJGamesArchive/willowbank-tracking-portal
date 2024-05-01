@@ -138,7 +138,7 @@ const AdminPortalDesktop: React.FC = () => {
             <MenuOption 
               imageSRC={`/assets/admin-portal-images/School.png`}
               imageAltText='School image'
-              destinationPage={`/adminportal/resetpassword/${params.snowflake}/${params.token}/${params.name}`}
+              destinationPage={`/adminportal/manageschools/${params.snowflake}/${params.token}/${params.name}`}
               title="School management" />
             </li>
             <li className="listItem">

@@ -10,9 +10,9 @@ import { doc, updateDoc } from "firebase/firestore";
  * @param {string} username The updated account username - Pass in 'undefined' to ignore param
  * @param {string} password The updated account password - Pass in 'undefined' to ignore param
  * @returns {Promise<boolean>} Returns either true or false to indicate whether the operation was successful or not.
- * @AJGamesArchive
+ * @Ethan
  */
-export async function updateCoreAccountDetails(accountType: string, snowflake: string, firstName: string = "", surnameInitial: string = "", username: string = "", password: string = ""): Promise<boolean> {
+export async function updateCoreAccountDetails(accountType: string, snowflake: string, firstName: string = "", surnameInitial: string = "", username: string = "", password: string = "",school: string[] = []): Promise<boolean> {
   // Ensure at least 1 core detail needs updating
   if(!firstName && !surnameInitial && !username && !password) return Promise.resolve(false);
   // Collect all core details and put them into an object
@@ -21,6 +21,14 @@ export async function updateCoreAccountDetails(accountType: string, snowflake: s
   if(surnameInitial) details.surnameInitial = surnameInitial;
   if(username) details.username = username;
   if(password) details.password = password;
+  if (accountType == 'students')
+    {
+      if(school.length !== 0) details.school = school[0]
+    }
+  else 
+    {
+    if(school.length !== 0) details.school = school
+    }
   // Update the DB
   try {
     await updateDoc(doc(db, accountType, snowflake), details);

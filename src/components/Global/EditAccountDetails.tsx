@@ -111,7 +111,7 @@ const EditAccountDetails: React.FC<EditAccountDetailsProps> = ({accountType, sno
           };
         };
         // Update database
-        success = await updateCoreAccountDetails(accountType, snowflake, firstName, surnameInitial, username, undefined);
+        success = await updateCoreAccountDetails(accountType, snowflake, firstName, surnameInitial, username, undefined,undefined);
         break;
       case "p":
         // Ensure a password has been entered
@@ -148,7 +148,7 @@ const EditAccountDetails: React.FC<EditAccountDetailsProps> = ({accountType, sno
           setLoading(false); return;
         };
         // Update database
-        success = await updateCoreAccountDetails(accountType, snowflake, undefined, undefined, undefined, newPassword);
+        success = await updateCoreAccountDetails(accountType, snowflake, undefined, undefined, undefined, newPassword,undefined);
         break;
       default:
         // Handel invalid modes being active

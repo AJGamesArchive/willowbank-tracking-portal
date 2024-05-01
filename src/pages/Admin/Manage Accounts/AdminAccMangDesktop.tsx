@@ -70,11 +70,6 @@ const AdminAccMangDesktop: React.FC = () => {
 
         <Divider />
         
-        <div className='buttonContainer'>
-          <Button label="Back" icon="pi pi-arrow-left" onClick={() => {
-          setSelectedUsername(null); //goes back to the list pages
-          }} severity="secondary"/>
-        </div>
 
         <Button label="[DEV] Back" icon="pi pi-arrow-left" onClick={() => {
           window.location.href = `/home` //! DEV button to return to login page - remove later
