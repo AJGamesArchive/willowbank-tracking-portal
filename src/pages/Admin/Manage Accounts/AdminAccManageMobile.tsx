@@ -8,14 +8,14 @@ import { GlobalParams } from '../../../interfaces/GlobalParams';
 import { useParams } from 'react-router';
 
 // Import CSS
-import './AdminAccMangMobile.css'
-import './AdminAccMangGlobal.css'
+import './AdminAccManageMobile.css'
+import './AdminAccManageGlobal.css'
 
 // Import functions
 import { confirmLogin } from '../../../functions/Global/ConfirmLogin';
 
 // React function to render the Teacher Portal page for mobile devices
-const AdminAccMangMobile: React.FC = () => {
+const AdminAccManageMobile: React.FC = () => {
   // Setting up global params on this page
   const params = useParams<GlobalParams>();
 
@@ -56,4 +56,4 @@ const AdminAccMangMobile: React.FC = () => {
   };
 };
 
-export default AdminAccMangMobile;
+export default AdminAccManageMobile;

@@ -62,7 +62,7 @@ interface AccountListBoxProps {
                 setTeachers(teacherData);
                 setAdmins(adminData);
             } catch (error) {
-                //runs error if a problem arrises with fetching usernames
+                //runs error if a problem arises with fetching usernames
                 console.error('Error fetching usernames:', error);
             }
         };

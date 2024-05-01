@@ -86,7 +86,7 @@ const EditAccountDetails: React.FC<EditAccountDetailsProps> = ({accountType, sno
           toast.current?.show({
             severity: `warn`,
             summary: `Missing Details`,
-            detail: `You cannot remove you're; first name, surname initial, or username. Please ensure all fields have a value.`,
+            detail: `You cannot remove your: first name, surname initial, or username. Please ensure all fields have a value.`,
             closeIcon: 'pi pi-times',
             life: 7000,
           });
@@ -119,7 +119,7 @@ const EditAccountDetails: React.FC<EditAccountDetailsProps> = ({accountType, sno
           toast.current?.show({
             severity: `warn`,
             summary: `Missing Details`,
-            detail: `You cannot remove you're password. Please ensure you have entered and confirmed your new password.`,
+            detail: `You cannot remove your password. Please ensure you have entered and confirmed your new password.`,
             closeIcon: 'pi pi-times',
             life: 7000,
           });
@@ -141,7 +141,7 @@ const EditAccountDetails: React.FC<EditAccountDetailsProps> = ({accountType, sno
           toast.current?.show({
             severity: `warn`,
             summary: `Unchanged Password`,
-            detail: `You're new password cannot be the same as your old password.`,
+            detail: `Your new password cannot be the same as your old password.`,
             closeIcon: 'pi pi-times',
             life: 7000,
           });
@@ -212,7 +212,7 @@ const EditAccountDetails: React.FC<EditAccountDetailsProps> = ({accountType, sno
     toast.current?.show({
       severity: `success`,
       summary: `Username Generated`,
-      detail: `You're username was generated successfully.`,
+      detail: `Your username was generated successfully.`,
       closeIcon: 'pi pi-times',
       life: 7000,
     });
@@ -328,7 +328,7 @@ const EditAccountDetails: React.FC<EditAccountDetailsProps> = ({accountType, sno
         closeIcon='pi pi-times' 
         style={{ width: '32rem' }} 
         breakpoints={{ '960px': '75vw', '641px': '90vw' }} 
-        header={`Edit You're Account Details:`} 
+        header={`Edit Your Account Details:`} 
         modal 
         className="p-fluid" 
         footer={footerManager} 

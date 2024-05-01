@@ -12,10 +12,7 @@ import { BlockUI } from 'primereact/blockui';
 import { Toast } from 'primereact/toast';
 import { InputMask, InputMaskChangeEvent } from 'primereact/inputmask';
 import { Button } from 'primereact/button';
-import { Password } from 'primereact/password';
-
-
-
+import { Chips } from 'primereact/chips';
 
 // Import types
 import { CoreStaffAccountDetails } from '../../../types/Global/UserAccountDetails';
@@ -24,15 +21,13 @@ import { CoreStudentAccountDetails } from '../../../types/Global/UserAccountDeta
 // Import CSS
 import './AccountMangBoxs.css';
 
-
-
 interface AccountListBoxProps {
     selectedUsername: CoreStudentAccountDetails | CoreStaffAccountDetails;
     setSelectedUsername: (value: string) => void;
     selectedCategory: string;
     setSelectedCategory: (value: string) => void;
 }
-    //creates usestates for the selected users ifnromation
+    //creates usestates for the selected users information
     const AccountManageBoxs: React.FC<AccountListBoxProps> = ({selectedUsername, setSelectedUsername,selectedCategory,setSelectedCategory}) => {
     const [userData, setUserData] = useState<UserData>();
 
@@ -44,7 +39,7 @@ interface AccountListBoxProps {
     const [firstName, setFirstName] = useState<string>("");
     const [surnameInitial, setSurnameInitial] = useState<any>("");
     const [password, setPassword] = useState<string>("");
-    const [school, setNewSchool] = useState<any>(null);
+    var [school, setNewSchool] = useState<string[]>([]);
 
     // State variable to control the submitted state of the form
     const [submitted, setSubmitted] = useState<boolean>(false);
@@ -104,13 +99,13 @@ interface AccountListBoxProps {
                 toast.current?.show({
                     severity: `warn`,
                     summary: `Invalid surnameInitial`,
-                    detail: `You must only entet the first letter of your last name.`,
+                    detail: `You must only enter the first letter of your last name.`,
                     closeIcon: 'pi pi-times',
                     life: 7000,
                     });
                     setLoading(false); return;
             }
-            success = await updateCoreAccountDetails(selectedCategory,String(userData?.snowflake),firstName, surnameInitial, username, password,[school]);
+            success = await updateCoreAccountDetails(selectedCategory,String(userData?.snowflake),firstName, surnameInitial, username, password,school);
             // Ensure process completed successfully
             if(!success) {
                 unexpected();
@@ -126,6 +121,8 @@ interface AccountListBoxProps {
         setLoading(false);
         setPassword("");
       };
+    
+      
 
     
     //use effects runs when component is called
@@ -139,7 +136,12 @@ interface AccountListBoxProps {
                         setFirstName(String(data?.firstName))
                         setSurnameInitial(String(data?.surnameInitial))
                         setUsername(String(data?.username))
-                        setNewSchool(data.school)
+                        if(selectedCategory === "students") {
+                            school = data.school;
+                        } else {
+                            school = data.school;
+                        }
+                        setNewSchool(school)
                         setPassword(String(data?.password))
                     }
                 })
@@ -151,6 +153,15 @@ interface AccountListBoxProps {
                 setUserData(null as unknown as UserData | undefined);
             }
     },[selectedUsername, selectedCategory]);
+    
+      const checkNewSchool = (e : any) => {
+        const regex = /^\d{2}-\d{2}-\d{2}$/;
+        if (regex.test(e) === true) {
+            const newSchool = [...school, e];
+        setNewSchool(newSchool);
+  }
+      };
+    
 
     return (
         (userData && <div>
@@ -208,15 +219,33 @@ interface AccountListBoxProps {
                     <label>
                         School
                     </label>
-                    <InputMask
-                    id='edit-account-school'
-                    value={school}
-                    mask="99-99-99"
-                    slotChar='00-00-00'
-                    onChange={(e: InputMaskChangeEvent) => {
-                        setNewSchool(e.target.value);
-                    }}
+                    {selectedCategory === 'students' ? (
+                        <InputMask
+                            id='edit-account-school'
+                            value={school[0]}
+                            mask="99-99-99"
+                            slotChar='00-00-00'
+                            onChange={(e: InputMaskChangeEvent) => {
+                            school[0] = (e.target.value) ? e.target.value : '';
+                            setNewSchool(school);
+                        }}
                     />
+                    ) : (
+                           <Chips
+                           value={school}
+                           placeholder='Format: 00-00-00'
+                           onRemove={(e) => {
+                            let index: number = -1;
+                            for(let i = 0; i < school.length; i++) {
+                                if(school[i] === e.value) index = i;
+                            };
+                            school.splice(index, 1);
+                            setNewSchool(school)
+                           }}
+                           onAdd={(e) => checkNewSchool(e.value)}
+                           
+                           />
+                        )}
                 </div>
 
                 <div>
