@@ -50,10 +50,10 @@ const AdminAccMangDesktop: React.FC = () => {
       <>
         <div>
           <Banner 
-            backgroundimage=''
-            text=''
+            backgroundimage='/assets/admin-portal-images/banner.png'
+            text='Manage Accounts'
           />
-          <h3>Please select from the existing accounts.</h3>
+
           <AccountListBox 
             selectedUsername={selectedUsername}
             setSelectedUsername={setSelectedUsername}

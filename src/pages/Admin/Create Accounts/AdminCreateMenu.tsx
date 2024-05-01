@@ -73,7 +73,7 @@ const AdminPortalDesktop: React.FC = () => {
       <div>
         <Toast ref={toast}/>
         <Banner
-          backgroundimage='https://marketplace.canva.com/EAENvp21inc/1/0/1600w/canva-simple-work-linkedin-banner-qt_TMRJF4m0.jpg' 
+          backgroundimage='/assets/admin-portal-images/banner.png' 
           text={`test`} 
         />
 
@@ -89,7 +89,7 @@ const AdminPortalDesktop: React.FC = () => {
                 imageSRC={`/assets/admin-portal-images/student.png`}
                 imageAltText='Student image'
                 destinationPage={`/AddStudent/${params.Snowflake}/${params.Token}/${params.Name}`}
-                title='Reset password'
+                title='Create student'
               />
             </li>
             <li className="listItem">
@@ -97,7 +97,7 @@ const AdminPortalDesktop: React.FC = () => {
                 imageSRC={`/assets/admin-portal-images/teacher.png`}
                 imageAltText='Teacher image'
                 destinationPage={``}
-                title='Program management'
+                title='Create teacher'
               />
             </li>
             <li className="listItem">
