@@ -258,18 +258,18 @@ const HomeDesktop: React.FC = () => {
   const programProgressCardTemplate = (program: XPStudentAccountDetails) => {
     const [description, colour, snowflake, textColour] = getDescription(program.programName);
     return (
-      <React.Fragment>
-        <StudentProgram
-          programSnowflake={snowflake}
-          image='/assets/placeholder.png'
-          title={program.programName}
-          description={description}
-          colour={colour}
-          textColour={textColour}
-          progress={program}
-          fetchAndFilterActivities={fetchAndFilterActivities}
-          lockButton={blockUI}
-        />
+        <React.Fragment>
+          <StudentProgram
+            programSnowflake={snowflake}
+            image='/assets/placeholder.png'
+            title={program.programName}
+            description={description}
+            colour={colour}
+            textColour={textColour}
+            progress={program}
+            fetchAndFilterActivities={fetchAndFilterActivities}
+            lockButton={blockUI}
+          />
       </React.Fragment>
     );
   };
@@ -281,6 +281,7 @@ const HomeDesktop: React.FC = () => {
         <BlockUI blocked={blockUI}>
           <Toast ref={toast}/>
           <h1>Welcome {params.name}</h1>
+          <h2 style={{textAlign: "center"}}>Programs</h2>
           <div className='program-progress-carousel'>
             <Carousel 
               value={progress}  
@@ -311,12 +312,8 @@ const HomeDesktop: React.FC = () => {
             setIsLoggedIn={setIsLoggedIn}
             setDetailConfirmation={setDetailConfirmation}
           />
-          <Divider />
-          <Button label="Edit Account Details" icon="pi pi-cog" onClick={() => setVisibleSettings(true)} severity="success"/>
-          <Divider />
-          <Button label="Sign-Out" icon="pi pi-sign-out" onClick={() => {
-            window.location.href = `/home`
-          }} severity="danger"/>
+          <Button className="student-button" label="Edit Account Details" icon="pi pi-cog" onClick={() => setVisibleSettings(true)} severity="warning"/>
+          <Button className="student-button" label="Sign-Out" icon="pi pi-sign-out" onClick={() => window.location.href = `/home`} severity="danger"/>
         </BlockUI>
       </>
     );

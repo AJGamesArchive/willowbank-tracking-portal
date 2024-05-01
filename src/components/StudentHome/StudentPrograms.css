@@ -1,43 +1,21 @@
-.left-content {
-    text-align: left;
-    display: inline-flex;
-    margin: auto;
-    align-items: left;
-}
-
-.center-content {
-    text-align: center;
-    display: inline-flex;
-    margin: auto;
-    align-items: center;
-}
-
-.right-content {
-    text-align: right;
-    display: inline-flex;
-    margin: auto;
-    align-items: right
-}
-
 .progress-card {
-    height: auto;
-    margin: 10px
+    margin: 10px;
+    height: 100%;
+    position: relative;
 }
 
-.p-card-content {
-    padding-top: 0%;
+.leftContent {
+    text-align: left;
+}
+
+.centerContent {
+    text-align: center;
+}
+
+.rightContent {
+    text-align: right;
 }
 
 .program-button {
-    margin: 0.5em;
-    display: inline
-}
-
-.button-set {
-    align-items: center;
-}
-
-.program-popup {
-    width: 50%;
-    height: auto
+    margin: 5px
 }

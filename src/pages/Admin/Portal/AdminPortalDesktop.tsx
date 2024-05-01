@@ -2,16 +2,13 @@
 import { useState, useEffect, useRef } from 'react';
 import { ProgressSpinner } from 'primereact/progressspinner';
 import { Toast } from 'primereact/toast';
-import { Button } from 'primereact/button';
-import { Divider } from 'primereact/divider';
 
 // Import global parameters
 import { GlobalParams } from '../../../interfaces/GlobalParams';
 import { useParams } from 'react-router';
 
 // Import CSS
-import './AdminPortalDesktop.css'
-import './AdminPortalGlobal.css'
+import '../../Shared CSS files/PortalDesktop.css'
 
 // Import functions
 import { confirmLogin } from '../../../functions/Global/ConfirmLogin';
@@ -25,6 +22,7 @@ import EditAccountDetails from '../../../components/Global/EditAccountDetails';
 
 // Import types
 import { CoreStaffAccountDetails } from '../../../types/Global/UserAccountDetails';
+import ModifyOption from '../../../components/Admin/AdminPortal/AdminMenuOptionChangeDetails';
 
 // React function to render the Admin Portal page for desktop devices
 const AdminPortalDesktop: React.FC = () => {
@@ -122,29 +120,44 @@ const AdminPortalDesktop: React.FC = () => {
                 title='Program management'
               />
             </li>
+            <li className="listItem">
+            <MenuOption 
+              imageSRC={`/assets/admin-portal-images/create-student.png`}
+              imageAltText='Create account image'
+              destinationPage={`/adminportal/createaccount/${params.snowflake}/${params.token}/${params.name}`}
+              title="Create new account" />
+            </li>
             <li className='listItem'>
             <MenuOption 
               imageSRC={`/assets/admin-portal-images/Account.png`}
               imageAltText='Account image'
               destinationPage={`/AccManagement/${params.snowflake}/${params.token}/${params.name}`}
-              title="Account management" />
+              title="Manage Accounts" />
             </li>
             <li className='listItem'>
             <MenuOption 
               imageSRC={`/assets/admin-portal-images/School.png`}
               imageAltText='School image'
-              destinationPage={`/adminportal/resetpassword/${params.snowflake}/${params.token}/${params.name}`}
+              destinationPage={`/adminportal/manageschools/${params.snowflake}/${params.token}/${params.name}`}
               title="School management" />
             </li>
             <li className="listItem">
             <MenuOption 
-              imageSRC={`/assets/admin-portal-images/Account.png`}
+              imageSRC={`/assets/admin-portal-images/Activity.png`}
               imageAltText='Account image'
               destinationPage={``}
-              title="Activity Requests" />
+              title="Actvitiy requests" />
             </li>
             <li className="listItem">
-            <SignOutOption />
+              <div onClick={() => setVisibleEditDetails(true)}>
+                <ModifyOption
+                  imageSRC={`/assets/admin-portal-images/Settings.png`}
+                  imageAltText='Settings image'
+                  title="Account details" />
+              </div>
+            </li>
+            <li className="listItem">
+              <SignOutOption />
             </li>
           </ul>
         </div>
@@ -161,8 +174,6 @@ const AdminPortalDesktop: React.FC = () => {
           setIsLoggedIn={setIsLoggedIn}
           setDetailConfirmation={setDetailConfirmation}
         />
-        <Divider/>
-        <Button label="Edit Account Details" icon="pi pi-cog" onClick={() => setVisibleEditDetails(true)} severity="success"/>
       </div>
     );
   } else {

@@ -74,7 +74,6 @@ interface AccountListBoxProps {
     return (
         
         <div> {/* Wrap everything in a div */}
-        {(!selectedUsername) && (
             <>
                 <div className="listBoxContainer">
                     <h3>Student Usernames</h3>
@@ -106,7 +105,6 @@ interface AccountListBoxProps {
                     />
                 </div>
             </>
-        )}
     </div>
 );
 };

@@ -30,6 +30,8 @@ import ManageProgramsDesktop from './pages/Admin/Manage Programs/ManageProgramsD
 import ManageProgramsMobile from './pages/Admin/Manage Programs/ManageProgramsMobile';
 import AdminCreateStudentDesktop from './pages/Admin/Create Accounts/AdminCreateStudentDesktop';
 import AdminCreateStudentMobile from './pages/Admin/Create Accounts/AdminCreateStudentMobile';
+import AdminCreateStudentOptionsDesktop from './pages/Admin/Create Accounts/AdminCreateMenu';
+import ManageSchoolsDesktop from './pages/Admin/Manage Schools/ManageSchoolsDesktop';
 
 // Teacher Portal
 import TeacherPortalDesktop from './pages/Teacher/TeacherPortalDesktop';
@@ -69,6 +71,7 @@ const App: React.FC = () => {
         <Route path="/teacherportal/:snowflake/:token/:name" Component={TeacherPortalDesktop} />
         <Route path="/AccManagement/:snowflake/:token/:name" Component={AdminAccMangDesktop} />
         <Route path="/AddStudent/:snowflake/:token/:name" Component={AdminCreateStudentDesktop}/>
+        <Route path="/adminportal/createaccount/:snowflake/:token/:name" Component={AdminCreateStudentOptionsDesktop}/>
       </Routes>
     );
   } else {
@@ -77,13 +80,15 @@ const App: React.FC = () => {
       <Routes>
         <Route path="/" Component={LoginDesktop} />
         <Route path="/home" Component={LoginDesktop} />
-        <Route path="/studenthome/:snowflake/:token/:name" Component={StudentDesktop}></Route>
+        <Route path="/studenthome/:snowflake/:token/:name" Component={StudentDesktop}/>
         <Route path="/adminportal/:snowflake/:token/:name" Component={AdminPortalDesktop} />
         <Route path="/adminportal/resetpassword/:snowflake/:token/:name" Component={AdminResetDesktop}/>
         <Route path="/adminportal/manageprograms/:snowflake/:token/:name" Component={ManageProgramsDesktop}/>
         <Route path="/teacherportal/:snowflake/:token/:name" Component={TeacherPortalDesktop} />
         <Route path="/AccManagement/:snowflake/:token/:name" Component={AdminAccMangDesktop} />
         <Route path="/AddStudent/:snowflake/:token/:name" Component={AdminCreateStudentDesktop}/>
+        <Route path="/adminportal/createaccount/:snowflake/:token/:name" Component={AdminCreateStudentOptionsDesktop}/>
+        <Route path="/adminportal/manageschools/:snowflake/:token/:name" Component={ManageSchoolsDesktop}/>
       </Routes>
     );
   };

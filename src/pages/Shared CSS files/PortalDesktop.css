@@ -1,0 +1,22 @@
+.subheading h3 {
+    text-align: left !important;
+}
+
+.list { 
+    list-style-type: none;
+    display: block;
+    align-self: center;
+    padding: auto;
+    
+}
+
+    .listItem { 
+        display: inline-block;
+        text-align: center;
+        vertical-align: middle;
+    }
+
+        .listItem:hover {
+            filter:brightness(150%);
+            transition: 0.2s;  
+        }   
