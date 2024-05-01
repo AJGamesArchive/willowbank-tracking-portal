@@ -9,7 +9,7 @@ import { CoreStaffAccountDetails } from '../../../types/Global/UserAccountDetail
 import { CoreStudentAccountDetails } from '../../../types/Global/UserAccountDetails';
 
 // Import CSS
-import './AccountManageLists.css';
+import './AccountMangLists.css';
 
 interface AccountListBoxProps {
     selectedUsername: CoreStudentAccountDetails | CoreStaffAccountDetails;

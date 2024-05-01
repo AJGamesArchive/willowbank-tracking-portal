@@ -13,8 +13,8 @@ import { GlobalParams } from '../../../interfaces/GlobalParams';
 import { useParams } from 'react-router';
 
 // Import CSS
-import './AdminAccMangDesktop.css'
-import './AdminAccMangGlobal.css'
+import './AdminAccManageDesktop.css'
+import './AdminAccManageGlobal.css'
 import '../../Shared CSS files/PortalDesktop.css'
 
 // Import functions
