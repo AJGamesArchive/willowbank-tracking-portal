@@ -24,8 +24,8 @@ import AdminPortalDesktop from './pages/Admin/Portal/AdminPortalDesktop';
 import AdminPortalMobile from './pages/Admin/Portal/AdminPortalMobile';
 import AdminResetDesktop from './pages/Admin/ResetPasswords/AdminResetDesktop';
 import AdminResetMobile from './pages/Admin/ResetPasswords/AdminResetMobile';
-import AdminAccMangDesktop from './pages/Admin/Manage Accounts/AdminAccMangDesktop';
-import AdminAccMangMobile from './pages/Admin/Manage Accounts/AdminAccMangMobile';
+import AdminAccountManageDesktop from './pages/Admin/Manage Accounts/AdminAccManageDesktop';
+import AdminAccManageMobile from './pages/Admin/Manage Accounts/AdminAccManageMobile';
 import ManageProgramsDesktop from './pages/Admin/Manage Programs/ManageProgramsDesktop';
 import ManageProgramsMobile from './pages/Admin/Manage Programs/ManageProgramsMobile';
 import AdminCreateStudentDesktop from './pages/Admin/Create Accounts/AdminCreateStudentDesktop';
@@ -53,7 +53,7 @@ const App: React.FC = () => {
         <Route path="/adminportal/resetpassword/:snowflake/:token/:name" Component={AdminResetMobile}/>
         <Route path="/adminportal/manageprograms/:snowflake/:token/:name" Component={ManageProgramsMobile}/>
         <Route path="/teacherportal/:snowflake/:token/:name" Component={TeacherPortalMobile} />
-        <Route path="/AccManagement/:snowflake/:token/:name" Component={AdminAccMangMobile} />
+        <Route path="/AccManagement/:snowflake/:token/:name" Component={AdminAccManageMobile} />
         <Route path="/AddStudent/:snowflake/:token/:name" Component={AdminCreateStudentMobile}/>
       </Routes>
     );
@@ -69,7 +69,7 @@ const App: React.FC = () => {
         <Route path="/adminportal/resetpassword/:snowflake/:token/:name" Component={AdminResetDesktop}/>
         <Route path="/adminportal/manageprograms/:snowflake/:token/:name" Component={ManageProgramsDesktop}/>
         <Route path="/teacherportal/:snowflake/:token/:name" Component={TeacherPortalDesktop} />
-        <Route path="/AccManagement/:snowflake/:token/:name" Component={AdminAccMangDesktop} />
+        <Route path="/AccManagement/:snowflake/:token/:name" Component={AdminAccountManageDesktop} />
         <Route path="/AddStudent/:snowflake/:token/:name" Component={AdminCreateStudentDesktop}/>
         <Route path="/adminportal/createaccount/:snowflake/:token/:name" Component={AdminCreateStudentOptionsDesktop}/>
       </Routes>
@@ -85,7 +85,7 @@ const App: React.FC = () => {
         <Route path="/adminportal/resetpassword/:snowflake/:token/:name" Component={AdminResetDesktop}/>
         <Route path="/adminportal/manageprograms/:snowflake/:token/:name" Component={ManageProgramsDesktop}/>
         <Route path="/teacherportal/:snowflake/:token/:name" Component={TeacherPortalDesktop} />
-        <Route path="/AccManagement/:snowflake/:token/:name" Component={AdminAccMangDesktop} />
+        <Route path="/AccManagement/:snowflake/:token/:name" Component={AdminAccountManageDesktop} />
         <Route path="/AddStudent/:snowflake/:token/:name" Component={AdminCreateStudentDesktop}/>
         <Route path="/adminportal/createaccount/:snowflake/:token/:name" Component={AdminCreateStudentOptionsDesktop}/>
         <Route path="/adminportal/manageschools/:snowflake/:token/:name" Component={ManageSchoolsDesktop}/>

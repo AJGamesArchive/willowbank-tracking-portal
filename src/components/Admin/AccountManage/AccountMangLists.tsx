@@ -9,7 +9,7 @@ import { CoreStaffAccountDetails } from '../../../types/Global/UserAccountDetail
 import { CoreStudentAccountDetails } from '../../../types/Global/UserAccountDetails';
 
 // Import CSS
-import './AccountMangLists.css';
+import './AccountManageLists.css';
 
 interface AccountListBoxProps {
     selectedUsername: CoreStudentAccountDetails | CoreStaffAccountDetails;
@@ -62,7 +62,7 @@ interface AccountListBoxProps {
                 setTeachers(teacherData);
                 setAdmins(adminData);
             } catch (error) {
-                //runs error if a problem arrises with fetching usernames
+                //runs error if a problem arises with fetching usernames
                 console.error('Error fetching usernames:', error);
             }
         };

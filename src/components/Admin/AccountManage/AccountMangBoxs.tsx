@@ -14,10 +14,6 @@ import { InputMask, InputMaskChangeEvent } from 'primereact/inputmask';
 import { Button } from 'primereact/button';
 import { Chips } from 'primereact/chips';
 
-
-
-
-
 // Import types
 import { CoreStaffAccountDetails } from '../../../types/Global/UserAccountDetails';
 import { CoreStudentAccountDetails } from '../../../types/Global/UserAccountDetails';
@@ -33,7 +29,7 @@ interface AccountListBoxProps {
     selectedCategory: string;
     setSelectedCategory: (value: string) => void;
 }
-    //creates usestates for the selected users ifnromation
+    //creates usestates for the selected users information
     const AccountManageBoxs: React.FC<AccountListBoxProps> = ({selectedUsername, setSelectedUsername,selectedCategory,setSelectedCategory}) => {
     const [userData, setUserData] = useState<UserData>();
 
@@ -105,7 +101,7 @@ interface AccountListBoxProps {
                 toast.current?.show({
                     severity: `warn`,
                     summary: `Invalid surnameInitial`,
-                    detail: `You must only entet the first letter of your last name.`,
+                    detail: `You must only enter the first letter of your last name.`,
                     closeIcon: 'pi pi-times',
                     life: 7000,
                     });
