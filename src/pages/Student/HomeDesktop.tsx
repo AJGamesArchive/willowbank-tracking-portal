@@ -112,6 +112,7 @@ const HomeDesktop: React.FC = () => {
     setProgramActivities(assessed);
     setVisibleActivities(true);
     setBlockUI(false);
+    console.log(assessed)
   };
 
   // Async function to retrieve all student data required for the portal

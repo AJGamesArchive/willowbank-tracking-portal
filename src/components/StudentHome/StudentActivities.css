@@ -26,8 +26,28 @@
 .student-activity-list-right {
     margin-left: auto;
     margin-top: auto;
+    vertical-align: middle;
+    margin-bottom: auto;
 }
 
 .student-activity-button-round {
     border-radius: 20px;
+    vertical-align: middle;
+    padding: auto
+}
+
+.header-row {
+    display: inline-block;
+    margin-top: 0;
+}
+
+.header-item {
+    margin-top: 0;
+    display: inline;
+    vertical-align: middle;
+    padding-right: 10px
+}
+
+.header-item tag {
+    padding: 5px
 }

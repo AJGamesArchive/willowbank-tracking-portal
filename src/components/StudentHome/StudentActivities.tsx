@@ -102,13 +102,18 @@ const StudentActivitiesDialogue: React.FC<StudentActivitiesDialogueProps> = ({ti
       <div key={index}>
         {index === 0 && (<br/>)}
         <div className='student-activity-list-row'>
-          <div><img alt="activity-image" src='/assets/placeholdersmall.png' style={{ width: '100%', height: 'auto' }}/></div>
-          <div style={{ paddingLeft: '1rem' }}>
-            <p><b>Activity {activity.id}</b></p>
+          <div style={{ paddingLeft: '1rem', marginTop: 0 }}>
+            <div className="header-row">
+              <h2 className="header-item">Activity {activity.id}</h2>
+              <div className="header-item"><Tag value={activity.difficulty} severity={getSeverity(activity.difficulty)}/></div>
+              <div className="header-item"><Tag value={activity.difficulty} severity={getSeverity(activity.difficulty)}/></div>
+            </div>
+            
             <div><b>Details:</b>{` ${activity.description}`}</div>
             <div><b>Awarded XP:</b>{` ${activity.xpValue}`}</div>
-            <Tag value={activity.difficulty} severity={getSeverity(activity.difficulty)}/>
+            
           </div>
+          
           <div className='student-activity-list-right'>
             <Button severity="success" icon="pi pi-send" className='student-activity-button-round'/>
           </div>
@@ -152,7 +157,7 @@ const StudentActivitiesDialogue: React.FC<StudentActivitiesDialogueProps> = ({ti
       blockScroll={true}
       draggable={false}
       resizable={false} 
-      style={{ minWidth: '52rem' }} 
+      style={{ minWidth: '52rem'}} 
       breakpoints={{ '960px': '75vw', '641px': '90vw' }} 
     >
       <p>View all the activities for {programName} and submit any completed activities for admin approval. Once submitted, if approved by an admin, you'll gain the stated XP for this program.</p>
