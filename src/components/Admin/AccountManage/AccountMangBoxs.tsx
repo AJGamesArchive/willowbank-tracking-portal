@@ -25,8 +25,6 @@ import { CoreStudentAccountDetails } from '../../../types/Global/UserAccountDeta
 // Import CSS
 import './AccountMangBoxs.css';
 
-
-
 interface AccountListBoxProps {
     selectedUsername: CoreStudentAccountDetails | CoreStaffAccountDetails;
     setSelectedUsername: (value: string) => void;
@@ -143,9 +141,9 @@ interface AccountListBoxProps {
                         setSurnameInitial(String(data?.surnameInitial))
                         setUsername(String(data?.username))
                         if(selectedCategory === "students") {
-                            school = [data.school];
+                            school = data.school;
                         } else {
-                            school = [data.school];
+                            school = data.school;
                         }
                         setNewSchool(school)
                         setPassword(String(data?.password))
@@ -161,20 +159,11 @@ interface AccountListBoxProps {
     },[selectedUsername, selectedCategory]);
     
       const checkNewSchool = (e : any) => {
-        console.log(e)
-        console.log(school)
         const regex = /^\d{2}-\d{2}-\d{2}$/;
-        if (regex.test(e) == true)
-            {
-                console.log(e)
-                school.push(e);
-                setNewSchool(school)
-                console.log(school)
-                return;
-            }
-        else {
-                return;
-             }
+        if (regex.test(e) === true) {
+            const newSchool = [...school, e];
+        setNewSchool(newSchool);
+  }
       };
     
 
@@ -258,6 +247,7 @@ interface AccountListBoxProps {
                             setNewSchool(school)
                            }}
                            onAdd={(e) => checkNewSchool(e.value)}
+                           
                            />
                         )}
                 </div>
