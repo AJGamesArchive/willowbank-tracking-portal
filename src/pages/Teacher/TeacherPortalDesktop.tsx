@@ -16,13 +16,13 @@ import { retrieveStaffData } from '../../functions/Teacher/RetrieveStaffData';
 
 // Importing UI components
 import Banner from '../../components/Admin/AdminPortal/Banner';
+import MenuOption from '../../components/Admin/AdminPortal/AdminMenuOption';
+import SignOutOption from '../../components/Admin/AdminPortal/AdminMenuSignOutOption';
 import EditAccountDetails from '../../components/Global/EditAccountDetails';
 
 // Import types
 import { CoreStaffAccountDetails } from '../../types/Global/UserAccountDetails';
-import MenuOption from '../../components/Admin/AdminPortal/AdminMenuOption';
 import ModifyOption from '../../components/Admin/AdminPortal/AdminMenuOptionChangeDetails';
-import SignOutOption from '../../components/Admin/AdminPortal/AdminMenuSignOutOption';
 
 // React function to render the Teacher Portal page for desktop devices
 const TeacherPortalDesktop: React.FC = () => {
@@ -95,37 +95,42 @@ const TeacherPortalDesktop: React.FC = () => {
         <Banner 
           backgroundimage='/assets/teacher-portal-images/teacher-banner.png' 
           text={`Welcome ${name}`}/>
-        <br />
-        <h3>Please select from the following options.</h3>
-        <br />
-        <ul className="list">
-          <li className="listItem">
-            <MenuOption 
-              imageSRC='/assets/teacher-portal-images/by-program.png'
-              imageAltText='Program image'
-              title='Students by program'
-              destinationPage=''
-            />
-          </li>
-          <li className="listItem">
-            <MenuOption
-              imageSRC='/assets/teacher-portal-images/by-school.png'
-              imageAltText='School image'
-              title='View students by school'
-              destinationPage='' />
-          </li>
-          <li className="listItem">
-            <div onClick={() => setVisibleEditDetails(true)}>
-              <ModifyOption
-                imageSRC={`/assets/teacher-portal-images/settings.png`}
-                imageAltText='Settings image'
-                title="Account details" />
+        
+          <div>
+            <div className="subheading">
+            <h3>Please select from the following options.</h3>
             </div>
-          </li>
-          <li className="listItem">
-            <SignOutOption />
-          </li>
-        </ul>
+            
+            <br />
+          <ul className="list">
+            <li className="listItem">
+              <MenuOption 
+                imageSRC='/assets/teacher-portal-images/by-program.png'
+                imageAltText='Program image'
+                title='Students by program'
+                destinationPage=''
+              />
+            </li>
+            <li className="listItem">
+              <MenuOption
+                imageSRC='/assets/teacher-portal-images/by-school.png'
+                imageAltText='School image'
+                title='View students by school'
+                destinationPage='' />
+            </li>
+            <li className="listItem">
+              <div onClick={() => setVisibleEditDetails(true)}>
+                <ModifyOption
+                  imageSRC={`/assets/teacher-portal-images/settings.png`}
+                  imageAltText='Settings image'
+                  title="Account details" />
+              </div>
+            </li>
+            <li className="listItem">
+              <SignOutOption />
+            </li>
+          </ul>
+        </div>
         <EditAccountDetails
           accountType='teachers'
           snowflake={(coreStaffData) ? coreStaffData.snowflake : ''}

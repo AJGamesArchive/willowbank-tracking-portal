@@ -1,3 +1,6 @@
+// Import CSS
+import '../../Shared CSS files/PortalDesktop.css'
+
 // Import core functions
 import { useState, useEffect, useRef } from 'react';
 import { ProgressSpinner } from 'primereact/progressspinner';
@@ -7,8 +10,6 @@ import { Toast } from 'primereact/toast';
 import { GlobalParams } from '../../../interfaces/GlobalParams';
 import { useParams } from 'react-router';
 
-// Import CSS
-import '../../Shared CSS files/PortalDesktop.css'
 
 // Import functions
 import { confirmLogin } from '../../../functions/Global/ConfirmLogin';
@@ -52,6 +53,8 @@ const AdminPortalDesktop: React.FC = () => {
 
   // Variables to control toast messages
   const toast = useRef<Toast>(null);
+
+  const name : string = String(params.name?.charAt(0).toUpperCase()) + String(params.name?.substring(1).toLowerCase());
 
   // Async function to handel retrieving all active activity completion requests
   async function retrieveActivityRequestsHandler(): Promise<void> {
@@ -117,11 +120,11 @@ const AdminPortalDesktop: React.FC = () => {
   // Return JSX based on login state
   if (isLoggedIn) {
     return (
-      <div>
+      <>
         <Toast ref={toast}/>
         <Banner
-          backgroundimage='https://marketplace.canva.com/EAENvp21inc/1/0/1600w/canva-simple-work-linkedin-banner-qt_TMRJF4m0.jpg' 
-          text={`WELCOME ${params.name?.toUpperCase()}`} 
+          backgroundimage='/assets/admin-portal-images/banner.png' 
+          text={`Welcome ${name}`} 
         />
 
         <div>
@@ -130,7 +133,6 @@ const AdminPortalDesktop: React.FC = () => {
           </div>
           
           <br />
-          
           <ul className="list">
             <li className="listItem">
               <MenuOption 
@@ -208,7 +210,7 @@ const AdminPortalDesktop: React.FC = () => {
           setVisible={setVisibleActivityRequests}
           requests={requests}
         />
-      </div>
+      </>
     );
   } else {
     return (
