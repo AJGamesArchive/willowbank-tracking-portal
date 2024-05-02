@@ -20,6 +20,7 @@ import { CoreStudentAccountDetails } from '../../../types/Global/UserAccountDeta
 
 // Import CSS
 import './AccountMangBoxs.css';
+import { isExists } from 'date-fns';
 
 interface AccountListBoxProps {
     selectedUsername: CoreStudentAccountDetails | CoreStaffAccountDetails;
@@ -129,7 +130,7 @@ interface AccountListBoxProps {
                 .then((data) => {
                     if(typeof data !== "string") {
                         setUserData(data);
-                        setVisible(true)
+                        setVisible(true);
                         setFirstName(String(data?.firstName))
                         setSurnameInitial(String(data?.surnameInitial))
                         setUsername(String(data?.username))

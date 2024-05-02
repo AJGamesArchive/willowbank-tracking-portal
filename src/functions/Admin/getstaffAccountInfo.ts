@@ -2,7 +2,6 @@ import { db } from "../../database/Initalise";
 import { getDocs, query, collection, DocumentData } from "firebase/firestore";
 
 // Import types
-import { CoreStudentAccountDetails } from "../../types/Global/UserAccountDetails";
 import { CoreStaffAccountDetails } from "../../types/Global/UserAccountDetails";
 
 
@@ -12,11 +11,11 @@ export async function getstaffAccountInfo(accountType: string): Promise< CoreSta
 let teacherData: CoreStaffAccountDetails[] = [];
 let adminData: CoreStaffAccountDetails[] = [];
 
-//creates querys for searching database
+//creates queries for searching database
 const qT = query(collection(db, "teachers"));
 const qA = query(collection(db, "admins"));
 
-//creates document variables to store account infromation
+//creates document variables to store account information
 let docT;
 let docA;
 
