@@ -45,7 +45,7 @@ docT.forEach((d) => {
       snowflake: docData.snowflake,
       username: docData.username,
       firstName: docData.firstname,
-      surnameInitial: docData.surnameInitial,
+      surname: docData.surname,
       password: docData.password,
       schools: docData.school,
       token: docData.token
@@ -60,7 +60,7 @@ docA.forEach((d) => {
       snowflake: docData.snowflake,
       username: docData.username,
       firstName: docData.firstname,
-      surnameInitial: docData.surnameInitial,
+      surname: docData.surname,
       password: docData.password,
       schools: docData.school,
       token: docData.token
