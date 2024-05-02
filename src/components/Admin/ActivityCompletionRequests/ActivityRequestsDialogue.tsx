@@ -7,6 +7,7 @@ import { Dropdown, DropdownChangeEvent } from 'primereact/dropdown';
 
 // Import types
 import { ActivityRequests } from '../../../types/Global/ActivityCompletionRequests';
+import { Actioned } from './ActivityRequestCard';
 
 // Import CSS
 import './ActivityRequestsDialogue.css'
@@ -19,7 +20,7 @@ import { Divider } from 'primereact/divider';
 interface ActivityCompletionRequestDialogueProps {
   visible: boolean;
   setVisible: (value: boolean) => void;
-  requests: ActivityRequests[];
+  baseRequests: ActivityRequests[];
 };
 
 // Type declarations for the activity request filtering system
@@ -29,9 +30,15 @@ type FilterMode = {
 };
 
 // React function to render the activity completion requests dialogue box
-const ActivityCompletionRequestDialogue: React.FC<ActivityCompletionRequestDialogueProps> = ({visible, setVisible, requests}) => {
+const ActivityCompletionRequestDialogue: React.FC<ActivityCompletionRequestDialogueProps> = ({visible, setVisible, baseRequests}) => {
   // State variable to store filtered requests
   const [filteredRequests, setFilteredRequests] = useState<ActivityRequests[]>([]);
+
+  // State variable to store current pending requests
+  var [requests, setRequests] = useState<ActivityRequests[]>([]);
+
+  // State variable to handel refreshing the pending activities array
+  const [actionedID, setActionedID] = useState<Actioned | null>(null)
 
   // Variables to control the filtering system
   const [filterMode, setFilterMode] = useState<FilterMode>({name: "Submission Date", key: 0})
@@ -58,6 +65,14 @@ const ActivityCompletionRequestDialogue: React.FC<ActivityCompletionRequestDialo
 
 // useEffect hook to update the displayed requests based on given filters
   useEffect(() => {
+    if(actionedID !== null) {
+      let updatedRequests: ActivityRequests[] = [];
+      requests.forEach((r) => {
+        if(r.activityID !== actionedID.activityId || r.studentSnowflake !== actionedID.studentSnowflake || r.programSnowflake !== actionedID.programSnowflake) updatedRequests.push(r);
+      });
+      setRequests(updatedRequests);
+      setActionedID(null);
+    };
     switch(filterMode.key) {
       case 1:
         // Filter by school name
@@ -103,19 +118,21 @@ const ActivityCompletionRequestDialogue: React.FC<ActivityCompletionRequestDialo
         };
         break;
     };
-  }, [filterMode, submissionFilter, schoolFilter, studentFilter, programFilter]);
+  }, [actionedID, filterMode, submissionFilter, schoolFilter, studentFilter, programFilter]);
 
   // useEffect hook to handel setting up the initial request filter and filtering options
   useEffect(() => {
+    // debugger
     if(visible) {
-      setFilteredRequests(requests);
+      setRequests(baseRequests);
+      setFilteredRequests(baseRequests);
       let scFilter: FilterMode[] = [];
       let scCount: number = 0;
       let sFilter: FilterMode[] = [];
       let sCountL: number = 0;
       let pFilter: FilterMode[] = [];
       let pCount: number = 0;
-      requests.forEach((r) => {
+      baseRequests.forEach((r) => {
         let included: boolean = false;
         scFilter.forEach((f) => {
           if(f.name === r.schoolName) included = true;
@@ -214,6 +231,7 @@ const ActivityCompletionRequestDialogue: React.FC<ActivityCompletionRequestDialo
         breakpoints={{ '960px': '75vw', '641px': '90vw' }} 
         header={header}
         modal
+        closeOnEscape={false}
         className="p-fluid" 
         onHide={onDialogueHide}
       >
@@ -222,6 +240,7 @@ const ActivityCompletionRequestDialogue: React.FC<ActivityCompletionRequestDialo
           <ActivityRequestCard
             request={request}
             mapId={index}
+            onActioned={setActionedID}
           />
         ))}
       </Dialog>

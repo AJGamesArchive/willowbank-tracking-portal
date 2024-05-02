@@ -78,6 +78,7 @@ const StudentProgram: React.FC<StudentProgramProps> = ({programSnowflake, title,
       {programPopup}
       <div className='progress-card-content'>
         <div style={{fontSize: "xx-large"}}><b>{title}</b></div>
+        <Divider/>
         <StudentProgramRow
           boldText={true}
           leftContent={`Badges Awarded:`}

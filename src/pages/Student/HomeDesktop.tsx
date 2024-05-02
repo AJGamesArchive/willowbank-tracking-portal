@@ -74,7 +74,8 @@ const HomeDesktop: React.FC = () => {
     setSelectProgram(snowflake);
     setSelectedProgramName(programName);
     const activities = await retrieveAllActivities(snowflake);
-    if(typeof activities == "string") {
+    const updatedProgress = await retrieveXPData((params.snowflake? params.snowflake : ''));
+    if(typeof activities == "string" || typeof updatedProgress === "string") {
       toast.current?.show({
         severity: 'error',
         summary: 'Unexpected Error',
@@ -87,7 +88,7 @@ const HomeDesktop: React.FC = () => {
     let assessed: AssessedActivities[] = [];
     let programIndex: number = -1;
     for(let i = 0; i < progress.length; i++) {
-      if(progress[i].programName.toLocaleLowerCase() === programName.toLocaleLowerCase()) {
+      if(updatedProgress[i].programName.toLocaleLowerCase() === programName.toLocaleLowerCase()) {
         programIndex = i;
       };
     };
@@ -95,12 +96,12 @@ const HomeDesktop: React.FC = () => {
       let completed: boolean = false;
       let pending: boolean= false;
       try {
-        progress[programIndex].completedActivities.forEach((c) => {
+        updatedProgress[programIndex].completedActivities.forEach((c) => {
           if(a.id === c.id) {
             completed = true;
           };
         });
-        progress[programIndex].pendingActivities.forEach((p) => {
+        updatedProgress[programIndex].pendingActivities.forEach((p) => {
           if(a.id === p.id) {
             pending = true;
           };
@@ -126,7 +127,7 @@ const HomeDesktop: React.FC = () => {
     setProgramActivities(assessed);
     setVisibleActivities(true);
     setBlockUI(false);
-    console.log(assessed)
+    return;
   };
 
   // Async function to retrieve all student data required for the portal
