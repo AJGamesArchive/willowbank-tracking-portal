@@ -133,16 +133,7 @@ interface AccountListBoxProps {
                         setFirstName(String(data?.firstName))
                         setSurnameInitial(String(data?.surnameInitial))
                         setUsername(String(data?.username))
-                        
-                        // If student, just display 1 school else display all schools
-                        // Logically shouldn't matter what category as student array will just display 1 school anyway?
-                //if(selectedCategory === "students") {
-                            // Why is this always a string?
-                            // Problem with getUserData - always gets data as a string
-                            school = data.school; 
-                //} else {
-                    //school = data.schools;
-                //}
+                        school = data.school; 
                         setNewSchool(school)
                         setPassword(String(data?.password))
                     }
