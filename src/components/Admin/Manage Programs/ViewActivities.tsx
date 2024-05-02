@@ -85,14 +85,19 @@ const ViewActivities: React.FC<ViewActivitiesProps> = ({visible, setVisible, set
   //TODO Maybe add an 'undefined/unclassified' tag to this list?
   const [difficultyOptions] = useState([
     {
+      label: "Unset",
+      value: "Unset",
+      severity: "info"
+    },
+    {
       label: "Easy",
       value: "Easy",
-      severity: "success"
+      severity: null
     },
     {
       label: "Medium",
       value: "Medium",
-      severity: "info"
+      severity: "success"
     },
     {
       label: "Hard",
@@ -312,10 +317,12 @@ const ViewActivities: React.FC<ViewActivitiesProps> = ({visible, setVisible, set
   // Function to get the severity of an activity for the difficulty tags
   const getSeverity = (activity: Activity): any => {
     switch (activity.difficulty) {
+      case 'Unset':
+        return "info";
       case 'Easy':
-        return 'success';
+        return null;
       case 'Medium':
-        return 'info';
+        return "success";
       case 'Hard':
         return 'warning';
       case "Very Hard":

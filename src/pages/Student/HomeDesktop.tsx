@@ -29,12 +29,15 @@ import { retrieveDocumentIDs } from '../../functions/Global/RetrieveDocumentIDs'
 import { retrieveXPData } from '../../functions/Student/RetrieveXPData';
 import { retrieveStudentData } from '../../functions/Student/RetrieveStudentData';
 import { retrieveAllActivities } from '../../functions/Admin/ManagePrograms/RetrieveActivityData';
+import { createActivityCompleteRequest } from '../../functions/Student/CreateActivityCompleteRequest';
+import { getSchoolName } from '../../functions/Student/GetSchoolName';
 
 // Importing types
 import { XPStudentAccountDetails } from '../../types/Global/UserAccountDetails';
 import { CoreStudentAccountDetails } from '../../types/Global/UserAccountDetails';
 import { ProgramData } from '../../types/Admin/ProgramData';
 import { AssessedActivities } from '../../types/Student/AssessedActivities';
+import { Activity } from '../../types/Global/Activity';
 
 // React function to render the Student Portal page for desktop devices
 const HomeDesktop: React.FC = () => {
@@ -46,6 +49,8 @@ const HomeDesktop: React.FC = () => {
   const [programActivities, setProgramActivities] = useState<AssessedActivities[]>([]);
   const [coreStudentData, setCoreStudentData] = useState<CoreStudentAccountDetails>();
   const [progress, setProgress] = useState<XPStudentAccountDetails[]>([]);
+  const [selectedProgram, setSelectProgram] = useState<string>("");
+  const [selectedProgramName, setSelectedProgramName] = useState<string>("");
 
   // Variable to force confirmation of the account login state
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
@@ -66,6 +71,8 @@ const HomeDesktop: React.FC = () => {
   // Async function to retrieve all activities for a given program and mark complete activities as completed when the activity dialogue box is called
   async function fetchAndFilterActivities(snowflake: string, programName: string): Promise<void> {
     setBlockUI(true);
+    setSelectProgram(snowflake);
+    setSelectedProgramName(programName);
     const activities = await retrieveAllActivities(snowflake);
     if(typeof activities == "string") {
       toast.current?.show({
@@ -86,10 +93,16 @@ const HomeDesktop: React.FC = () => {
     };
     activities.forEach((a) => {
       let completed: boolean = false;
+      let pending: boolean= false;
       try {
         progress[programIndex].completedActivities.forEach((c) => {
           if(a.id === c.id) {
             completed = true;
+          };
+        });
+        progress[programIndex].pendingActivities.forEach((p) => {
+          if(a.id === p.id) {
+            pending = true;
           };
         });
       } catch (e) {
@@ -105,6 +118,7 @@ const HomeDesktop: React.FC = () => {
       };
       const assessment: AssessedActivities = {
         completed: completed,
+        pending: pending,
         activity: a,
       };
       assessed.push(assessment);
@@ -112,6 +126,7 @@ const HomeDesktop: React.FC = () => {
     setProgramActivities(assessed);
     setVisibleActivities(true);
     setBlockUI(false);
+    console.log(assessed)
   };
 
   // Async function to retrieve all student data required for the portal
@@ -138,6 +153,43 @@ const HomeDesktop: React.FC = () => {
     setCoreProgramData((typeof programData !== "string") ? filteredProgramData : coreProgramData);
     setProgress((typeof programProgress !== "string") ? programProgress : progress);
     setCoreStudentData((typeof studentData !== "string") ? studentData : coreStudentData);
+    return;
+  };
+
+  // Async function to handel creating activity complete requests
+  //TODO Make things and stuff work
+  async function createActivityCompleteRequestHandler(activityId: number): Promise<void> {
+    setVisibleActivities(false);
+    const UnexpectedCreationError = () => {
+      toast.current?.show({
+        severity: 'error',
+        summary: 'Unexpected Error',
+        detail: `An unexpected error occurred while try to submit an activity for completion review. Please try again.`,
+        closeIcon: 'pi pi-times',
+        life: 7000,
+      });
+    };
+    const studentName: string = `${coreStudentData?.firstName} ${coreStudentData?.surnameInitial}`;
+    let programName: string = '[Error]';
+    coreProgramData.forEach((p) => {
+      if(p.snowflake === selectedProgram) programName = p.name;
+    });
+    let activity: Activity | undefined = undefined;
+    programActivities.forEach((a) => {
+      if(a.activity.id === activityId) activity = a.activity;
+    });
+    if(activity === undefined) {UnexpectedCreationError(); return;};
+    const schoolName = await getSchoolName((coreStudentData) ? coreStudentData.school : '');
+    if(schoolName === undefined) {UnexpectedCreationError(); return;};
+    const success: boolean = await createActivityCompleteRequest((coreStudentData) ? coreStudentData.snowflake : '', studentName, selectedProgram, programName, activity, schoolName);
+    if(!success) {UnexpectedCreationError(); return;}
+    toast.current?.show({
+      severity: 'success',
+      summary: 'Request Submitted',
+      detail: `Activity ${activityId} has been submitted for admin review. Once approved, you will be awarded the XP from the activity.`,
+      closeIcon: 'pi pi-times',
+      life: 7000,
+    });
     return;
   };
 
@@ -211,18 +263,18 @@ const HomeDesktop: React.FC = () => {
   const programProgressCardTemplate = (program: XPStudentAccountDetails) => {
     const [description, colour, snowflake, textColour] = getDescription(program.programName);
     return (
-      <React.Fragment>
-        <StudentProgram
-          programSnowflake={snowflake}
-          image='/assets/placeholder.png'
-          title={program.programName}
-          description={description}
-          colour={colour}
-          textColour={textColour}
-          progress={program}
-          fetchAndFilterActivities={fetchAndFilterActivities}
-          lockButton={blockUI}
-        />
+        <React.Fragment>
+          <StudentProgram
+            programSnowflake={snowflake}
+            image='/assets/placeholder.png'
+            title={program.programName}
+            description={description}
+            colour={colour}
+            textColour={textColour}
+            progress={program}
+            fetchAndFilterActivities={fetchAndFilterActivities}
+            lockButton={blockUI}
+          />
       </React.Fragment>
     );
   };
@@ -234,6 +286,7 @@ const HomeDesktop: React.FC = () => {
         <BlockUI blocked={blockUI}>
           <Toast ref={toast}/>
           <h1>Welcome {params.name}</h1>
+          <h2 style={{textAlign: "center"}}>Programs</h2>
           <div className='program-progress-carousel'>
             <Carousel 
               value={progress}  
@@ -244,11 +297,12 @@ const HomeDesktop: React.FC = () => {
             />
           </div>
           <StudentActivitiesDialogue
-            title='Fishing Activities'
-            programName='Fishing'
+            title={`${selectedProgramName} Activities`}
+            programName={selectedProgramName}
             activities={programActivities}
             visible={visibleActivities}
             setVisible={setVisibleActivities}
+            onActivityClick={createActivityCompleteRequestHandler}
           />
           <EditAccountDetails
             accountType='students'
@@ -263,12 +317,8 @@ const HomeDesktop: React.FC = () => {
             setIsLoggedIn={setIsLoggedIn}
             setDetailConfirmation={setDetailConfirmation}
           />
-          <Divider />
-          <Button label="Edit Account Details" icon="pi pi-cog" onClick={() => setVisibleSettings(true)} severity="success"/>
-          <Divider />
-          <Button label="Sign-Out" icon="pi pi-sign-out" onClick={() => {
-            window.location.href = `/home`
-          }} severity="danger"/>
+          <Button className="student-button" label="Edit Account Details" icon="pi pi-cog" onClick={() => setVisibleSettings(true)} severity="warning"/>
+          <Button className="student-button" label="Sign-Out" icon="pi pi-sign-out" onClick={() => window.location.href = `/home`} severity="danger"/>
         </BlockUI>
       </>
     );

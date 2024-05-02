@@ -2,3 +2,7 @@
     max-width: 90vw; /* 100% of the viewport width */
     overflow: hidden; /* Ensures the content doesn't overflow */
 }
+
+.student-button {
+    margin: 5px
+}

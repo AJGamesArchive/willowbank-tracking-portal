@@ -1,27 +1,32 @@
+// Import CSS
+import '../../Shared CSS files/PortalDesktop.css'
+
 // Import core functions
 import { useState, useEffect, useRef } from 'react';
 import { ProgressSpinner } from 'primereact/progressspinner';
 import { Toast } from 'primereact/toast';
+import { BlockUI } from 'primereact/blockui';
 
 // Import global parameters
 import { GlobalParams } from '../../../interfaces/GlobalParams';
 import { useParams } from 'react-router';
 
-// Import CSS
-import '../../Shared CSS files/PortalDesktop.css'
 
 // Import functions
 import { confirmLogin } from '../../../functions/Global/ConfirmLogin';
 import { retrieveStaffData } from '../../../functions/Teacher/RetrieveStaffData';
+import { retrieveActivityRequests } from '../../../functions/Admin/ActivityRequests/RetrieveAllActivityRequests';
 
 // Importing UI components
 import Banner from "../../../components/Admin/AdminPortal/Banner";
 import MenuOption from '../../../components/Admin/AdminPortal/AdminMenuOption';
 import SignOutOption from '../../../components/Admin/AdminPortal/AdminMenuSignOutOption';
 import EditAccountDetails from '../../../components/Global/EditAccountDetails';
+import ActivityCompletionRequestDialogue from '../../../components/Admin/ActivityCompletionRequests/ActivityRequestsDialogue';
 
 // Import types
 import { CoreStaffAccountDetails } from '../../../types/Global/UserAccountDetails';
+import { ActivityRequests } from '../../../types/Global/ActivityCompletionRequests';
 import ModifyOption from '../../../components/Admin/AdminPortal/AdminMenuOptionChangeDetails';
 
 // React function to render the Admin Portal page for desktop devices
@@ -32,6 +37,9 @@ const AdminPortalDesktop: React.FC = () => {
   // Variable to force confirmation of the account login state
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
 
+  // State variable to store all active activity completion requests
+  const [requests, setRequests] = useState<ActivityRequests[]>([]);
+
   // State variable o store the logged in users data
   const [coreStaffData, setCoreStaffData] = useState<CoreStaffAccountDetails>();
 
@@ -41,8 +49,37 @@ const AdminPortalDesktop: React.FC = () => {
   // State variable to control the visibility of the edit account details dialogue box
   const [visibleEditDetails, setVisibleEditDetails] = useState<boolean>(false);
 
+  // State variable to control the visibility of the activity completion requests dialogue box
+  const [visibleActivityRequests, setVisibleActivityRequests] = useState<boolean>(false);
+
+  // State variables to block UI components
+  const [blockButtons, setBlockButtons] = useState<boolean>(false);
+
   // Variables to control toast messages
   const toast = useRef<Toast>(null);
+
+  const name : string = String(params.name?.charAt(0).toUpperCase()) + String(params.name?.substring(1).toLowerCase());
+
+  // Async function to handel retrieving all active activity completion requests
+  async function retrieveActivityRequestsHandler(): Promise<void> {
+    setBlockButtons(true);
+    const retrievedRequests = await retrieveActivityRequests();
+    if(typeof retrievedRequests === "string") {
+      toast.current?.show({
+        severity: 'error',
+        summary: 'Error Retrieving Requests',
+        detail: `An error occurred while trying to retrieve all active activity completion requests. Please try again.`,
+        closeIcon: 'pi pi-times',
+        life: 7000,
+      });
+      setRequests([]);
+      return;
+    };
+    setRequests(retrievedRequests);
+    setVisibleActivityRequests(true);
+    setBlockButtons(false);
+    return;
+  };
 
   // Async function to retrieve all staff data required for the portal
   async function retrieveStaffDataHandler(): Promise<void> {
@@ -89,11 +126,11 @@ const AdminPortalDesktop: React.FC = () => {
   // Return JSX based on login state
   if (isLoggedIn) {
     return (
-      <div>
+      <>
         <Toast ref={toast}/>
         <Banner
-          backgroundimage='https://marketplace.canva.com/EAENvp21inc/1/0/1600w/canva-simple-work-linkedin-banner-qt_TMRJF4m0.jpg' 
-          text={`WELCOME ${params.name?.toUpperCase()}`} 
+          backgroundimage='/assets/admin-portal-images/banner.png' 
+          text={`Welcome ${name}`} 
         />
 
         <div>
@@ -102,7 +139,6 @@ const AdminPortalDesktop: React.FC = () => {
           </div>
           
           <br />
-          
           <ul className="list">
             <li className="listItem">
               <MenuOption 
@@ -120,12 +156,19 @@ const AdminPortalDesktop: React.FC = () => {
                 title='Program management'
               />
             </li>
+            <li className="listItem">
+            <MenuOption 
+              imageSRC={`/assets/admin-portal-images/create-student.png`}
+              imageAltText='Create account image'
+              destinationPage={`/adminportal/createaccount/${params.snowflake}/${params.token}/${params.name}`}
+              title="Create new account" />
+            </li>
             <li className='listItem'>
             <MenuOption 
               imageSRC={`/assets/admin-portal-images/Account.png`}
               imageAltText='Account image'
               destinationPage={`/AccManagement/${params.snowflake}/${params.token}/${params.name}`}
-              title="Account management" />
+              title="Manage Accounts" />
             </li>
             <li className='listItem'>
             <MenuOption 
@@ -135,11 +178,14 @@ const AdminPortalDesktop: React.FC = () => {
               title="School management" />
             </li>
             <li className="listItem">
-            <MenuOption 
-              imageSRC={`/assets/admin-portal-images/Activity.png`}
-              imageAltText='Account image'
-              destinationPage={``}
-              title="Actvitiy requests" />
+              <BlockUI blocked={blockButtons}>
+                <div onClick={() => retrieveActivityRequestsHandler()}>
+                  <ModifyOption 
+                  imageSRC={`/assets/admin-portal-images/Activity.png`}
+                  imageAltText='Account image'
+                  title="Actvitiy requests" />
+                </div>
+              </BlockUI>
             </li>
             <li className="listItem">
               <div onClick={() => setVisibleEditDetails(true)}>
@@ -167,7 +213,12 @@ const AdminPortalDesktop: React.FC = () => {
           setIsLoggedIn={setIsLoggedIn}
           setDetailConfirmation={setDetailConfirmation}
         />
-      </div>
+        <ActivityCompletionRequestDialogue
+          visible={visibleActivityRequests}
+          setVisible={setVisibleActivityRequests}
+          requests={requests}
+        />
+      </>
     );
   } else {
     return (

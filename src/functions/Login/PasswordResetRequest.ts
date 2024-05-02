@@ -4,12 +4,14 @@ import { getDoc, doc, setDoc, query, collection, getDocs, DocumentData } from "f
 
 // Import functions
 import { dateTime } from "../Global/GenerateTimestamp";
+import { dateTimeReadable } from "../Global/GenerateTimestamp";
 
 // Import types
 import { PasswordRequest } from "../../types/Global/PasswordRequest";
 import { PasswordRequestLog } from "../../types/Global/PasswordRequest";
 
 // Async function to create a password reset request for a given user
+//TODO Update this function so it only creates a request if you have not currently got an active request open
 export async function createPasswordRequest(username: string, accountType: string): Promise<boolean> {
   // Get the current timestamp
   const timestamp: string = dateTime();
@@ -46,7 +48,7 @@ export async function createPasswordRequest(username: string, accountType: strin
       snowflake: accountSnowflake,
       username: username,
       accountType: accountType,
-      created: timestamp,
+      created: dateTimeReadable(),
       completed: "",
       newPassword: "",
       ignored: false,
