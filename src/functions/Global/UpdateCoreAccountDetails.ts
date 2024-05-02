@@ -25,6 +25,7 @@ export async function updateCoreAccountDetails(accountType: string, snowflake: s
     {
       if(school.length !== 0) details.school = school[0]
       if(surnameInitial) details.surnameInitial = surnameInitial;
+      if(surnameInitial) details.surnameInitial = surnameInitial;
     }
   else 
     {

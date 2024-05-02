@@ -1,8 +1,28 @@
 .school_creation_form_field {
     margin-top: 35px;
+    display: flex;
+    align-items: center;
   }
 
 .school_creation-form-help {
     display: flex;
     padding-left: 5px;
   }
+
+.school_creation_form_time {
+  display: flex;
+  align-items: center;
+  margin-top: 35px;
+}
+
+.school_creation_time_container {
+  display: flex;
+  align-items: center;
+
+}
+
+.school_creation_time_components {
+    display: flex;
+    align-items: center;
+    margin-left: 10px;
+}

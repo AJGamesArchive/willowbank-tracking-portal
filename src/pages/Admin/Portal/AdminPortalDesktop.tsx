@@ -5,6 +5,7 @@ import '../../Shared CSS files/PortalDesktop.css'
 import { useState, useEffect, useRef } from 'react';
 import { ProgressSpinner } from 'primereact/progressspinner';
 import { Toast } from 'primereact/toast';
+import { BlockUI } from 'primereact/blockui';
 
 // Import global parameters
 import { GlobalParams } from '../../../interfaces/GlobalParams';
@@ -51,6 +52,9 @@ const AdminPortalDesktop: React.FC = () => {
   // State variable to control the visibility of the activity completion requests dialogue box
   const [visibleActivityRequests, setVisibleActivityRequests] = useState<boolean>(false);
 
+  // State variables to block UI components
+  const [blockButtons, setBlockButtons] = useState<boolean>(false);
+
   // Variables to control toast messages
   const toast = useRef<Toast>(null);
 
@@ -58,6 +62,7 @@ const AdminPortalDesktop: React.FC = () => {
 
   // Async function to handel retrieving all active activity completion requests
   async function retrieveActivityRequestsHandler(): Promise<void> {
+    setBlockButtons(true);
     const retrievedRequests = await retrieveActivityRequests();
     if(typeof retrievedRequests === "string") {
       toast.current?.show({
@@ -71,7 +76,8 @@ const AdminPortalDesktop: React.FC = () => {
       return;
     };
     setRequests(retrievedRequests);
-    setVisibleActivityRequests(true)
+    setVisibleActivityRequests(true);
+    setBlockButtons(false);
     return;
   };
 
@@ -172,12 +178,14 @@ const AdminPortalDesktop: React.FC = () => {
               title="School management" />
             </li>
             <li className="listItem">
-              <div onClick={() => retrieveActivityRequestsHandler()}>
-                <ModifyOption 
-                imageSRC={`/assets/admin-portal-images/Activity.png`}
-                imageAltText='Account image'
-                title="Actvitiy requests" />
-              </div>
+              <BlockUI blocked={blockButtons}>
+                <div onClick={() => retrieveActivityRequestsHandler()}>
+                  <ModifyOption 
+                  imageSRC={`/assets/admin-portal-images/Activity.png`}
+                  imageAltText='Account image'
+                  title="Actvitiy requests" />
+                </div>
+              </BlockUI>
             </li>
             <li className="listItem">
               <div onClick={() => setVisibleEditDetails(true)}>

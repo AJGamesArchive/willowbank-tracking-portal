@@ -60,7 +60,7 @@ interface AccountListBoxProps {
 
     async function updateCoreDetailsHandler(): Promise<void> {
 
-    // Handel and validate differing data depending on mode
+    // Handle and validate differing data depending on mode
     let success: boolean = false;
     // Set loading states
     setSubmitted(true);
@@ -121,9 +121,6 @@ interface AccountListBoxProps {
         setLoading(false);
         setPassword("");
       };
-    
-      
-
     
     //use effects runs when component is called
     useEffect(() => {
