@@ -131,9 +131,16 @@ interface AccountListBoxProps {
                         setUserData(data);
                         setVisible(true)
                         setFirstName(String(data?.firstName))
-                        setSurnameInitial(String(data?.surnameInitial))
                         setUsername(String(data?.username))
-                        school = data.school; 
+                        if(selectedCategory === "students") {
+                            school = [data.school];
+                            setSurnameInitial(String(data?.surnameInitial))
+                        } else {
+                            console.log('data:' , data.school);
+                            school = data.schools;
+                            console.log('schools:', school)
+                            setSurnameInitial(String(data?.surname))
+                        }
                         setNewSchool(school)
                         setPassword(String(data?.password))
                     }
@@ -152,6 +159,7 @@ interface AccountListBoxProps {
         if (regex.test(e) === true) {
             const newSchool = [...school, e];
         setNewSchool(newSchool);
+        console.log('checknewschool',newSchool)
   }
       };
     
@@ -200,12 +208,23 @@ interface AccountListBoxProps {
                     <label>
                         Last Name 
                     </label>
-                    <InputText
-                    id='edit-account-lastName'
-                    value={surnameInitial}
-                    onChange={(e) => setSurnameInitial(e.target.value.toUpperCase())}
-                    autoFocus
-                    />
+                    {selectedCategory === 'students' ? (
+
+                        <InputText
+                        id='edit-account-lastName'
+                        value={surnameInitial}
+                        onChange={(e) => setSurnameInitial(e.target.value.toUpperCase())}
+                        autoFocus
+                        />
+                    ) : (
+
+                        <InputText
+                        id='edit-account-lastName'
+                        value={surnameInitial}
+                        onChange={(e) => setSurnameInitial(e.target.value.toUpperCase())}
+                        autoFocus
+                        />
+                    )}
                 </div>
 
                 <div>
