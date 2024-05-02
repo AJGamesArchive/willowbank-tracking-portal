@@ -1,5 +1,5 @@
 // Import core functions
-// --import { useState } from 'react';
+import { useState } from 'react';
 import { Divider } from 'primereact/divider';
 import { Button } from 'primereact/button';
 import { Tag } from 'primereact/tag';
@@ -18,6 +18,9 @@ interface ActivityRequestCardProps {
 
 // React function to render the activity request card for the activity requests dialogue box
 const ActivityRequestCard: React.FC<ActivityRequestCardProps> = ({request, mapId}) => {
+  // State variable to control the loading state of varying UI components
+  const [loading, setLoading] = useState<boolean>(false);
+  
   // Function to set the XP tag severity
   const getTagSeverity = (value: number) => {
     if(value < 50) return "success";

@@ -1,10 +1,8 @@
 // Import core functions
 import React, { useEffect } from 'react';
 import { useRef, useState } from 'react';
-import { BlockUI } from 'primereact/blockui';
 import { Toast } from 'primereact/toast';
 import { Dialog } from 'primereact/dialog';
-import { Button } from 'primereact/button';
 import { Dropdown, DropdownChangeEvent } from 'primereact/dropdown';
 
 // Import types
@@ -32,21 +30,18 @@ type FilterMode = {
 
 // React function to render the activity completion requests dialogue box
 const ActivityCompletionRequestDialogue: React.FC<ActivityCompletionRequestDialogueProps> = ({visible, setVisible, requests}) => {
-  // State variable to control the loading state of varying UI components
-  const [loading, setLoading] = useState<boolean>(false);
-
   // State variable to store filtered requests
   const [filteredRequests, setFilteredRequests] = useState<ActivityRequests[]>([]);
 
   // Variables to control the filtering system
-  const [filterMode, setFilterMode] = useState<FilterMode | null>(null)
+  const [filterMode, setFilterMode] = useState<FilterMode>({name: "Submission Date", key: 0})
   const modes: FilterMode[] = [
     {name: "Submission Date", key: 0},
     {name: "School", key: 1},
     {name: "Student", key: 2},
     {name: "Program", key: 3},
   ];
-  const [submissionFilter, setSubmissionFilter] = useState<FilterMode | null>(null);
+  const [submissionFilter, setSubmissionFilter] = useState<FilterMode>({name: 'Ascending', key: 0});
   const submissionFilterOpts: FilterMode[] = [
     {name: "Ascending", key: 0},
     {name: "Descending", key: 1},
@@ -60,6 +55,55 @@ const ActivityCompletionRequestDialogue: React.FC<ActivityCompletionRequestDialo
 
   // Variables to control toast messages
   const toast = useRef<Toast>(null);
+
+// useEffect hook to update the displayed requests based on given filters
+  useEffect(() => {
+    switch(filterMode.key) {
+      case 1:
+        // Filter by school name
+        if(schoolFilter === null) return;
+        let filteredSchoolArray: ActivityRequests[] = [];
+        requests.forEach((r) => {
+          if(r.schoolName === schoolFilter.name) filteredSchoolArray.push(r);
+        });
+        setFilteredRequests(filteredSchoolArray);
+        break;
+      case 2:
+        // Filter by student name
+        if(studentFilter === null) return;
+        let filteredStudentArray: ActivityRequests[] = [];
+        requests.forEach((r) => {
+          if(r.studentName === studentFilter.name) filteredStudentArray.push(r);
+        });
+        setFilteredRequests(filteredStudentArray);
+        break;
+      case 3:
+        // Filter by program name
+        if(programFilter === null) return;
+        let filteredProgramArray: ActivityRequests[] = [];
+        requests.forEach((r) => {
+          if(r.programName === programFilter.name) filteredProgramArray.push(r);
+        });
+        setFilteredRequests(filteredProgramArray);
+        break;
+      default:
+        switch(submissionFilter.key) {
+          case 0:
+            // Filtered requests by submission date in ascending order
+            setFilteredRequests(requests);
+            break;
+          case 1:
+            // Filtered requests by submission date in descending order
+            let filteredArray: ActivityRequests[] = [];
+            for(let i = requests.length - 1; i >= 0; i--) {
+              filteredArray.push(requests[i]);
+            };
+            setFilteredRequests(filteredArray);
+            break;
+        };
+        break;
+    };
+  }, [filterMode, submissionFilter, schoolFilter, studentFilter, programFilter]);
 
   // useEffect hook to handel setting up the initial request filter and filtering options
   useEffect(() => {
@@ -117,42 +161,42 @@ const ActivityCompletionRequestDialogue: React.FC<ActivityCompletionRequestDialo
         <br/>
         <small style={{color: '#7c7d7e'}}>Filtering:</small>
       </div>
-      <div>
-      <Dropdown 
-        value={filterMode}
-        onChange={(e: DropdownChangeEvent) => setFilterMode(e.value)} 
-        options={modes}
-        optionLabel="name" 
-        placeholder="Select a Filter Mode" className="w-full md:w-14rem" 
-      />
-      <Dropdown 
-        value={submissionFilter}
-        onChange={(e: DropdownChangeEvent) => setSubmissionFilter(e.value)} 
-        options={submissionFilterOpts}
-        optionLabel="name" 
-        placeholder="Select a Submission Order" className="w-full md:w-14rem" 
-      />
-      <Dropdown 
-        value={schoolFilter}
-        onChange={(e: DropdownChangeEvent) => setSchoolFilter(e.value)} 
-        options={schoolFilterOpts}
-        optionLabel="name" 
-        placeholder="Select a School" className="w-full md:w-14rem" 
-      />
-      <Dropdown 
-        value={studentFilter}
-        onChange={(e: DropdownChangeEvent) => setStudentFilter(e.value)} 
-        options={studentFilterOpts}
-        optionLabel="name" 
-        placeholder="Select a Student" className="w-full md:w-14rem" 
-      />
-      <Dropdown 
-        value={programFilter}
-        onChange={(e: DropdownChangeEvent) => setProgramFilter(e.value)} 
-        options={programFilterOpts}
-        optionLabel="name" 
-        placeholder="Select a Program" className="w-full md:w-14rem" 
-      />
+      <div className="p-inputgroup flex-1">
+        <Dropdown 
+          value={filterMode}
+          onChange={(e: DropdownChangeEvent) => setFilterMode(e.value)}
+          options={modes}
+          optionLabel="name" 
+          placeholder="Select a Filter Mode" className="w-full md:w-14rem" 
+        />
+        {filterMode.key === 0 && <Dropdown 
+          value={submissionFilter}
+          onChange={(e: DropdownChangeEvent) => setSubmissionFilter(e.value)} 
+          options={submissionFilterOpts}
+          optionLabel="name" 
+          placeholder="Select a Submission Order" className="w-full md:w-14rem" 
+        />}
+        {filterMode.key === 1 && <Dropdown 
+          value={schoolFilter}
+          onChange={(e: DropdownChangeEvent) => setSchoolFilter(e.value)} 
+          options={schoolFilterOpts}
+          optionLabel="name" 
+          placeholder="Select a School" className="w-full md:w-14rem" 
+        />}
+        {filterMode.key === 2 && <Dropdown 
+          value={studentFilter}
+          onChange={(e: DropdownChangeEvent) => setStudentFilter(e.value)} 
+          options={studentFilterOpts}
+          optionLabel="name" 
+          placeholder="Select a Student" className="w-full md:w-14rem" 
+        />}
+        {filterMode.key === 3 && <Dropdown 
+          value={programFilter}
+          onChange={(e: DropdownChangeEvent) => setProgramFilter(e.value)} 
+          options={programFilterOpts}
+          optionLabel="name" 
+          placeholder="Select a Program" className="w-full md:w-14rem" 
+        />}
       </div>
     </React.Fragment>
   );
