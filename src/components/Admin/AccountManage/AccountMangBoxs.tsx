@@ -60,7 +60,7 @@ interface AccountListBoxProps {
 
     async function updateCoreDetailsHandler(): Promise<void> {
 
-    // Handel and validate differing data depending on mode
+    // Handle and validate differing data depending on mode
     let success: boolean = false;
     // Set loading states
     setSubmitted(true);
@@ -122,9 +122,6 @@ interface AccountListBoxProps {
         setPassword("");
       };
     
-      
-
-    
     //use effects runs when component is called
     useEffect(() => {
         if (selectedUsername && selectedCategory) {
@@ -136,11 +133,16 @@ interface AccountListBoxProps {
                         setFirstName(String(data?.firstName))
                         setSurnameInitial(String(data?.surnameInitial))
                         setUsername(String(data?.username))
-                        if(selectedCategory === "students") {
-                            school = data.school;
-                        } else {
-                            school = data.school;
-                        }
+                        
+                        // If student, just display 1 school else display all schools
+                        // Logically shouldn't matter what category as student array will just display 1 school anyway?
+                //if(selectedCategory === "students") {
+                            // Why is this always a string?
+                            // Problem with getUserData - always gets data as a string
+                            school = data.school; 
+                //} else {
+                    //school = data.schools;
+                //}
                         setNewSchool(school)
                         setPassword(String(data?.password))
                     }

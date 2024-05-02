@@ -6,7 +6,7 @@ export interface UserData {
     username: string;
     firstName: string;
     surnameInitial: string;
-    school: string;
+    school: string[];
     password: string;
     snowflake: string;
 }

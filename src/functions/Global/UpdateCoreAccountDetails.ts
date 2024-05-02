@@ -12,7 +12,7 @@ import { doc, updateDoc } from "firebase/firestore";
  * @returns {Promise<boolean>} Returns either true or false to indicate whether the operation was successful or not.
  * @Ethan
  */
-export async function updateCoreAccountDetails(accountType: string, snowflake: string, firstName: string = "", surnameInitial: string = "", username: string = "", password: string = "",school: string[] = []): Promise<boolean> {
+export async function updateCoreAccountDetails(accountType: string, snowflake: string, firstName: string = "", surnameInitial: string = "", username: string = "", password: string = "", school: string[] = []): Promise<boolean> {
   // Ensure at least 1 core detail needs updating
   if(!firstName && !surnameInitial && !username && !password) return Promise.resolve(false);
   // Collect all core details and put them into an object
