@@ -5,4 +5,5 @@ export type AssessedActivities = {
     completed: boolean;
     pending: boolean;
     activity: Activity;
+    date: string;
 };

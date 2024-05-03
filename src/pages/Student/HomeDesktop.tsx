@@ -1,7 +1,6 @@
 // Import core UI components
 import React from 'react';
 import { useState, useEffect, useRef } from 'react';
-import { Divider } from 'primereact/divider';
 import { Button } from 'primereact/button';
 import { ProgressSpinner } from 'primereact/progressspinner';
 import { Toast } from 'primereact/toast';
@@ -95,15 +94,18 @@ const HomeDesktop: React.FC = () => {
     activities.forEach((a) => {
       let completed: boolean = false;
       let pending: boolean= false;
+      let date: string = '-----';
       try {
         updatedProgress[programIndex].completedActivities.forEach((c) => {
           if(a.id === c.id) {
             completed = true;
+            date = c.dateCompleted;
           };
         });
         updatedProgress[programIndex].pendingActivities.forEach((p) => {
           if(a.id === p.id) {
             pending = true;
+            date = p.dateSubmitted;
           };
         });
       } catch (e) {
@@ -121,6 +123,7 @@ const HomeDesktop: React.FC = () => {
         completed: completed,
         pending: pending,
         activity: a,
+        date: date,
       };
       assessed.push(assessment);
     });
@@ -158,7 +161,6 @@ const HomeDesktop: React.FC = () => {
   };
 
   // Async function to handel creating activity complete requests
-  //TODO Make things and stuff work
   async function createActivityCompleteRequestHandler(activityId: number): Promise<void> {
     setVisibleActivities(false);
     const UnexpectedCreationError = () => {

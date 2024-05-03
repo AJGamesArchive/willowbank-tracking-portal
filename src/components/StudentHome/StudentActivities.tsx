@@ -108,7 +108,7 @@ const StudentActivitiesDialogue: React.FC<StudentActivitiesDialogueProps> = ({ti
   //   </>
   // );
 
-  const listItem = (activity: Activity, completed: boolean, pending: boolean, index: number) => {
+  const listItem = (activity: Activity, completed: boolean, pending: boolean, completionDate: string, index: number) => {
     return (
       <div className="student-activity-grid-item" key={index}>
         <Card header={cardHeader} title={`Activity ${activity.id}`} role={`Activity ${activity.id} Info Card`}>
@@ -118,6 +118,8 @@ const StudentActivitiesDialogue: React.FC<StudentActivitiesDialogueProps> = ({ti
           </div>
           <div><b>Details:</b> {activity.description}</div>
           <div><b>Awarded XP:</b> {activity.xpValue}</div>
+          <br/>
+          <div><b>Date Completed:</b>{` ${completionDate}`}</div>
           <br/>
           <Button 
             label="Mark completed" 
@@ -133,7 +135,7 @@ const StudentActivitiesDialogue: React.FC<StudentActivitiesDialogueProps> = ({ti
   
   //TODO Update both gridItem and listItem components to display activities differently if there completed
 
-  const gridItem = (activity: Activity, completed: boolean, pending: boolean, index: number) => {
+  const gridItem = (activity: Activity, completed: boolean, pending: boolean, completionDate: string, index: number) => {
     return (
       <div key={index}>
         {index === 0 && (<br/>)}
@@ -147,6 +149,8 @@ const StudentActivitiesDialogue: React.FC<StudentActivitiesDialogueProps> = ({ti
             
             <div><b>Details:</b>{` ${activity.description}`}</div>
             <div><b>Awarded XP:</b>{` ${activity.xpValue}`}</div>
+            <br/>
+            <div><b>Date Completed:</b>{` ${completionDate}`}</div>
           </div>
           <div className='student-activity-list-right'>
             <Button 
@@ -163,13 +167,13 @@ const StudentActivitiesDialogue: React.FC<StudentActivitiesDialogueProps> = ({ti
     );
   };
 
-  const itemTemplate = (activity: Activity, completed: boolean, pending: boolean, layout: string, index: number) => {
+  const itemTemplate = (activity: Activity, completed: boolean, pending: boolean, completionDate: string, layout: string, index: number) => {
     if (!activity) {return;};
-    return (layout === 'grid') ? listItem(activity, completed, pending, index) : gridItem(activity, completed, pending, index);
+    return (layout === 'grid') ? listItem(activity, completed, pending, completionDate, index) : gridItem(activity, completed, pending, completionDate, index);
   };
 
   const listTemplate = () => {
-    return <div className={(layout === "grid" ? "student-activity-grid-container" : "student-activity-list-col")}>{activities.map((activity, index) => itemTemplate(activity.activity, activity.completed, activity.pending, layout, index))}</div>;
+    return <div className={(layout === "grid" ? "student-activity-grid-container" : "student-activity-list-col")}>{activities.map((activity, index) => itemTemplate(activity.activity, activity.completed, activity.pending, activity.date, layout, index))}</div>;
   };
   
   const dataViewHeader = () => {
