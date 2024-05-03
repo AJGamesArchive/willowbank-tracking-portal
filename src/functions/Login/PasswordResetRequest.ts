@@ -1,6 +1,6 @@
 // Importing the database
 import { db } from "../../database/Initalise";
-import { getDoc, doc, setDoc, query, collection, getDocs, DocumentData } from "firebase/firestore";
+import { getDoc, doc, query, collection, getDocs, DocumentData, runTransaction } from "firebase/firestore";
 
 // Import functions
 import { dateTime } from "../Global/GenerateTimestamp";
@@ -11,7 +11,6 @@ import { PasswordRequest } from "../../types/Global/PasswordRequest";
 import { PasswordRequestLog } from "../../types/Global/PasswordRequest";
 
 // Async function to create a password reset request for a given user
-//TODO Update this function so it only creates a request if you have not currently got an active request open
 export async function createPasswordRequest(username: string, accountType: string): Promise<boolean> {
   // Get the current timestamp
   const timestamp: string = dateTime();
@@ -37,6 +36,13 @@ export async function createPasswordRequest(username: string, accountType: strin
       requestsArray = docPassReset.data().requests;
     };
 
+    // Ensure that there isn't already an active reset request
+    let exists: boolean = false;
+    requestsArray.forEach((r) => {
+      if(r.snowflake === accountSnowflake) exists = true;
+    });
+    if(exists) return Promise.resolve(true);
+
     // Add a new request to array of requests and create a request log object
     requestsArray.push({
       snowflake: accountSnowflake,
@@ -54,14 +60,17 @@ export async function createPasswordRequest(username: string, accountType: strin
       ignored: false,
     };
 
-    // Save updated request array to DB and activate active requests flag
-    await setDoc(doc(db, "requests", "password-resets"), {
-      activeRequests: true,
-      requests: requestsArray,
+    // Transaction to write data to DB
+    await runTransaction(db, async (transaction): Promise<void> => {
+      // Save updated request array to DB and activate active requests flag
+      await transaction.set(doc(db, "requests", "password-resets"), {
+        activeRequests: true,
+        requests: requestsArray,
+      });
+      
+      // Save request log object to DB
+      await transaction.set(doc(db, "requests", "password-resets", "request-logs", timestamp), requestsLogArray);
     });
-    
-    // Save request log object to DB
-    await setDoc(doc(db, "requests", "password-resets", "request-logs", timestamp), requestsLogArray);
   } catch (e) {
     return Promise.resolve(false);
   };
