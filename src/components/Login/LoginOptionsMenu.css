@@ -7,6 +7,55 @@
   transform: translateX(-50%);
 }
 
+.p-icon.p-submenu-icon {
+  color: #dad7cd
+}
+
+.p-menuitem-text {
+  color: #dad7cd
+}
+.p-panelmenu .p-panelmenu-header:not(.p-disabled).p-highlight .p-panelmenu-header-content {
+  background-color: #3a5a40;
+  border-color: #344e41; 
+}
+
+.p-menuitem-icon {
+  color: #dad7cd
+}
+
+.p-card.p-component {
+  background-color: rgb(90, 141, 110);
+}
+
+.p-panelmenu-icon {
+  color: #dad7cd
+}
+
+.left-div {
+  display: flex; 
+  float: left; 
+  max-width: 50%; 
+  height: 100%; 
+  align-items: center; 
+  justify-content: center; 
+  vertical-align: middle
+}
+
+.logo {
+  width: 100%;
+  min-height: auto; 
+  border-radius: 8px; 
+  margin: auto; 
+  vertical-align: center
+}
+
+.right-div {
+  width: 50%; 
+  display: flex; 
+  flex-direction: column; 
+  padding: 15px;
+  margin: auto 20px
+}
 /* .badge-circle {
   width: 50px;
   height: 50px;
@@ -70,7 +119,7 @@
 }
 
 .badge-star:before {
-  content: '';
+  content: ;
   position: absolute;
   top: 16px;
   left: -25px;

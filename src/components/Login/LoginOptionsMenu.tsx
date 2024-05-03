@@ -79,22 +79,30 @@ const LoginOptionsMenu: React.FC<LoginOptionsMenuProps> = ({setLoginType, visibl
   
   // Return JSX
   return (
-    <div style={{ display: visible ? 'block' : 'none' }}>
-      <h1>Welcome!</h1>
-      <p className='login-subheader'>
-        Please login or create a new account.
-      </p>
-      <PanelMenu model={options}/>
+    <div 
+      style={{ backgroundColor: "#5A8D6E", 
+        padding: "3%", 
+        borderRadius: "5px", 
+        margin: "auto", 
+        minWidth: "50%",
+        maxWidth: "750px",
+        height: "fit-content", 
+        verticalAlign: "middle",
+        display: visible ? 'flex' : 'none' }}>
+      <div className="left-div">
+      <img src="https://images.squarespace-cdn.com/content/v1/602e622e8efecc669cef2b45/9e0ef273-0d6a-4792-9e90-526fcfa4a936/Screenshot%2B2022-11-22%2Bat%2B20.43.18.jpeg" 
+        className='logo'/>
+      </div>
+      <div className="right-div">
+      <h1 style={{textAlign: "left", margin: "0px"}}>Welcome!</h1>
+      <h4 style = {{textAlign: "left"}}>Please login or create a new account.</h4>
+      <PanelMenu model={options} />
+      </div>
       <div className='login-footer'>
         <p>
-          <i className='pi pi-book'/> Willowbank Education Track Portal
+          <i className='pi pi-book'/> Willowbank Education Tracking Portal
         </p>
       </div>
-      <Divider/>
-      <Button label={`[DEV] Token & Snowflake`} icon="pi pi-exclamation-triangle" onClick={() => {
-        console.log(generateToken()); //! Remove later
-        console.log(snowflake.generate()); //! Remove later
-      }} raised severity="help"/>
     </div>
   );
 };

@@ -15,11 +15,11 @@ export async function getstaffAccountInfo(accountType: string): Promise< CoreSta
   let teacherData: CoreStaffAccountDetails[] = [];
   let adminData: CoreStaffAccountDetails[] = [];
 
-  //creates querys for searching database
+  // Creates queries for searching database
   const qT = query(collection(db, "teachers"));
   const qA = query(collection(db, "admins"));
 
-  //creates document variables to store account infromation
+  // Creates document variables to store account information
   let docT;
   let docA;
 

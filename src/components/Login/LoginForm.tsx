@@ -150,7 +150,7 @@ const LoginForm: React.FC<LoginFormProps> = ({accountType, visible, setVisible, 
           ! Here for development purposes - remove later
         */
       }
-      <div style={{ display: visible ? 'block' : 'none' }}>
+      <div style={{display: visible ? 'block' : 'none'}}>
         <Button label={`[DEV] ${accountType} Details`} icon="pi pi-exclamation-triangle" onClick={() => {
           switch (accountType) {
             case ("Teacher"):
