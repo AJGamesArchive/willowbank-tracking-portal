@@ -23,7 +23,6 @@ interface StudentProgramProps {
   progress: XPStudentAccountDetails;
   fetchAndFilterActivities: (snowflake: string, programName: string) => void;
   lockButton: boolean;
-  //TODO Add props for the button functions
 };
 
 // React function to render the student programs component for the student portal
@@ -37,7 +36,7 @@ const StudentProgram: React.FC<StudentProgramProps> = ({programSnowflake, title,
     <div style={{backgroundColor: `#${colour}`}}>
       <img style={{ width: '100%', filter:`brightness(${getBrightness()})`}} src={getSRC()} alt='Program image'/>
     </div>
-);
+  );
   
   function getSRC ()
   {
@@ -78,6 +77,7 @@ const StudentProgram: React.FC<StudentProgramProps> = ({programSnowflake, title,
       {programPopup}
       <div className='progress-card-content'>
         <div style={{fontSize: "xx-large"}}><b>{title}</b></div>
+        <Divider/>
         <StudentProgramRow
           boldText={true}
           leftContent={`Badges Awarded:`}
@@ -86,7 +86,7 @@ const StudentProgram: React.FC<StudentProgramProps> = ({programSnowflake, title,
         />
         <StudentProgramRow
           boldText={false}
-          leftContent={`${progress.currentLevel}`}
+          leftContent={`${progress.currentLevel - 1}`}
           centerContent={` `}
           rightContent={`${progress.dateStarted}`}
         />

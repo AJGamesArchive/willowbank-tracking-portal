@@ -216,7 +216,7 @@ const AdminPortalDesktop: React.FC = () => {
         <ActivityCompletionRequestDialogue
           visible={visibleActivityRequests}
           setVisible={setVisibleActivityRequests}
-          requests={requests}
+          baseRequests={requests}
         />
       </>
     );

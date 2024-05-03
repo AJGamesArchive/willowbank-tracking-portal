@@ -1,7 +1,6 @@
 // Import core UI components
 import React from 'react';
 import { useState, useEffect, useRef } from 'react';
-import { Divider } from 'primereact/divider';
 import { Button } from 'primereact/button';
 import { ProgressSpinner } from 'primereact/progressspinner';
 import { Toast } from 'primereact/toast';
@@ -74,7 +73,8 @@ const HomeDesktop: React.FC = () => {
     setSelectProgram(snowflake);
     setSelectedProgramName(programName);
     const activities = await retrieveAllActivities(snowflake);
-    if(typeof activities == "string") {
+    const updatedProgress = await retrieveXPData((params.snowflake? params.snowflake : ''));
+    if(typeof activities == "string" || typeof updatedProgress === "string") {
       toast.current?.show({
         severity: 'error',
         summary: 'Unexpected Error',
@@ -87,22 +87,25 @@ const HomeDesktop: React.FC = () => {
     let assessed: AssessedActivities[] = [];
     let programIndex: number = -1;
     for(let i = 0; i < progress.length; i++) {
-      if(progress[i].programName.toLocaleLowerCase() === programName.toLocaleLowerCase()) {
+      if(updatedProgress[i].programName.toLocaleLowerCase() === programName.toLocaleLowerCase()) {
         programIndex = i;
       };
     };
     activities.forEach((a) => {
       let completed: boolean = false;
       let pending: boolean= false;
+      let date: string = '-----';
       try {
-        progress[programIndex].completedActivities.forEach((c) => {
+        updatedProgress[programIndex].completedActivities.forEach((c) => {
           if(a.id === c.id) {
             completed = true;
+            date = c.dateCompleted;
           };
         });
-        progress[programIndex].pendingActivities.forEach((p) => {
+        updatedProgress[programIndex].pendingActivities.forEach((p) => {
           if(a.id === p.id) {
             pending = true;
+            date = p.dateSubmitted;
           };
         });
       } catch (e) {
@@ -120,13 +123,14 @@ const HomeDesktop: React.FC = () => {
         completed: completed,
         pending: pending,
         activity: a,
+        date: date,
       };
       assessed.push(assessment);
     });
     setProgramActivities(assessed);
     setVisibleActivities(true);
     setBlockUI(false);
-    console.log(assessed)
+    return;
   };
 
   // Async function to retrieve all student data required for the portal
@@ -157,7 +161,6 @@ const HomeDesktop: React.FC = () => {
   };
 
   // Async function to handel creating activity complete requests
-  //TODO Make things and stuff work
   async function createActivityCompleteRequestHandler(activityId: number): Promise<void> {
     setVisibleActivities(false);
     const UnexpectedCreationError = () => {
