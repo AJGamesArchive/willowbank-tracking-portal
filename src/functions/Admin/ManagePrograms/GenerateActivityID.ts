@@ -1,6 +1,6 @@
 // Importing core resources
 import { db } from "../../../database/Initalise";
-import { getDoc, doc, updateDoc } from "firebase/firestore";
+import { getDoc, doc, runTransaction } from "firebase/firestore";
 
 // Async function to look at all activity IDs in the DB and generate a new unique ID for a new activity
 export async function generateActivityID(snowflake: string): Promise<string | number> {
@@ -14,9 +14,13 @@ export async function generateActivityID(snowflake: string): Promise<string | nu
     if(!programDoc.exists()) {return Promise.resolve("Error");}
     totalActivities = programDoc.data().totalActivities;
     id = totalActivities + 1;
-    await updateDoc(docRef, {
-      totalActivities: id,
+    const success: boolean = await runTransaction(db, async (transaction): Promise<boolean> => {
+      await transaction.update(docRef, {
+        totalActivities: id,
+      });
+      return Promise.resolve(true);
     });
+    if(!success) return Promise.resolve("Error");
   } catch (e) {
     console.log(e);
     Promise.resolve(String(e));

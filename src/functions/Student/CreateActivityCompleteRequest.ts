@@ -1,5 +1,5 @@
 import { db } from "../../database/Initalise";
-import { getDoc, doc, updateDoc, setDoc, DocumentData } from "firebase/firestore";
+import { getDoc, doc, setDoc, DocumentData, runTransaction } from "firebase/firestore";
 import { ActivityRequests } from "../../types/Global/ActivityCompletionRequests";
 import { ActivityRequestsLog } from "../../types/Global/ActivityCompletionRequests";
 import { Activity } from "../../types/Global/Activity";
@@ -63,7 +63,6 @@ export async function createActivityCompleteRequest(studentSnowflake: string, st
   const requestsLogDocRef = doc(db, "requests", "activity-completions", "request-logs", submissionDate);
   let studentDoc;
   let requestsDoc;
-  let requestLogsDoc;
   let studentDocData: DocumentData;
   let requestsDocData: DocumentData;
   let pendingActivities: PendingActivity[] = [];
@@ -72,7 +71,6 @@ export async function createActivityCompleteRequest(studentSnowflake: string, st
     // Retrieve required documents from the database and ensure they exist
     studentDoc = await getDoc(studentDocRef);
     requestsDoc = await getDoc(requestsDocRef);
-    requestLogsDoc = await getDoc(requestsLogDocRef);
     if(!studentDoc.exists()) return Promise.resolve(false);
     if(!requestsDoc.exists()) {
       await setDoc(requestsDocRef, {
@@ -91,15 +89,18 @@ export async function createActivityCompleteRequest(studentSnowflake: string, st
     // Retrieve existing array of requests and add the new request to the array
     requests = requestsDocData.requests;
     requests.push(request);
-    // Write all data back to the database
-    await updateDoc(studentDocRef, {
-      pendingActivities: pendingActivities,
+    // Transaction to write data to DB
+    await runTransaction(db, async (transaction): Promise<void> => {
+      // Write all data back to the database
+      await transaction.update(studentDocRef, {
+        pendingActivities: pendingActivities,
+      });
+      await transaction.update(requestsDocRef, {
+        activeRequests: true,
+        requests: requests,
+      });
+      await transaction.set(requestsLogDocRef, requestLog);
     });
-    await updateDoc(requestsDocRef, {
-      activeRequests: true,
-      requests: requests,
-    });
-    await setDoc(requestsLogDocRef, requestLog);
   } catch (e) {
     console.log(e);
     return Promise.resolve(false);
