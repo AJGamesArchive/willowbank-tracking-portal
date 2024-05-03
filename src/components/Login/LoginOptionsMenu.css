@@ -7,20 +7,28 @@
   transform: translateX(-50%);
 }
 
+.p-icon.p-submenu-icon {
+  color: #dad7cd
+}
+
 .p-menuitem-text {
   color: #dad7cd
 }
+.p-panelmenu .p-panelmenu-header:not(.p-disabled).p-highlight .p-panelmenu-header-content {
+  background-color: #3a5a40;
+  border-color: #344e41; 
+}
 
-.p-menuitem-icon{
+.p-menuitem-icon {
   color: #dad7cd
 }
 
-.p-panelmenu-icon {
-  color: #dad7cd 
+.p-card.p-component {
+  background-color: rgb(90, 141, 110);
 }
 
-.p-menuitem {
-  background-color: #283618;
+.p-panelmenu-icon {
+  color: #dad7cd
 }
 
 .left-div {
