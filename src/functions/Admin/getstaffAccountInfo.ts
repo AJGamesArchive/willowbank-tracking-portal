@@ -4,41 +4,42 @@ import { getDocs, query, collection, DocumentData } from "firebase/firestore";
 // Import types
 import { CoreStaffAccountDetails } from "../../types/Global/UserAccountDetails";
 
-
+/**
+ * Async function to retrieve all staff accounts info
+ * @param accountType The type of account to retrieve data for (teachers, admins)
+ * @returns An array of all account details for a collection of staff accounts
+ */
 export async function getstaffAccountInfo(accountType: string): Promise< CoreStaffAccountDetails[] | string> {
 
-//sets arrays to store student , teacher and admin data
-let teacherData: CoreStaffAccountDetails[] = [];
-let adminData: CoreStaffAccountDetails[] = [];
+  //sets arrays to store student , teacher and admin data
+  let teacherData: CoreStaffAccountDetails[] = [];
+  let adminData: CoreStaffAccountDetails[] = [];
 
-//creates queries for searching database
-const qT = query(collection(db, "teachers"));
-const qA = query(collection(db, "admins"));
+  // Creates queries for searching database
+  const qT = query(collection(db, "teachers"));
+  const qA = query(collection(db, "admins"));
 
-//creates document variables to store account information
-let docT;
-let docA;
+  // Creates document variables to store account information
+  let docT;
+  let docA;
 
-//fetches document data for teacher
+  //fetches document data for teacher
+  try {
+      docT = await getDocs(qT);
+    } catch (e) {
+      return Promise.resolve("Error");
+    };
 
-try {
-    docT = await getDocs(qT);
-  } catch (e) {
-    return Promise.resolve("Error");
-  };
-
-// fetches document data for admin
-
-try {
-    docA = await getDocs(qA);
-  } catch (e) {
-    return Promise.resolve("Error");
-  };
+  // fetches document data for admin
+  try {
+      docA = await getDocs(qA);
+    } catch (e) {
+      return Promise.resolve("Error");
+    };
 
 
-//saves data for teacher
-
-docT.forEach((d) => {
+  //saves data for teacher
+  docT.forEach((d) => {
     const docData: DocumentData = d.data();
     const tData: CoreStaffAccountDetails = {
       snowflake: docData.snowflake,
@@ -50,10 +51,10 @@ docT.forEach((d) => {
       token: docData.token
     };
     teacherData.push(tData);
-});
-//saves data for admin
+  });
 
-docA.forEach((d) => {
+  //saves data for admin
+  docA.forEach((d) => {
     const docData: DocumentData = d.data();
     const aData: CoreStaffAccountDetails = {
       snowflake: docData.snowflake,
@@ -65,19 +66,15 @@ docA.forEach((d) => {
       token: docData.token
     };
     adminData.push(aData);
-});
+  });
 
-
-
-switch (accountType) {
+  switch (accountType) {
     case "T":{
-        return Promise.resolve (teacherData) ; 
-        break;
-     }
-    case "A":{
-        return Promise.resolve (adminData) ;
-        break;
+      return Promise.resolve (teacherData);
     }
-}
+    case "A":{
+        return Promise.resolve (adminData);
+      }
+  }
   return Promise.resolve("Error");
-}
+};

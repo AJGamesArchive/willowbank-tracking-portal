@@ -2,7 +2,7 @@ import { db } from "../../database/Initalise"
 import { getDoc, doc } from "firebase/firestore";
 import { PasswordRequestLog } from "../../types/Global/PasswordRequest";
 
-// Async function to retrieve all the document ID's for a given collection in the database
+// JESS COMMENT YOUR FUNCTION PROPERLY
 export async function getLogs() : Promise<string | PasswordRequestLog[]> {
     
     const docRef = doc(db, "requests", "password-resets", "request-logs");

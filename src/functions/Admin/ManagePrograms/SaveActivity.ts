@@ -1,6 +1,6 @@
 // Importing core resources
 import { db } from "../../../database/Initalise";
-import { getDoc, doc, updateDoc } from "firebase/firestore";
+import { getDoc, doc, runTransaction } from "firebase/firestore";
 
 // Importing types
 import { Activity } from "../../../types/Global/Activity";
@@ -29,8 +29,10 @@ export async function saveActivityData(activity: Activity, isNew: boolean, snowf
     };
   };
   try {
-    await updateDoc(docRef, {
-      activities: activityData,
+    await runTransaction(db, async (transaction): Promise<void> => {
+      await transaction.update(docRef, {
+        activities: activityData,
+      });
     });
   } catch (e) {
     console.log(e);

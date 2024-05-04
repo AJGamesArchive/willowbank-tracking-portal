@@ -1,12 +1,12 @@
 // Importing the database
 import { db } from "../../database/Initalise"
-import { getDoc, setDoc, updateDoc, doc } from "firebase/firestore";
+import { getDoc, doc, runTransaction } from "firebase/firestore";
 import { PasswordRequest } from "../../types/Global/PasswordRequest";
 import { getResetRequests } from "./GetResetRequests";
 import { dateTimeReadable } from "./GenerateTimestamp";
 import { generatePassword } from '../../functions/Login/GeneratePassword.ts';
 
-// Async function to retrieve all the document ID's for a given collection in the database
+// JESS COMMENT YOUR FUNCTION PROPERLY
 export async function removeResetRequest(remove : PasswordRequest, ignore : Boolean, newPassword: string): Promise<boolean> {
     try 
     {
@@ -28,18 +28,20 @@ export async function removeResetRequest(remove : PasswordRequest, ignore : Bool
 
         // Write back to database
         const docRef = doc(db, "requests", "password-resets");
-        
-        await setDoc(docRef, {
-            activeRequests: (allAccounts.length === 0) ? false : true,
-            requests: allAccounts
-        });
 
-        const logDocRef = doc(db, "requests", "password-resets", "request-logs", remove.created)
-            updateDoc(logDocRef, {
+        // Transaction to write data
+        await runTransaction(db, async (transaction): Promise<void> => {
+            await transaction.set(docRef, {
+                activeRequests: (allAccounts.length === 0) ? false : true,
+                requests: allAccounts
+            });
+            const logDocRef = doc(db, "requests", "password-resets", "request-logs", remove.created)
+            await transaction.update(logDocRef, {
                 ignored: ignore,
                 completed: dateTimeReadable(),
                 newPassword: newPassword,
             });
+        });
 
         return Promise.resolve(true);
     }
@@ -61,8 +63,10 @@ export async function resetPassword ( account : PasswordRequest ) : Promise<stri
         var name : string = Account.data().firstName
         var surnameInitial : string = Account.data().surnameInitial
         var newPassword = generatePassword(name, surnameInitial)
-        await updateDoc(docRef, {
-            password : newPassword
+        await runTransaction(db, async (transaction): Promise<void> => {
+            await transaction.update(docRef, {
+                password : newPassword
+            });
         });
         return Promise.resolve(newPassword);
     }
