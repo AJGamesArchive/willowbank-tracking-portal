@@ -1,7 +1,6 @@
 // Import core UI components
 import React from 'react';
 import { useState, useEffect, useRef } from 'react';
-import { Divider } from 'primereact/divider';
 import { Button } from 'primereact/button';
 import { ProgressSpinner } from 'primereact/progressspinner';
 import { Toast } from 'primereact/toast';
@@ -14,6 +13,7 @@ import { useParams } from 'react-router';
 // Import CSS
 import './HomeDesktop.css';
 import './HomeGlobal.css';
+import '../Shared CSS files/PortalDesktop.css'
 
 // Import UI components
 import Badge from '../../components/StudentHome/Badge';
@@ -38,6 +38,9 @@ import { CoreStudentAccountDetails } from '../../types/Global/UserAccountDetails
 import { ProgramData } from '../../types/Admin/ProgramData';
 import { AssessedActivities } from '../../types/Student/AssessedActivities';
 import { Activity } from '../../types/Global/Activity';
+import SignOutOption from '../../components/Admin/AdminPortal/AdminMenuSignOutOption';
+import ModifyOption from '../../components/Admin/AdminPortal/AdminMenuOptionChangeDetails';
+import { Divider } from 'primereact/divider';
 
 // React function to render the Student Portal page for desktop devices
 const HomeDesktop: React.FC = () => {
@@ -68,13 +71,17 @@ const HomeDesktop: React.FC = () => {
   // Variables to control toast messages
   const toast = useRef<Toast>(null);
 
+  // Get name
+  const name : string = String(params.name?.charAt(0).toUpperCase()) + String(params.name?.substring(1).toLowerCase());
+
   // Async function to retrieve all activities for a given program and mark complete activities as completed when the activity dialogue box is called
   async function fetchAndFilterActivities(snowflake: string, programName: string): Promise<void> {
     setBlockUI(true);
     setSelectProgram(snowflake);
     setSelectedProgramName(programName);
     const activities = await retrieveAllActivities(snowflake);
-    if(typeof activities == "string") {
+    const updatedProgress = await retrieveXPData((params.snowflake? params.snowflake : ''));
+    if(typeof activities == "string" || typeof updatedProgress === "string") {
       toast.current?.show({
         severity: 'error',
         summary: 'Unexpected Error',
@@ -87,22 +94,25 @@ const HomeDesktop: React.FC = () => {
     let assessed: AssessedActivities[] = [];
     let programIndex: number = -1;
     for(let i = 0; i < progress.length; i++) {
-      if(progress[i].programName.toLocaleLowerCase() === programName.toLocaleLowerCase()) {
+      if(updatedProgress[i].programName.toLocaleLowerCase() === programName.toLocaleLowerCase()) {
         programIndex = i;
       };
     };
     activities.forEach((a) => {
       let completed: boolean = false;
       let pending: boolean= false;
+      let date: string = '-----';
       try {
-        progress[programIndex].completedActivities.forEach((c) => {
+        updatedProgress[programIndex].completedActivities.forEach((c) => {
           if(a.id === c.id) {
             completed = true;
+            date = c.dateCompleted;
           };
         });
-        progress[programIndex].pendingActivities.forEach((p) => {
+        updatedProgress[programIndex].pendingActivities.forEach((p) => {
           if(a.id === p.id) {
             pending = true;
+            date = p.dateSubmitted;
           };
         });
       } catch (e) {
@@ -120,13 +130,14 @@ const HomeDesktop: React.FC = () => {
         completed: completed,
         pending: pending,
         activity: a,
+        date: date,
       };
       assessed.push(assessment);
     });
     setProgramActivities(assessed);
     setVisibleActivities(true);
     setBlockUI(false);
-    console.log(assessed)
+    return;
   };
 
   // Async function to retrieve all student data required for the portal
@@ -157,7 +168,6 @@ const HomeDesktop: React.FC = () => {
   };
 
   // Async function to handel creating activity complete requests
-  //TODO Make things and stuff work
   async function createActivityCompleteRequestHandler(activityId: number): Promise<void> {
     setVisibleActivities(false);
     const UnexpectedCreationError = () => {
@@ -261,7 +271,9 @@ const HomeDesktop: React.FC = () => {
 
   // Function to create the program progress cards for the program progress carousel
   const programProgressCardTemplate = (program: XPStudentAccountDetails) => {
+    let locked = false;
     const [description, colour, snowflake, textColour] = getDescription(program.programName);
+    if(!description && !colour && !snowflake && !textColour) locked = true;
     return (
         <React.Fragment>
           <StudentProgram
@@ -274,6 +286,7 @@ const HomeDesktop: React.FC = () => {
             progress={program}
             fetchAndFilterActivities={fetchAndFilterActivities}
             lockButton={blockUI}
+            locked={locked}
           />
       </React.Fragment>
     );
@@ -285,8 +298,7 @@ const HomeDesktop: React.FC = () => {
       <>
         <BlockUI blocked={blockUI}>
           <Toast ref={toast}/>
-          <h1>Welcome {params.name}</h1>
-          <h2 style={{textAlign: "center"}}>Programs</h2>
+          <h1>Welcome {name}</h1>
           <div className='program-progress-carousel'>
             <Carousel 
               value={progress}  
@@ -317,8 +329,18 @@ const HomeDesktop: React.FC = () => {
             setIsLoggedIn={setIsLoggedIn}
             setDetailConfirmation={setDetailConfirmation}
           />
-          <Button className="student-button" label="Edit Account Details" icon="pi pi-cog" onClick={() => setVisibleSettings(true)} severity="warning"/>
-          <Button className="student-button" label="Sign-Out" icon="pi pi-sign-out" onClick={() => window.location.href = `/home`} severity="danger"/>
+          <Divider />
+          <li className="listItem">
+              <div onClick={() => setVisibleSettings(true)}>
+                <ModifyOption
+                  imageSRC={`/assets/admin-portal-images/Settings.png`}
+                  imageAltText='Settings image'
+                  title="Account details" />
+              </div>
+            </li>
+          <li className="listItem">
+            <SignOutOption />
+          </li>
         </BlockUI>
       </>
     );

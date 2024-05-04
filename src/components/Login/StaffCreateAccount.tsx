@@ -3,7 +3,6 @@ import { useState, useRef } from 'react';
 import { Card } from 'primereact/card';
 import { Button } from 'primereact/button';
 import { InputText } from 'primereact/inputtext';
-import { InputMask, InputMaskChangeEvent } from 'primereact/inputmask';
 import { Toast } from 'primereact/toast';
 import { BlockUI } from 'primereact/blockui';
 import { confirmDialog } from 'primereact/confirmdialog';
@@ -11,13 +10,13 @@ import { Messages } from 'primereact/messages';
 import { Password } from 'primereact/password';
 
 // Import CSS
-import './StudentCreateAccount.css';
+import './StaffCreateAccount.css';
 
 // Importing <Password> UI Props
 import { passwordStrengthMsgs, passwordSuggestionsHeader, passwordSuggestionsFooter } from '../../data/PasswordSuggestions';
 
-// Import functions
-import { createStudentAccount } from '../../functions/Login/CreateStudentAccount';
+// Import functions 
+import { createStaffAccount } from '../../functions/Login/CreateStaffAccount';
 import { schoolSearcher } from '../../functions/Login/SchoolSearcher';
 import { generateUsername } from '../../functions/Login/GenerateUsername';
 import { generatePassword } from '../../functions/Login/GeneratePassword';
@@ -26,23 +25,21 @@ import { isUniqueUsernameName } from '../../functions/Validation/IsUniqueUsernam
 // Import types
 import { SchoolSearch } from '../../types/Login/SchoolSearch';
 import { UsernameGen } from '../../types/Login/UsernameGen';
+import { Chips } from 'primereact/chips';
+import { ListBox } from 'primereact/listbox';
 
 // Interfacing forcing certain props on the Student Account Creation form
-interface StudentAccountCreationProps {
+interface StaffAccountCreationProps {
   accountType: string;
-  visible: boolean;
-  setVisible: (value: boolean) => void;
-  setOptionMenuVisible: (value: boolean) => void;
-  userPOV: 'student' | 'admin';
 };
 
 // React function to render the student login form
-const StudentCreationForm: React.FC<StudentAccountCreationProps> = ({accountType, visible, setVisible, setOptionMenuVisible, userPOV}) => {
+const StaffCreationForm: React.FC<StaffAccountCreationProps> = ({accountType}) => {
   // Variables to store the required login credentials
-  const [schoolCode, setSchoolCode] = useState<any>(null);
-  const [schoolName, setSchoolName] = useState<string>("");
+  const [schoolCodes, setSchoolCodes] = useState<string[]>([]);
+  const [schoolNames, setSchoolNames] = useState<string[]>([]);
   const [firstName, setFirstName] = useState<string>("");
-  const [surnameInitial, setSurnameInitial] = useState<any>(null);
+  const [surname, setSurname] = useState<any>(null);
   const [username, setUsername] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [confirmPassword, setConfirmPassword] = useState<string>("");
@@ -55,17 +52,17 @@ const StudentCreationForm: React.FC<StudentAccountCreationProps> = ({accountType
   const [loadingPasswordGen, setLoadingPasswordGen] = useState<boolean>(false);
 
   // Variables to control the form input field styling
-  const [schoolCodeStyle, setSchoolCodeStyle] = useState<string>("");
-  const [schoolNameStyle, setSchoolNameStyle] = useState<string>("");
+  
   const [firstNameStyle, setFirstNameStyle] = useState<string>("");
   const [surnameStyle, setSurnameStyle] = useState<string>("");
   const [usernameStyle, setUsernameStyle] = useState<string>("");
   const [passwordStyle, setPasswordStyle] = useState<string>("");
   const [confirmPasswordStyle, setConfirmPasswordStyle] = useState<string>("");
 
-  const [personPossession] = useState<string>(userPOV === 'student' ? 'your' : `the student's`)
-  const [personPOV] = useState<string>(userPOV === 'student' ? 'you' : 'the student')
-  // Variable to store password generated messag`
+  const [personPossession] = useState<string>(accountType === 'admin' ? `the admin's` : `the student's`)
+  const [personPOV] = useState<string>(accountType === 'admin' ? `the admin's` : `the teacher's`)
+  
+  // Variable to store password generated message
   const msg = useRef<Messages>(null);
 
   // Variable to control blocking certain sections of the UI
@@ -113,16 +110,15 @@ const StudentCreationForm: React.FC<StudentAccountCreationProps> = ({accountType
       defaultFocus: 'accept',
       position: 'center',
       accept: () => {
-        setVisible(false);
         clearHighlighting();
         clearForm();
-        setOptionMenuVisible(true);
       },
       reject: () => {}
     });
+
   };
 
-  // Async function to handel the form submission
+  // Async function to handle the form submission
   async function creationHandler() {
     setLoadingCreation(true);
     setBlockForm(true);
@@ -142,19 +138,20 @@ const StudentCreationForm: React.FC<StudentAccountCreationProps> = ({accountType
       });
     };
 
-    // Ensure the entered school code is valid
-    const results: SchoolSearch = await schoolSearcher(schoolCode);
-    if (results.errored) {
-      detailValidationError("error", "Unexpected Error Occurred", "The school code you entered is invalid. Please check your code is correct and try again.");
-      setSchoolCode(null);
-      setSchoolCodeStyle("p-invalid");
-      unlock(); return;
-    };
+    for (var i = 0; i < schoolCodes.length; i++)
+    {
+       // Ensure the entered school code is valid
+       const results: SchoolSearch = await schoolSearcher(schoolCodes[i]);
+       if (results.errored) {
+       detailValidationError("error", "Unexpected Error Occurred", "The school code you entered is invalid. Please check your code is correct and try again.");
+       setSchoolCodes([]);
+       unlock(); return;
+       };
+    }
 
     // Ensure a valid school has been detected and assigned
-    if (schoolName === "") {
+    if (schoolNames.length === 0) {
       detailValidationError("warn", "No School Detected", `Ensure you detect your school by searching with a school code before creating ${personPossession} account.`);
-      setSchoolNameStyle("p-invalid");
       unlock(); return;
     };
 
@@ -166,7 +163,7 @@ const StudentCreationForm: React.FC<StudentAccountCreationProps> = ({accountType
     };
 
     // Ensure a surname initial has been provided
-    if (surnameInitial === "" || surnameInitial === null) {
+    if (surname === "" || surname === null) {
       detailValidationError("warn", "Invalid Surname Initial", "You have not entered a surname initial. Please enter a surname initial and try again.");
       setSurnameStyle("p-invalid");
       unlock(); return;
@@ -204,7 +201,7 @@ const StudentCreationForm: React.FC<StudentAccountCreationProps> = ({accountType
     };
 
     // Create the student account
-    const creationResults: boolean = await createStudentAccount(schoolCode, schoolName, firstName, surnameInitial, username, password);
+    const creationResults: boolean = await createStaffAccount(accountType, schoolCodes, schoolNames, firstName, surname, username, password);
     if (!creationResults) {
       detailValidationError("error", "Something Went Wrong", "An unexpected error occurred and the account was not able to be created. Please try again.");
       unlock(); return;
@@ -228,10 +225,10 @@ const StudentCreationForm: React.FC<StudentAccountCreationProps> = ({accountType
   // Function to clear the form
   function clearForm(): void {
     setLoadingClear(true);
-    setSchoolCode(null);
-    setSchoolName("");
+    setSchoolCodes([]);
+    setSchoolNames([]);
     setFirstName("");
-    setSurnameInitial("");
+    setSurname("");
     setUsername("");
     setPassword("");
     setConfirmPassword("");
@@ -240,11 +237,11 @@ const StudentCreationForm: React.FC<StudentAccountCreationProps> = ({accountType
   };
 
   // Async function to handle searching for a school based on a given school code
-  async function schoolSearchHandler(): Promise<void> {
+  async function schoolSearchHandler(code : string): Promise<void> {
     setLoadingSchoolSearch(true);
 
     // Attempt to retrieve the name of the school that matches the given ID
-    const results: SchoolSearch = await schoolSearcher(schoolCode);
+    const results: SchoolSearch = await schoolSearcher(code);
     if (results.errored) {
       const errorDialogue = () => {
         toast.current?.show({
@@ -256,13 +253,15 @@ const StudentCreationForm: React.FC<StudentAccountCreationProps> = ({accountType
         });
       };
       errorDialogue();
-      setSchoolCode(null);
-      setSchoolCodeStyle("p-invalid");
+      setSchoolCodes([]);
       setLoadingSchoolSearch(false); return;
     };
 
     // Update the school name field on the creation form
-    setSchoolName(results.schoolName);
+    let updatedSchoolNames = [...schoolNames]; // Create a copy of the current state
+    updatedSchoolNames.push(results.schoolName); // Add the new school name
+    setSchoolNames(updatedSchoolNames); // Update the state with the new array
+
     const confirmationDialogue = () => {
       toast.current?.show({
         severity: `success`,
@@ -281,7 +280,7 @@ const StudentCreationForm: React.FC<StudentAccountCreationProps> = ({accountType
     setLoadingUsernameGen(true);
 
     // Ensure the user has provided their first name and surname initial
-    if (firstName === "" || surnameInitial === null || surnameInitial === "") {
+    if (firstName === "" || surname === null || surname === "") {
       const errorDialogue = () => {
         toast.current?.show({
           severity: `warn`,
@@ -297,7 +296,7 @@ const StudentCreationForm: React.FC<StudentAccountCreationProps> = ({accountType
     };
 
     // Generate username and ensure it's unique
-    const genUsername: UsernameGen = await generateUsername(firstName, surnameInitial);
+    const genUsername: UsernameGen = await generateUsername(firstName, surname);
     if (!genUsername.success) {
       const errorDialogue = () => {
         toast.current?.show({
@@ -333,7 +332,7 @@ const StudentCreationForm: React.FC<StudentAccountCreationProps> = ({accountType
     setLoadingPasswordGen(true);
     
     // Ensure the user has provided their first name and surname initial
-    if (firstName === "" || surnameInitial === null || surnameInitial === "") {
+    if (firstName === "" || surname === null || surname === "") {
       const errorDialogue = () => {
         toast.current?.show({
           severity: `warn`,
@@ -349,7 +348,7 @@ const StudentCreationForm: React.FC<StudentAccountCreationProps> = ({accountType
     };
 
     // Generate a password and output it to the user
-    const genPassword: string = generatePassword(firstName, surnameInitial);
+    const genPassword: string = generatePassword(firstName, surname);
     setPassword(genPassword);
     const confirmationDialogue = () => {
       toast.current?.show({
@@ -381,8 +380,6 @@ const StudentCreationForm: React.FC<StudentAccountCreationProps> = ({accountType
 
   // Function to clear all the error highlighting
   function clearHighlighting(): void {
-    setSchoolCodeStyle("");
-    setSchoolNameStyle("");
     setFirstNameStyle("");
     setSurnameStyle("");
     setUsernameStyle("");
@@ -391,58 +388,50 @@ const StudentCreationForm: React.FC<StudentAccountCreationProps> = ({accountType
     return;
   };
 
+//   const checkNewSchool = (e : any) => {
+//     const regex = /^\d{2}-\d{2}-\d{2}$/;
+//     if (regex.test(e) === true) {
+//         const newSchool = [...schoolCodes, e];
+//         setSchoolCodes(newSchool);
+// }
+//   };
+
   // Return JSX
   return (
     <BlockUI blocked={blockForm}>
     <Toast ref={toast} />
-    <Card title={`Create New ${accountType} Account`} subTitle={`Enter ${personPossession} details:`} style={{ display: visible ? 'block' : 'none' }}>
+    <Card title={`Create New ${accountType} Account`} subTitle={`Enter ${personPossession} details:`} style={{ display: 'block' }}>
       <div className="p-inputgroup flex-1">
         <span className="p-float-label">
-          <InputMask 
-            id="school_code_input"
-            value={schoolCode} 
-            onChange={(e: InputMaskChangeEvent) => {
-              setSchoolName("");
-              setSchoolCode(e.target.value);
-            }}
-            mask="99-99-99"
-            slotChar="00-00-00"
-            className={schoolCodeStyle}
-            aria-describedby='school-code-help'
+        <Chips
+          value={schoolCodes}
+          placeholder='Format: 00-00-00'
+          onRemove={(e) => {
+          let index: number = -1;
+          for(let i = 0; i < schoolCodes.length; i++) {
+            if(schoolCodes[i] === e.value) 
+              index = i;
+          };
+          schoolCodes.splice(index, 1);
+          setSchoolCodes(schoolCodes)
+          }}
+          onAdd={(e) => schoolSearchHandler(e.value)}
+                           
           />
-          <label htmlFor="school_code_input">School Code</label>
-          <Button label='Search' icon="pi pi-search" loading={loadingSchoolSearch} onClick={() => {
-            setSchoolCodeStyle("");
-            schoolSearchHandler();
-          }} />
+          <label htmlFor="school_code_inp">School Code</label>
         </span>
       </div>
-      <small id="school-code-help" className='creation-form-help-text'>
+      <small id="school-code-help2" className='creation-form-help-text'>
         Enter the 6-digit code that {personPossession} school or instructor has provided.
       </small>
 
       <div className="student-creation-form-field">
         <div className="p-inputgroup flex-1">
           <span className="p-float-label">
-            <InputText
-              id="school-name"
-              value={schoolName}
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSchoolName(e.target.value)}
-              required
-              disabled
-              className={schoolNameStyle}
-              aria-describedby='school-name-help'
-            />
-            <label htmlFor="school-name">School Name</label>
-            <Button label="Clear" icon="pi pi-times" onClick={() => {
-              setSchoolName("");
-              setSchoolNameStyle("");
-              setSchoolCode(null);
-              setSchoolCodeStyle("");
-            }} severity="secondary"/>
+            <ListBox options={schoolNames} disabled style={{textAlign:"center", width: "100%"}} emptyMessage="No schools added"/>          
           </span>
         </div>
-        <small id="school-name-help" className='creation-form-help-text'>
+        <small id="school-name-help2" className='creation-form-help-text'>
           {personPossession[0].toUpperCase()}{personPossession.substring(1)} schools name will be filled in automatically.
         </small>
       </div>
@@ -451,36 +440,37 @@ const StudentCreationForm: React.FC<StudentAccountCreationProps> = ({accountType
         <div className="p-inputgroup flex-1">
           <span className="p-float-label">
             <InputText
-              id="first-name"
+              id="first-name2"
               value={firstName}
               onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFirstName(e.target.value.toUpperCase())}
               required
               className={firstNameStyle}
-              aria-describedby='first-name-help'
+              aria-describedby='first-name-help2'
             />
-            <label htmlFor="first-name">First Name</label>
+            <label htmlFor="first-name2">First Name</label>
           </span>
         </div>
-        <small id="first-name-help" className='creation-form-help-text'>
+        <small id="first-name-help2" className='creation-form-help-text'>
           Enter just {personPossession} first name.
         </small>
       </div>
+      
 
       <div className="student-creation-form-field">
         <div className="p-inputgroup flex-1">
           <span className="p-float-label">
-            <InputMask 
-              id="surname-initial"
-              value={surnameInitial}
-              onChange={(e: InputMaskChangeEvent) => setSurnameInitial(e.target.value?.toUpperCase())}
-              mask="a"
+            <InputText
+              id="surname-initial2"
+              value={surname}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSurname(e.target.value?.toUpperCase())}
+              required
               className={surnameStyle}
-              aria-describedby='surname-help'
+              aria-describedby='surname-help2'
             />
-            <label htmlFor="surname-initial">Surname Initial</label>
+            <label htmlFor="surname-initial2">Surname</label>
           </span>
         </div>
-        <small id="surname-help" className='creation-form-help-text'>
+        <small id="surname-help2" className='creation-form-help-text'>
           Enter just the first letter of {personPossession} surname.
         </small>
       </div>
@@ -489,23 +479,23 @@ const StudentCreationForm: React.FC<StudentAccountCreationProps> = ({accountType
         <div className="p-inputgroup flex-1">
           <span className="p-float-label">
             <InputText
-              id="creation-username"
+              id="creation-username2"
               value={username}
               onChange={(e: React.ChangeEvent<HTMLInputElement>) => setUsername(e.target.value)}
               required
               className={usernameStyle}
-              aria-describedby='username-help'
+              aria-describedby='username-help2'
             />
-            <label htmlFor="creation-username">Username</label>
+            <label htmlFor="creation-username2">Username</label>
             <Button label='Generate' icon="pi pi-sync" loading={loadingUsernameGen} onClick={() => {
               setUsernameStyle("");
               setFirstNameStyle("");
               setSurnameStyle("");
               usernameGenerationHandler();
-            }}/>
+            }} severity="info"/>
           </span>
         </div>
-        <small id="username-help" className='creation-form-help-text'>
+        <small id="username-help2" className='creation-form-help-text'>
           Create {personPossession} username or have one generated based on {personPossession} name.
         </small>
       </div>
@@ -514,7 +504,7 @@ const StudentCreationForm: React.FC<StudentAccountCreationProps> = ({accountType
         <div className="p-inputgroup flex-1">
           <span className="p-float-label">
             <Password
-              id="creation-password"
+              id="creation-password2"
               value={password}
               onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPassword(e.target.value)}
               required
@@ -528,13 +518,13 @@ const StudentCreationForm: React.FC<StudentAccountCreationProps> = ({accountType
               className={passwordStyle}
               aria-describedby='password-help'
             />
-            <label htmlFor="creation-password">Password</label>
+            <label htmlFor="creation-password2">Password</label>
             <Button label='Generate' icon="pi pi-sync" loading={loadingPasswordGen} onClick={() => {
               setPasswordStyle("");
               setFirstNameStyle("");
               setSurnameStyle("");
               passwordGenerationHandler();
-            }} />
+            }} severity="info"/>
           </span>
         </div>
         <small id="password-help" className='creation-form-help-text'>
@@ -548,7 +538,7 @@ const StudentCreationForm: React.FC<StudentAccountCreationProps> = ({accountType
         <div className="p-inputgroup flex-1">
           <span className="p-float-label">
             <Password
-              id="confirm-password"
+              id="confirm-password2"
               value={confirmPassword}
               onChange={(e: React.ChangeEvent<HTMLInputElement>) => setConfirmPassword(e.target.value)}
               required
@@ -557,20 +547,21 @@ const StudentCreationForm: React.FC<StudentAccountCreationProps> = ({accountType
               className={confirmPasswordStyle}
               aria-describedby='confirm-password-help'
             />
-            <label htmlFor="confirm-password">Confirm Password</label>
+            <label htmlFor="confirm-password2">Confirm Password</label>
           </span>
         </div>
-        <small id="confirm-password-help" className='creation-form-help-text'>
+        <small id="confirm-password-help2" className='creation-form-help-text'>
           Re-enter {personPossession} password to confirm it's correct.
         </small>
       </div>
+
 
       <div className="student-creation-form-button-field">
         <div className="student-creation-form-button">
           <Button label="Create" icon="pi pi-check" loading={loadingCreation} onClick={() => {
             clearHighlighting();
             creationHandler();
-          }} />
+          }} raised severity="info"/>
         </div>
         <div className="student-creation-form-button">
           <Button label="Clear" icon="pi pi-exclamation-triangle" loading={loadingClear} onClick={() => {
@@ -580,13 +571,11 @@ const StudentCreationForm: React.FC<StudentAccountCreationProps> = ({accountType
         </div>
         <div className="student-login-form-button">
           <Button label="Back" icon="pi pi-arrow-left" onClick={() => {
-            if (schoolCode !== null || firstName !== "" || surnameInitial !== "" || username !== "" || password !== "" || confirmPassword !== "") {
+            if (schoolCodes !== null || firstName !== "" || surname !== "" || username !== "" || password !== "" || confirmPassword !== "") {
               confirmFormClose();
             } else {
-              setVisible(false);
               clearHighlighting();
               clearForm();
-              setOptionMenuVisible(true);
             };
           }} raised severity="secondary"/>
         </div>
@@ -596,4 +585,4 @@ const StudentCreationForm: React.FC<StudentAccountCreationProps> = ({accountType
   );
 };
 
-export default StudentCreationForm;
+export default StaffCreationForm;

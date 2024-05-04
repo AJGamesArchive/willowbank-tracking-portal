@@ -26,7 +26,7 @@ const LoginDesktop: React.FC = () => {
   // Return JSX
   return (
     <>
-      <ConfirmDialog />
+      <ConfirmDialog/>
       <LoginOptionsMenu
         setLoginType={setAccountType}
         visible={visibleOptionsMenu}

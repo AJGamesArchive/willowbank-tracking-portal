@@ -20,6 +20,7 @@ import { CoreStudentAccountDetails } from '../../../types/Global/UserAccountDeta
 
 // Import CSS
 import './AccountMangBoxs.css';
+import { isExists } from 'date-fns';
 
 interface AccountListBoxProps {
     selectedUsername: CoreStudentAccountDetails | CoreStaffAccountDetails;
@@ -129,20 +130,18 @@ interface AccountListBoxProps {
                 .then((data) => {
                     if(typeof data !== "string") {
                         setUserData(data);
-                        setVisible(true)
+                        setVisible(true);
                         setFirstName(String(data?.firstName))
-                        setSurnameInitial(String(data?.surnameInitial))
                         setUsername(String(data?.username))
-                        
-                        // If student, just display 1 school else display all schools
-                        // Logically shouldn't matter what category as student array will just display 1 school anyway?
-                //if(selectedCategory === "students") {
-                            // Why is this always a string?
-                            // Problem with getUserData - always gets data as a string
-                            school = data.school; 
-                //} else {
-                    //school = data.schools;
-                //}
+                        if(selectedCategory === "students") {
+                            school = [data.school];
+                            setSurnameInitial(String(data?.surnameInitial))
+                        } else {
+                            console.log('data:' , data.school);
+                            school = data.schools;
+                            console.log('schools:', school)
+                            setSurnameInitial(String(data?.surname))
+                        }
                         setNewSchool(school)
                         setPassword(String(data?.password))
                     }
@@ -161,6 +160,7 @@ interface AccountListBoxProps {
         if (regex.test(e) === true) {
             const newSchool = [...school, e];
         setNewSchool(newSchool);
+        console.log('checknewschool',newSchool)
   }
       };
     
@@ -209,12 +209,23 @@ interface AccountListBoxProps {
                     <label>
                         Last Name 
                     </label>
-                    <InputText
-                    id='edit-account-lastName'
-                    value={surnameInitial}
-                    onChange={(e) => setSurnameInitial(e.target.value.toUpperCase())}
-                    autoFocus
-                    />
+                    {selectedCategory === 'students' ? (
+
+                        <InputText
+                        id='edit-account-lastName'
+                        value={surnameInitial}
+                        onChange={(e) => setSurnameInitial(e.target.value.toUpperCase())}
+                        autoFocus
+                        />
+                    ) : (
+
+                        <InputText
+                        id='edit-account-lastName'
+                        value={surnameInitial}
+                        onChange={(e) => setSurnameInitial(e.target.value.toUpperCase())}
+                        autoFocus
+                        />
+                    )}
                 </div>
 
                 <div>

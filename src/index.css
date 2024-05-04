@@ -8,7 +8,7 @@
 
   color-scheme: light dark;
   color: rgba(255, 255, 255, 0.87);
-  background-color: #0b1018;
+  background-color: #1d2c24;
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -53,20 +53,36 @@ button {
   transition: border-color 0.25s;
 }
 button:hover {
-  border-color: #64fffc;
+  border-color: #A2E0BB;
 }
 button:focus,
 button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
 }
 
+.p-card-subtitle {
+  color: lightgray
+}
 @media (prefers-color-scheme: light) {
   :root {
-    color: #213547;
-    background-color: #ffffff;
+    color: #183222;
+    background-color: #f8f9fa;
   }
   a:hover {
     color: #006361;
+  }
+
+  .p-panelmenu-header-content{
+    background-color: #3a5a40;
+    border-color: #344e41;
+  }
+
+  .p-toggleable-content-enter-done {
+      background-color: #dad7cd
+    }
+
+  .p-panelmenu .p-panelmenu-header:not(.p-disabled).p-highlight .p-panelmenu-header-content {
+    background-color: #f8f9fa;
   }
   /*
   button {

@@ -1,7 +1,7 @@
 // Importing types
 import { CompletedActivity } from "./Activity";
 import { PendingActivity } from "./Activity";
-import { BadgeData } from "./Bdges";
+import { BadgeData } from "./Badges";
 
 // Type definition for the details required for a user account (student, teacher, admin)
 

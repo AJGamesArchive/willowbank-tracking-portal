@@ -37,6 +37,7 @@ interface NewProgramFormProps {
 };
 
 // React function to render the login page for mobile devices
+//TODO When validating for unique program names, the system needs to ensure the new name is also unique to any deleted program names
 const NewProgramForm: React.FC<NewProgramFormProps> = ({visible, setVisible, setVisiblePrograms, setProgramRerender, setProgramAdded, formHeader, formSubheader, existingData, isNew}) => {
   // State variables to store form input data
   const [programName, setProgramName] = useState<string>("");
