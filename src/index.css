@@ -8,7 +8,7 @@
 
   color-scheme: light dark;
   color: rgba(255, 255, 255, 0.87);
-  background-color: #16211B;
+  background-color: #1d2c24;
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -60,6 +60,9 @@ button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
 }
 
+.p-card-subtitle {
+  color: lightgray
+}
 @media (prefers-color-scheme: light) {
   :root {
     color: #183222;

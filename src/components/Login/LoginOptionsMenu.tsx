@@ -2,17 +2,9 @@
 import './LoginOptionsMenu.css';
 import '../../pages/Login/LoginGlobal.css'
 
-// Import functions
-import { generateToken } from '../../functions/Global/GenerateToken';
-
 // Import UI components
 import { PanelMenu } from 'primereact/panelmenu';
 import { MenuItem } from 'primereact/menuitem';
-import { Divider } from 'primereact/divider';
-import { Button } from 'primereact/button';
-
-// Importing snowflakes
-import { snowflake } from '../../classes/Snowflake'; //! Remove later
 
 // Interfacing forcing certain props on the Login Options Menu component
 interface LoginOptionsMenuProps {
