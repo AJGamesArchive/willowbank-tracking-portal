@@ -18,14 +18,20 @@ export async function deleteProgram(snowflake: string): Promise<boolean> {
     // DB Transaction
     const success: boolean = await runTransaction(db, async (transaction): Promise<boolean> => {
       // Delete the program data from all students who have not completed any activities for the program
+      let docRefs: any[] = [];
+      let docsData: any[] = [];
       for(let i = 0; i < studentSnowflakes.length; i++) {
         const programDocRef = doc(db, "students", studentSnowflakes[i], "programs", snowflake);
         const programDoc = await transaction.get(programDocRef);
         if(!programDoc.exists()) {return Promise.resolve(false)};
         const trackingData: DocumentData = programDoc.data();
         const activities: Activity[] = trackingData.completedActivities;
-        if(activities.length !== 0) {continue;}
-        await transaction.delete(programDocRef);
+        docRefs.push(programDocRef);
+        docsData.push(activities);
+      };
+      for(let i = 0; i < docsData.length; i++) {
+        if(docsData[i].length !== 0) {continue;}
+        await transaction.delete(docRefs[i]);
       };
 
       // Delete the core program data

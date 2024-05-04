@@ -23,10 +23,11 @@ interface StudentProgramProps {
   progress: XPStudentAccountDetails;
   fetchAndFilterActivities: (snowflake: string, programName: string) => void;
   lockButton: boolean;
+  locked: boolean;
 };
 
 // React function to render the student programs component for the student portal
-const StudentProgram: React.FC<StudentProgramProps> = ({programSnowflake, title, description, colour, textColour, progress, fetchAndFilterActivities, lockButton}) => {
+const StudentProgram: React.FC<StudentProgramProps> = ({programSnowflake, title, description, colour, textColour, progress, fetchAndFilterActivities, lockButton, locked}) => {
   // Defining state variable to handle program process
   const [progressPercentage] = useState<number>(((progress.currentXP - progress.previousTargetXP) / (progress.targetXP - progress.previousTargetXP) * 100));
   const [programPopupVisible, setProgramPopupVisible] = useState<boolean>(false);
@@ -57,8 +58,8 @@ const StudentProgram: React.FC<StudentProgramProps> = ({programSnowflake, title,
   const cardFooter = (
     <>
       <Button className="program-button" label="Badges"       icon="pi pi-star" severity="success"    />
-      <Button className="program-button" label="Activities"   icon="pi pi-list" severity="info"       onClick={() => fetchAndFilterActivities(programSnowflake, title)} loading={lockButton}  />
-      <Button className="program-button" label="Program Info" icon="pi pi-book" severity="secondary"  onClick={() => {setProgramPopupVisible(true)}}/>
+      <Button className="program-button" label="Activities"   icon="pi pi-list" severity="info"       onClick={() => fetchAndFilterActivities(programSnowflake, title)} loading={lockButton} disabled={locked}/>
+      <Button className="program-button" label="Program Info" icon="pi pi-book" severity="secondary"  onClick={() => {setProgramPopupVisible(true)}} disabled={locked}/>
     </>
   );
 
