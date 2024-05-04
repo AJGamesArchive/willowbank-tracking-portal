@@ -1,7 +1,6 @@
 // Import core UI components
 import React from 'react';
 import { useState, useEffect, useRef } from 'react';
-import { Button } from 'primereact/button';
 import { ProgressSpinner } from 'primereact/progressspinner';
 import { Toast } from 'primereact/toast';
 import { BlockUI } from 'primereact/blockui';
@@ -227,7 +226,7 @@ const HomeDesktop: React.FC = () => {
   useEffect(() => {
     async function confirmLoginHandler() {
       const confirmed: boolean = await confirmLogin("students", params.snowflake, params.token);
-      if(!confirmed) {window.location.href = `/home`;}
+      if(!confirmed) {window.location.href = `/home`; return;}
       await retrieveStudentDataHandler();
       setIsLoggedIn(true);
       return;

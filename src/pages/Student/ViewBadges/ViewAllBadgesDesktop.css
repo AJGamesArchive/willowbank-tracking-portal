@@ -1,19 +1,14 @@
-.student-badge-grid-item {
-    background-color: #85d2f9;
-    margin: 5px;
-    padding: 5px;
-    border: 1px solid #85d2f9;
+.student-badge-grid-container {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* Force 3 columns */
+    gap: 20px;
     min-width: fit-content;
 }
 
-.badge-grid-container {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    gap: 20px;
-}
-
-.badge-grid-item {
-    background-color: #85d2f9;
+.student-badge-grid-item {
+    background-color: #2f333b;
+    margin: 5px;
     padding: 5px;
-    border: 1px solid #ccc;
+    border: 1px solid #2f333b;
+    min-width: fit-content;
 }
