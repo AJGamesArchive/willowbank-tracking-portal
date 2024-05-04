@@ -17,6 +17,7 @@
     }
 
         .listItem:hover {
-            filter:brightness(150%);
+            filter:brightness(125%);
             transition: 0.2s;  
         }   
+
