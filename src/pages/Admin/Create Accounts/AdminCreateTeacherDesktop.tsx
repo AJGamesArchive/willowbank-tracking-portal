@@ -43,7 +43,7 @@ const AdminCreateTeacherDesktop: React.FC = () => {
     useEffect(() => {
       async function confirmLoginHandler() {
         const confirmed: boolean = await confirmLogin("admins", params.snowflake, params.token);
-        if (!confirmed) { window.location.href = `/home`; }
+        if (!confirmed) { window.location.href = `/home`; return;}
         await retrieveStaffDataHandler();
         setIsLoggedIn(true); 
         return;

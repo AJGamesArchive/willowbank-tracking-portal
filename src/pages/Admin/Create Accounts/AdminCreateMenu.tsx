@@ -74,7 +74,7 @@ const AdminPortalDesktop: React.FC = () => {
         <Toast ref={toast}/>
         <Banner
           backgroundimage='/assets/admin-portal-images/banner.png' 
-          text={`test`} 
+          text={`Account Creation`} 
         />
 
         <div>
@@ -96,7 +96,7 @@ const AdminPortalDesktop: React.FC = () => {
               <MenuOption 
                 imageSRC={`/assets/admin-portal-images/teacher.png`}
                 imageAltText='Teacher image'
-                destinationPage={`/adminportal/createaccount/teacher/${params.snowflake}/${params.snowflake}/${params.name}`}
+                destinationPage={`/adminportal/createaccount/teacher/${params.snowflake}/${params.token}/${params.name}`}
                 title='Create teacher'
               />
             </li>
