@@ -66,10 +66,23 @@ button:focus-visible {
 @media (prefers-color-scheme: light) {
   :root {
     color: #183222;
-    background-color: #ffffff;
+    background-color: #f8f9fa;
   }
   a:hover {
     color: #006361;
+  }
+
+  .p-panelmenu-header-content{
+    background-color: #3a5a40;
+    border-color: #344e41;
+  }
+
+  .p-toggleable-content-enter-done {
+      background-color: #dad7cd
+    }
+
+  .p-panelmenu .p-panelmenu-header:not(.p-disabled).p-highlight .p-panelmenu-header-content {
+    background-color: #f8f9fa;
   }
   /*
   button {

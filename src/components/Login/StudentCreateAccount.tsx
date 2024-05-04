@@ -414,7 +414,7 @@ const StudentCreationForm: React.FC<StudentAccountCreationProps> = ({accountType
           <Button label='Search' icon="pi pi-search" loading={loadingSchoolSearch} onClick={() => {
             setSchoolCodeStyle("");
             schoolSearchHandler();
-          }} severity="info"/>
+          }} />
         </span>
       </div>
       <small id="school-code-help" className='creation-form-help-text'>
@@ -502,7 +502,7 @@ const StudentCreationForm: React.FC<StudentAccountCreationProps> = ({accountType
               setFirstNameStyle("");
               setSurnameStyle("");
               usernameGenerationHandler();
-            }} severity="info"/>
+            }}/>
           </span>
         </div>
         <small id="username-help" className='creation-form-help-text'>
@@ -534,7 +534,7 @@ const StudentCreationForm: React.FC<StudentAccountCreationProps> = ({accountType
               setFirstNameStyle("");
               setSurnameStyle("");
               passwordGenerationHandler();
-            }} severity="info"/>
+            }} />
           </span>
         </div>
         <small id="password-help" className='creation-form-help-text'>
@@ -570,7 +570,7 @@ const StudentCreationForm: React.FC<StudentAccountCreationProps> = ({accountType
           <Button label="Create" icon="pi pi-check" loading={loadingCreation} onClick={() => {
             clearHighlighting();
             creationHandler();
-          }} raised severity="info"/>
+          }} />
         </div>
         <div className="student-creation-form-button">
           <Button label="Clear" icon="pi pi-exclamation-triangle" loading={loadingClear} onClick={() => {
