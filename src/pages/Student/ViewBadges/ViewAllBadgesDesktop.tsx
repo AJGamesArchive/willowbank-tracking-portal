@@ -2,6 +2,10 @@
 import { useState, useEffect, useRef } from 'react';
 import { ProgressSpinner } from 'primereact/progressspinner';
 import { Toast } from 'primereact/toast';
+import { CustomRenderProps, MeterGroup } from 'primereact/metergroup';
+import { Divider } from 'primereact/divider';
+import { Button } from 'primereact/button';
+import { Card } from 'primereact/card';
 
 // Import UI components
 import Badge from '../../../components/StudentHome/Badge';
@@ -21,6 +25,14 @@ import { retrieveStudentData } from '../../../functions/Student/RetrieveStudentD
 // Import types
 import { BadgeData } from '../../../types/Global/Badges';
 
+// Defining the data type for counting program occurrences
+type CountingPrograms = {
+  programName: string;
+  programColour: string;
+  counter: number;
+  percentage: number;
+};
+
 // React function to render the view all badges page for desktop devices
 const ViewBadgesDesktop: React.FC = () => {
   // Setting up global params on this page
@@ -39,8 +51,11 @@ const ViewBadgesDesktop: React.FC = () => {
   // Event handler to perform action upon initial render
   useEffect(() => {
     async function confirmLoginHandler() {
+      // Validate login
       const confirmed: boolean = await confirmLogin("students", params.snowflake, params.token);
       if (!confirmed) { window.location.href = `/home`; }
+
+      // Retrieve all student and badge data
       const studentData = await retrieveStudentData((params.snowflake? params.snowflake : ''));
       if(typeof studentData === "string") {
         toast.current?.show({
@@ -52,8 +67,31 @@ const ViewBadgesDesktop: React.FC = () => {
         });
         setIsLoggedIn(true); return;
       };
+
+      // Save badge data
       setBadges(studentData.badges);
       setFilteredBadges(studentData.badges);
+
+      //* Calculating data to power meter group
+      // Calculate badges as percentages of programs
+      let countPrograms: CountingPrograms[] = [];
+      studentData.badges.forEach((b) => {
+        let logged: boolean = false;
+        countPrograms.forEach((p) => {
+          if(p.programName === b.awardedProgram) {
+            logged = true;
+            p.counter++;
+          };
+        });
+        if(!logged) {
+          countPrograms.push({
+            programName: b.awardedProgram,
+            programColour: b.colour,
+            counter: 1,
+            percentage: 0,
+          });
+        };
+      });
       setIsLoggedIn(true); return;
     };
     confirmLoginHandler();
@@ -64,10 +102,11 @@ const ViewBadgesDesktop: React.FC = () => {
     return (
       <>
         <Toast ref={toast}/>
-        <h1>Fuck Badges!</h1>
-        <div className="badge-grid-container">
+        <h1>Here's all your awarded badges {params.name}!</h1>
+        <Divider/>
+        <div className="student-badge-grid-container">
           {filteredBadges.map((badge, index) => (
-            <div className='badge-grid-item'>
+            <div className='student-badge-grid-item'>
               <Badge
                 badge={badge}
                 id={index}
