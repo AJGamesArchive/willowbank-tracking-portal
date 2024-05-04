@@ -376,7 +376,7 @@ const HomeDesktop: React.FC = () => {
             <MenuOption 
                 title={"View All Badges"}
                 destinationPage={`/student/viewbadges/${params.snowflake}/${params.token}/${params.name}`}
-                imageSRC='JESS PUT THINGS HERE'
+                imageSRC='/assets/student-portal-images/badge.png'
                 imageAltText='badges-banner'
             />
           </li>
