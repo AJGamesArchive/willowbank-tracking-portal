@@ -1,0 +1,19 @@
+.student-badge-grid-item {
+    background-color: #85d2f9;
+    margin: 5px;
+    padding: 5px;
+    border: 1px solid #85d2f9;
+    min-width: fit-content;
+}
+
+.badge-grid-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 20px;
+}
+
+.badge-grid-item {
+    background-color: #85d2f9;
+    padding: 5px;
+    border: 1px solid #ccc;
+}
