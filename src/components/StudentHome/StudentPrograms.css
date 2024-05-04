@@ -4,6 +4,10 @@
     position: relative;
 }
 
+.progress-card.p-card {
+    background-color: #323232 !important;
+}
+
 .leftContent {
     text-align: left;
 }

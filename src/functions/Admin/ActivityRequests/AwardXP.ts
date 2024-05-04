@@ -64,7 +64,7 @@ export async function awardXP(request: ActivityRequests): Promise<boolean> {
 
       //* Data processing for level gaining
       // Calculate next level and next target XP
-      progress.currentLevel += 1;
+      progress.currentLevel = calculateLevel(progress.currentXP);
       progress.previousTargetXP = progress.targetXP;
       progress.targetXP = calculateTargetXP(progress.currentXP);
 
@@ -121,5 +121,16 @@ function calculateTargetXP(currentXP: number): number {
   if(currentXP < 1600) return 1600;
   if(currentXP < 1800) return 1800;
   if(currentXP < 2000) return 2000;
-  return ((Math.floor(currentXP) + 1) * 500);
+  return ((Math.floor(currentXP / 500) + 1) * 500);
+};
+
+// Function to calculate your level based of your current XP
+function calculateLevel(currentXP: number): number {
+  if(currentXP < 600) {
+    return 1 + Math.floor(currentXP / 100);
+  };
+  if(currentXP < 2000) {
+    return 7 + Math.floor((currentXP -= 600) / 200);
+  };
+  return 14 + Math.floor((currentXP -= 2000) / 500);
 };

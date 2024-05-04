@@ -271,7 +271,9 @@ const HomeDesktop: React.FC = () => {
 
   // Function to create the program progress cards for the program progress carousel
   const programProgressCardTemplate = (program: XPStudentAccountDetails) => {
+    let locked = false;
     const [description, colour, snowflake, textColour] = getDescription(program.programName);
+    if(!description && !colour && !snowflake && !textColour) locked = true;
     return (
         <React.Fragment>
           <StudentProgram
@@ -284,6 +286,7 @@ const HomeDesktop: React.FC = () => {
             progress={program}
             fetchAndFilterActivities={fetchAndFilterActivities}
             lockButton={blockUI}
+            locked={locked}
           />
       </React.Fragment>
     );
