@@ -436,11 +436,11 @@ const StaffCreationForm: React.FC<StaffAccountCreationProps> = ({accountType}) =
           setSchoolCodes(schoolCodes)
           }}
           onAdd={(e) => schoolSearchHandler(e.value)}
+          aria-describedby='school-code-prompt'
           />
-          <label htmlFor="school_code_inp">School Code</label>
         </span>
       </div>
-      <small id="school-code-help2" className='creation-form-help-text'>
+      <small id="school-code-prompt" className='creation-form-help-text'>
         Enter the 6-digit code that {personPossession} school or instructor has provided.
       </small>
 
@@ -452,14 +452,14 @@ const StaffCreationForm: React.FC<StaffAccountCreationProps> = ({accountType}) =
               style={{textAlign:"center", width: "100%"}} 
               emptyMessage="No schools added"
               onChange={(e) => removeSchool(e.value)} // function to remove school
-                />
+              aria-describedby='school-name-prompt'  />
               <Button label="Clear" icon="pi pi-times" onClick={() => {
                 setSchoolNames([]);
                 setSchoolCodes([]);
               }} severity="secondary"/>
             </span>
         </div>
-        <small id="school-name-help2" className='creation-form-help-text'>
+        <small id="school-name-prompt" className='creation-form-help-text'>
           {personPossession[0].toUpperCase()}{personPossession.substring(1)} schools name will be filled in automatically.
         </small>
       </div>
@@ -468,17 +468,17 @@ const StaffCreationForm: React.FC<StaffAccountCreationProps> = ({accountType}) =
         <div className="p-inputgroup flex-1">
           <span className="p-float-label">
             <InputText
-              id="first-name2"
+              id="first-name-label"
               value={firstName}
               onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFirstName(e.target.value.toUpperCase())}
               required
               className={firstNameStyle}
-              aria-describedby='first-name-help2'
+              aria-describedby='first-name-prompt'
             />
-            <label htmlFor="first-name2">First Name</label>
+            <label htmlFor="first-name-label">First Name</label>
           </span>
         </div>
-        <small id="first-name-help2" className='creation-form-help-text'>
+        <small id="first-name-prompt" className='creation-form-help-text'>
           Enter just {personPossession} first name.
         </small>
       </div>
@@ -488,17 +488,17 @@ const StaffCreationForm: React.FC<StaffAccountCreationProps> = ({accountType}) =
         <div className="p-inputgroup flex-1">
           <span className="p-float-label">
             <InputText
-              id="surname-initial2"
+              id="surname-initial-label"
               value={surname}
               onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSurname(e.target.value?.toUpperCase())}
               required
               className={surnameStyle}
-              aria-describedby='surname-help2'
+              aria-describedby='surname-prompt'
             />
-            <label htmlFor="surname-initial2">Surname</label>
+            <label htmlFor="surname-initial-label">Surname</label>
           </span>
         </div>
-        <small id="surname-help2" className='creation-form-help-text'>
+        <small id="surname-prompt" className='creation-form-help-text'>
           Enter just the first letter of {personPossession} surname.
         </small>
       </div>
@@ -507,14 +507,14 @@ const StaffCreationForm: React.FC<StaffAccountCreationProps> = ({accountType}) =
         <div className="p-inputgroup flex-1">
           <span className="p-float-label">
             <InputText
-              id="creation-username2"
+              id="creation-username-label"
               value={username}
               onChange={(e: React.ChangeEvent<HTMLInputElement>) => setUsername(e.target.value)}
               required
               className={usernameStyle}
-              aria-describedby='username-help2'
+              aria-describedby='username-prompt'
             />
-            <label htmlFor="creation-username2">Username</label>
+            <label htmlFor="creation-username-label">Username</label>
             <Button label='Generate' icon="pi pi-sync" loading={loadingUsernameGen} onClick={() => {
               setUsernameStyle("");
               setFirstNameStyle("");
@@ -523,7 +523,7 @@ const StaffCreationForm: React.FC<StaffAccountCreationProps> = ({accountType}) =
             }} severity="info"/>
           </span>
         </div>
-        <small id="username-help2" className='creation-form-help-text'>
+        <small id="username-prompt" className='creation-form-help-text'>
           Create {personPossession} username or have one generated based on {personPossession} name.
         </small>
       </div>
@@ -532,7 +532,7 @@ const StaffCreationForm: React.FC<StaffAccountCreationProps> = ({accountType}) =
         <div className="p-inputgroup flex-1">
           <span className="p-float-label">
             <Password
-              id="creation-password2"
+              id="creation-password-feature"
               value={password}
               onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPassword(e.target.value)}
               required
@@ -544,9 +544,9 @@ const StaffCreationForm: React.FC<StaffAccountCreationProps> = ({accountType}) =
               mediumLabel={passwordStrengthMsgs.medium}
               strongLabel={passwordStrengthMsgs.strong}
               className={passwordStyle}
-              aria-describedby='password-help'
+              aria-describedby='password-prompt'
             />
-            <label htmlFor="creation-password2">Password</label>
+            <label htmlFor="creation-password-feature">Password</label>
             <Button label='Generate' icon="pi pi-sync" loading={loadingPasswordGen} onClick={() => {
               setPasswordStyle("");
               setFirstNameStyle("");
@@ -555,7 +555,7 @@ const StaffCreationForm: React.FC<StaffAccountCreationProps> = ({accountType}) =
             }} severity="info"/>
           </span>
         </div>
-        <small id="password-help" className='creation-form-help-text'>
+        <small id="password-prompt" className='creation-form-help-text'>
           Create {personPossession} password or have one generated.
         </small>
       </div>
@@ -566,19 +566,19 @@ const StaffCreationForm: React.FC<StaffAccountCreationProps> = ({accountType}) =
         <div className="p-inputgroup flex-1">
           <span className="p-float-label">
             <Password
-              id="confirm-password2"
+              id="confirm-password-feature"
               value={confirmPassword}
               onChange={(e: React.ChangeEvent<HTMLInputElement>) => setConfirmPassword(e.target.value)}
               required
               toggleMask
               feedback={false}
               className={confirmPasswordStyle}
-              aria-describedby='confirm-password-help'
+              aria-describedby='confirm-password-prompt'
             />
-            <label htmlFor="confirm-password2">Confirm Password</label>
+            <label htmlFor="confirm-password-feature">Confirm Password</label>
           </span>
         </div>
-        <small id="confirm-password-help2" className='creation-form-help-text'>
+        <small id="confirm-password-prompt" className='creation-form-help-text'>
           Re-enter {personPossession} password to confirm it's correct.
         </small>
       </div>
