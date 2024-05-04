@@ -34,6 +34,7 @@ import AdminCreateStudentDesktop from './pages/Admin/Create Accounts/AdminCreate
 import AdminCreateStudentMobile from './pages/Admin/Create Accounts/AdminCreateStudentMobile';
 import AdminCreateStudentOptionsDesktop from './pages/Admin/Create Accounts/AdminCreateMenu';
 import ManageSchoolsDesktop from './pages/Admin/Manage Schools/ManageSchoolsDesktop';
+import AdminCreateTeacherDesktop from './pages/Admin/Create Accounts/AdminCreateTeacherDesktop';
 
 // Teacher Portal
 import TeacherPortalDesktop from './pages/Teacher/TeacherPortalDesktop';
@@ -75,6 +76,7 @@ const App: React.FC = () => {
         <Route path="/AccManagement/:snowflake/:token/:name" Component={AdminAccountManageDesktop} />
         <Route path="/AddStudent/:snowflake/:token/:name" Component={AdminCreateStudentDesktop}/>
         <Route path="/adminportal/createaccount/:snowflake/:token/:name" Component={AdminCreateStudentOptionsDesktop}/>
+        <Route path="/adminportal/createaccount/teacher/:snowflake/:token/:name" Component={AdminCreateTeacherDesktop}/>
         <Route path="/student/viewbadges/:snowflake/:token/:name" Component={ViewBadgesDesktop}/>
       </Routes>
     );
@@ -93,6 +95,7 @@ const App: React.FC = () => {
         <Route path="/AddStudent/:snowflake/:token/:name" Component={AdminCreateStudentDesktop}/>
         <Route path="/adminportal/createaccount/:snowflake/:token/:name" Component={AdminCreateStudentOptionsDesktop}/>
         <Route path="/adminportal/manageschools/:snowflake/:token/:name" Component={ManageSchoolsDesktop}/>
+        <Route path="/adminportal/createaccount/teacher/:snowflake/:token/:name" Component={AdminCreateTeacherDesktop}/>
         <Route path="/student/viewbadges/:snowflake/:token/:name" Component={ViewBadgesDesktop}/>
       </Routes>
     );
