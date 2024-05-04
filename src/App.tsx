@@ -32,7 +32,8 @@ import ManageProgramsDesktop from './pages/Admin/Manage Programs/ManageProgramsD
 import ManageProgramsMobile from './pages/Admin/Manage Programs/ManageProgramsMobile';
 import AdminCreateStudentDesktop from './pages/Admin/Create Accounts/AdminCreateStudentDesktop';
 import AdminCreateStudentMobile from './pages/Admin/Create Accounts/AdminCreateStudentMobile';
-import AdminCreateStudentOptionsDesktop from './pages/Admin/Create Accounts/AdminCreateMenu';
+import AdminCreateStudentOptionsDesktop from './pages/Admin/Create Accounts/AdminCreateMenuDesktop';
+import AdminCreateStudentOptionsMobile from './pages/Admin/Create Accounts/AdminCreateMenuMobile';
 import ManageSchoolsDesktop from './pages/Admin/Manage Schools/ManageSchoolsDesktop';
 import AdminCreateTeacherDesktop from './pages/Admin/Create Accounts/AdminCreateTeacherDesktop';
 
@@ -59,6 +60,7 @@ const App: React.FC = () => {
         <Route path="/AccManagement/:snowflake/:token/:name" Component={AdminAccManageMobile} />
         <Route path="/AddStudent/:snowflake/:token/:name" Component={AdminCreateStudentMobile}/>
         <Route path="/student/viewbadges/:snowflake/:token/:name" Component={ViewBadgesMobile}/>
+        <Route path="/adminportal/createaccount/:snowflake/:token/:name" Component={AdminCreateStudentOptionsMobile}/>
       </Routes>
     );
   } else if (windowSize.width >= 768 && windowSize.width <= 1024) {
