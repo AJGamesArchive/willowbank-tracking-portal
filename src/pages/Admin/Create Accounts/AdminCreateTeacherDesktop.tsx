@@ -2,7 +2,6 @@ import { Toast } from "primereact/toast";
 import { useState, useRef, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { confirmLogin } from "../../../functions/Global/ConfirmLogin";
-import { createStaffAccount } from "../../../functions/Login/CreateStaffAccount";
 import { retrieveStaffData } from "../../../functions/Teacher/RetrieveStaffData";
 import { GlobalParams } from "../../../interfaces/GlobalParams";
 import { CoreStaffAccountDetails } from "../../../types/Global/UserAccountDetails";

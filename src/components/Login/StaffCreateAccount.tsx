@@ -27,6 +27,7 @@ import { SchoolSearch } from '../../types/Login/SchoolSearch';
 import { UsernameGen } from '../../types/Login/UsernameGen';
 import { Chips } from 'primereact/chips';
 import { ListBox } from 'primereact/listbox';
+import { getSchoolName } from '../../functions/Student/GetSchoolName';
 
 // Interfacing forcing certain props on the Student Account Creation form
 interface StaffAccountCreationProps {
@@ -236,6 +237,25 @@ const StaffCreationForm: React.FC<StaffAccountCreationProps> = ({accountType}) =
     return;
   };
 
+  function removeSchool(removeSchoolName : string) {
+    let updatedSchoolNames = [...schoolNames]; // Create a copy of the current state
+    let updatedCodes = [...schoolCodes];
+
+    for (var i = 0; i < schoolCodes.length; i++)
+      {
+        if (schoolNames[i] === removeSchoolName )
+          {
+            updatedSchoolNames.splice(i, 1);
+            updatedCodes.splice(i, 1);
+            setSchoolCodes(updatedCodes);
+            setSchoolNames(updatedSchoolNames);
+            console.log(schoolCodes)
+            console.log(schoolNames)
+            return;
+          }
+      }
+  }
+
   // Async function to handle searching for a school based on a given school code
   async function schoolSearchHandler(code : string): Promise<void> {
     setLoadingSchoolSearch(true);
@@ -416,7 +436,6 @@ const StaffCreationForm: React.FC<StaffAccountCreationProps> = ({accountType}) =
           setSchoolCodes(schoolCodes)
           }}
           onAdd={(e) => schoolSearchHandler(e.value)}
-                           
           />
           <label htmlFor="school_code_inp">School Code</label>
         </span>
@@ -428,8 +447,17 @@ const StaffCreationForm: React.FC<StaffAccountCreationProps> = ({accountType}) =
       <div className="student-creation-form-field">
         <div className="p-inputgroup flex-1">
           <span className="p-float-label">
-            <ListBox options={schoolNames} disabled style={{textAlign:"center", width: "100%"}} emptyMessage="No schools added"/>          
-          </span>
+            <ListBox 
+              options={schoolNames} 
+              style={{textAlign:"center", width: "100%"}} 
+              emptyMessage="No schools added"
+              onChange={(e) => removeSchool(e.value)} // function to remove school
+                />
+              <Button label="Clear" icon="pi pi-times" onClick={() => {
+                setSchoolNames([]);
+                setSchoolCodes([]);
+              }} severity="secondary"/>
+            </span>
         </div>
         <small id="school-name-help2" className='creation-form-help-text'>
           {personPossession[0].toUpperCase()}{personPossession.substring(1)} schools name will be filled in automatically.
