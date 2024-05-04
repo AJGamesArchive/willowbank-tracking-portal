@@ -18,6 +18,8 @@ import LoginMobile from './pages/Login/LoginMobile';
 // Student Portal
 import StudentDesktop from './pages/Student/HomeDesktop';
 import StudentMobile from './pages/Student/HomeMobile';
+import ViewBadgesDesktop from './pages/Student/ViewBadges/ViewAllBadgesDesktop';
+import ViewBadgesMobile from './pages/Student/ViewBadges/ViewAllBadgesMobile';
 
 // Admin Portal
 import AdminPortalDesktop from './pages/Admin/Portal/AdminPortalDesktop';
@@ -56,6 +58,7 @@ const App: React.FC = () => {
         <Route path="/teacherportal/:snowflake/:token/:name" Component={TeacherPortalMobile} />
         <Route path="/AccManagement/:snowflake/:token/:name" Component={AdminAccManageMobile} />
         <Route path="/AddStudent/:snowflake/:token/:name" Component={AdminCreateStudentMobile}/>
+        <Route path="/student/viewbadges/:snowflake/:token/:name" Component={ViewBadgesMobile}/>
       </Routes>
     );
   } else if (windowSize.width >= 768 && windowSize.width <= 1024) {
@@ -74,6 +77,7 @@ const App: React.FC = () => {
         <Route path="/AddStudent/:snowflake/:token/:name" Component={AdminCreateStudentDesktop}/>
         <Route path="/adminportal/createaccount/:snowflake/:token/:name" Component={AdminCreateStudentOptionsDesktop}/>
         <Route path="/adminportal/createaccount/teacher/:snowflake/:token/:name" Component={AdminCreateTeacherDesktop}/>
+        <Route path="/student/viewbadges/:snowflake/:token/:name" Component={ViewBadgesDesktop}/>
       </Routes>
     );
   } else {
@@ -92,6 +96,7 @@ const App: React.FC = () => {
         <Route path="/adminportal/createaccount/:snowflake/:token/:name" Component={AdminCreateStudentOptionsDesktop}/>
         <Route path="/adminportal/manageschools/:snowflake/:token/:name" Component={ManageSchoolsDesktop}/>
         <Route path="/adminportal/createaccount/teacher/:snowflake/:token/:name" Component={AdminCreateTeacherDesktop}/>
+        <Route path="/student/viewbadges/:snowflake/:token/:name" Component={ViewBadgesDesktop}/>
       </Routes>
     );
   };
