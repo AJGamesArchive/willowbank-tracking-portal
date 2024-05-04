@@ -88,7 +88,7 @@ const AdminPortalDesktop: React.FC = () => {
               <MenuOption 
                 imageSRC={`/assets/admin-portal-images/student.png`}
                 imageAltText='Student image'
-                destinationPage={`/AddStudent/${params.Snowflake}/${params.Token}/${params.Name}`}
+                destinationPage={`/AddStudent/${params.snowflake}/${params.token}/${params.name}`}
                 title='Create student'
               />
             </li>
@@ -96,7 +96,7 @@ const AdminPortalDesktop: React.FC = () => {
               <MenuOption 
                 imageSRC={`/assets/admin-portal-images/teacher.png`}
                 imageAltText='Teacher image'
-                destinationPage={``}
+                destinationPage={`/adminportal/createaccount/teacher/${params.snowflake}/${params.snowflake}/${params.name}`}
                 title='Create teacher'
               />
             </li>
