@@ -8,6 +8,7 @@ import { BlockUI } from 'primereact/blockui';
 import { confirmDialog } from 'primereact/confirmdialog';
 import { Messages } from 'primereact/messages';
 import { Password } from 'primereact/password';
+import { useParams } from "react-router-dom";
 
 // Import CSS
 import './StaffCreateAccount.css';
@@ -27,14 +28,14 @@ import { SchoolSearch } from '../../types/Login/SchoolSearch';
 import { UsernameGen } from '../../types/Login/UsernameGen';
 import { Chips } from 'primereact/chips';
 import { ListBox } from 'primereact/listbox';
-import { getSchoolName } from '../../functions/Student/GetSchoolName';
+import { GlobalParams } from '../../interfaces/GlobalParams';
 
-// Interfacing forcing certain props on the Student Account Creation form
+// Interfacing forcing certain props on the account Account Creation form
 interface StaffAccountCreationProps {
   accountType: string;
 };
 
-// React function to render the student login form
+// React function to render the account login form
 const StaffCreationForm: React.FC<StaffAccountCreationProps> = ({accountType}) => {
   // Variables to store the required login credentials
   const [schoolCodes, setSchoolCodes] = useState<string[]>([]);
@@ -48,7 +49,6 @@ const StaffCreationForm: React.FC<StaffAccountCreationProps> = ({accountType}) =
   // Variables to control the loading state of the form buttons
   const [loadingCreation, setLoadingCreation] = useState<boolean>(false);
   const [loadingClear, setLoadingClear] = useState<boolean>(false);
-  const [loadingSchoolSearch, setLoadingSchoolSearch] = useState<boolean>(false);
   const [loadingUsernameGen, setLoadingUsernameGen] = useState<boolean>(false);
   const [loadingPasswordGen, setLoadingPasswordGen] = useState<boolean>(false);
 
@@ -60,7 +60,7 @@ const StaffCreationForm: React.FC<StaffAccountCreationProps> = ({accountType}) =
   const [passwordStyle, setPasswordStyle] = useState<string>("");
   const [confirmPasswordStyle, setConfirmPasswordStyle] = useState<string>("");
 
-  const [personPossession] = useState<string>(accountType === 'admin' ? `the admin's` : `the student's`)
+  const [personPossession] = useState<string>(accountType === 'admin' ? `the admin's` : `the teacher's`)
   const [personPOV] = useState<string>(accountType === 'admin' ? `the admin's` : `the teacher's`)
   
   // Variable to store password generated message
@@ -68,7 +68,7 @@ const StaffCreationForm: React.FC<StaffAccountCreationProps> = ({accountType}) =
 
   // Variable to control blocking certain sections of the UI
   const [blockForm, setBlockForm] = useState<boolean>(false);
-
+  const params = useParams<GlobalParams>();
   // Variables to control toast messages
   const toast = useRef<Toast>(null);
   const accept = () => {
@@ -102,21 +102,6 @@ const StaffCreationForm: React.FC<StaffAccountCreationProps> = ({accountType}) =
       accept,
       reject
     });
-  };
-  const confirmFormClose = () => {
-    confirmDialog({
-      message: "Are you sure you want to close the form? All the details you've added will be lost.",
-      header: 'Confirmation',
-      icon: 'pi pi-exclamation-triangle',
-      defaultFocus: 'accept',
-      position: 'center',
-      accept: () => {
-        clearHighlighting();
-        clearForm();
-      },
-      reject: () => {}
-    });
-
   };
 
   // Async function to handle the form submission
@@ -201,7 +186,7 @@ const StaffCreationForm: React.FC<StaffAccountCreationProps> = ({accountType}) =
       unlock(); return;
     };
 
-    // Create the student account
+    // Create the account account
     const creationResults: boolean = await createStaffAccount(accountType, schoolCodes, schoolNames, firstName, surname, username, password);
     if (!creationResults) {
       detailValidationError("error", "Something Went Wrong", "An unexpected error occurred and the account was not able to be created. Please try again.");
@@ -213,7 +198,7 @@ const StaffCreationForm: React.FC<StaffAccountCreationProps> = ({accountType}) =
       toast.current?.show({
         severity: `success`,
         summary: `Account Creation Successful`,
-        detail: `The account '${username}' was created successfully. '${personPOV}' should now be able to login from the student login page.`,
+        detail: `The account '${username}' was created successfully. '${personPOV}' should now be able to login from '${personPOV}' login page.`,
         closeIcon: 'pi pi-times',
         life: 7000,
       });
@@ -258,8 +243,6 @@ const StaffCreationForm: React.FC<StaffAccountCreationProps> = ({accountType}) =
 
   // Async function to handle searching for a school based on a given school code
   async function schoolSearchHandler(code : string): Promise<void> {
-    setLoadingSchoolSearch(true);
-
     // Attempt to retrieve the name of the school that matches the given ID
     const results: SchoolSearch = await schoolSearcher(code);
     if (results.errored) {
@@ -274,7 +257,7 @@ const StaffCreationForm: React.FC<StaffAccountCreationProps> = ({accountType}) =
       };
       errorDialogue();
       setSchoolCodes([]);
-      setLoadingSchoolSearch(false); return;
+      return;
     };
 
     // Update the school name field on the creation form
@@ -292,7 +275,7 @@ const StaffCreationForm: React.FC<StaffAccountCreationProps> = ({accountType}) =
       });
     };
     confirmationDialogue();
-    setLoadingSchoolSearch(false); return;
+    return;
   };
 
   // async function to handle username generation
@@ -444,7 +427,7 @@ const StaffCreationForm: React.FC<StaffAccountCreationProps> = ({accountType}) =
         Enter the 6-digit code that {personPossession} school or instructor has provided.
       </small>
 
-      <div className="student-creation-form-field">
+      <div className="account-creation-form-field">
         <div className="p-inputgroup flex-1">
           <span className="p-float-label">
             <ListBox 
@@ -464,7 +447,7 @@ const StaffCreationForm: React.FC<StaffAccountCreationProps> = ({accountType}) =
         </small>
       </div>
 
-      <div className="student-creation-form-field">
+      <div className="account-creation-form-field">
         <div className="p-inputgroup flex-1">
           <span className="p-float-label">
             <InputText
@@ -484,7 +467,7 @@ const StaffCreationForm: React.FC<StaffAccountCreationProps> = ({accountType}) =
       </div>
       
 
-      <div className="student-creation-form-field">
+      <div className="account-creation-form-field">
         <div className="p-inputgroup flex-1">
           <span className="p-float-label">
             <InputText
@@ -503,7 +486,7 @@ const StaffCreationForm: React.FC<StaffAccountCreationProps> = ({accountType}) =
         </small>
       </div>
 
-      <div className="student-creation-form-field">
+      <div className="account-creation-form-field">
         <div className="p-inputgroup flex-1">
           <span className="p-float-label">
             <InputText
@@ -528,7 +511,7 @@ const StaffCreationForm: React.FC<StaffAccountCreationProps> = ({accountType}) =
         </small>
       </div>
 
-      <div className="student-creation-form-field">
+      <div className="account-creation-form-field">
         <div className="p-inputgroup flex-1">
           <span className="p-float-label">
             <Password
@@ -562,7 +545,7 @@ const StaffCreationForm: React.FC<StaffAccountCreationProps> = ({accountType}) =
 
       <Messages ref={msg}/>
 
-      <div className="student-creation-form-field">
+      <div className="account-creation-form-field">
         <div className="p-inputgroup flex-1">
           <span className="p-float-label">
             <Password
@@ -584,23 +567,23 @@ const StaffCreationForm: React.FC<StaffAccountCreationProps> = ({accountType}) =
       </div>
 
 
-      <div className="student-creation-form-button-field">
-        <div className="student-creation-form-button">
+      <div className="account-creation-form-button-field">
+        <div className="account-creation-form-button">
           <Button label="Create" icon="pi pi-check" loading={loadingCreation} onClick={() => {
             clearHighlighting();
             creationHandler();
           }} raised severity="info"/>
         </div>
-        <div className="student-creation-form-button">
+        <div className="account-creation-form-button">
           <Button label="Clear" icon="pi pi-exclamation-triangle" loading={loadingClear} onClick={() => {
             clearHighlighting();
             confirmFormClear();
           }} raised severity="warning"/>
         </div>
-        <div className="student-login-form-button">
+        <div className="account-login-form-button">
           <Button label="Back" icon="pi pi-arrow-left" onClick={() => {
             if (schoolCodes !== null || firstName !== "" || surname !== "" || username !== "" || password !== "" || confirmPassword !== "") {
-              confirmFormClose();
+              window.location.href = `/adminportal/${params.snowflake}/${params.token}/${params.name}`
             } else {
               clearHighlighting();
               clearForm();
