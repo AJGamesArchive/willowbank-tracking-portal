@@ -32,6 +32,7 @@ const AdminAccMangDesktop: React.FC = () => {
 
   // Variable to force confirmation of the account login state
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
+  const [reload, setReload] = useState<boolean>(true);
 
   // Event handler to perform action upon initial render
   useEffect(() => {
@@ -59,12 +60,16 @@ const AdminAccMangDesktop: React.FC = () => {
             setSelectedUsername={setSelectedUsername}
             selectedCategory={selectedCategory}
             setSelectedCategory={setSelectedCategory}
+            setReload={setReload}
+            reload={reload}
+            // 
           />
           <AccountManageBoxs
             selectedUsername={selectedUsername}
             setSelectedUsername={setSelectedUsername}
             selectedCategory={selectedCategory}
             setSelectedCategory={setSelectedCategory}
+            callback={setReload}
           />
         </div>
 

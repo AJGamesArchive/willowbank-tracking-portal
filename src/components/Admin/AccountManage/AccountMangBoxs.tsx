@@ -20,16 +20,17 @@ import { CoreStudentAccountDetails } from '../../../types/Global/UserAccountDeta
 
 // Import CSS
 import './AccountMangBoxs.css';
-import { isExists } from 'date-fns';
+import { removeAccount } from '../../../functions/Admin/removeAccount';
 
 interface AccountListBoxProps {
     selectedUsername: CoreStudentAccountDetails | CoreStaffAccountDetails;
     setSelectedUsername: (value: string) => void;
     selectedCategory: string;
     setSelectedCategory: (value: string) => void;
+    callback: (value : boolean) => void;
 }
     //creates usestates for the selected users information
-    const AccountManageBoxs: React.FC<AccountListBoxProps> = ({selectedUsername, setSelectedUsername,selectedCategory,setSelectedCategory}) => {
+    const AccountManageBoxs: React.FC<AccountListBoxProps> = ({selectedUsername, setSelectedUsername,selectedCategory,setSelectedCategory, callback}) => {
     const [userData, setUserData] = useState<UserData>();
 
     // Variables to control toast messages
@@ -46,6 +47,9 @@ interface AccountListBoxProps {
     const [submitted, setSubmitted] = useState<boolean>(false);
     const [loading, setLoading] = useState<boolean>(false);
     const [Visible, setVisible] = useState<boolean>(true)
+    const [popupVisible, setPopupVisible] = useState<boolean>(false);
+    const [resultPopupVisible, setResultPopupVisible] = useState<boolean>(false);
+    const [result, setResult] = useState<string>("")
 
     // Define unexpected error message
     const unexpected = () => {
@@ -122,6 +126,19 @@ interface AccountListBoxProps {
         setLoading(false);
         setPassword("");
       };
+
+    async function RemoveAccount (snowflake : string, accountType : string) {
+        if (await removeAccount(snowflake, accountType))
+        {
+            setResult("was");
+            callback(true);
+        }
+        else {
+            setResult("was not");
+            callback(false);
+        }
+        setResultPopupVisible(true);
+    }
     
     //use effects runs when component is called
     useEffect(() => {
@@ -163,7 +180,6 @@ interface AccountListBoxProps {
         console.log('checknewschool',newSchool)
   }
       };
-    
 
     return (
         (userData && <div>
@@ -272,9 +288,27 @@ interface AccountListBoxProps {
                     autoFocus
                     />
                 </div>
-                <Button label="Update Details" loading={loading} icon="pi pi-save" severity='success' onClick={updateCoreDetailsHandler} />
+                <Button label="Update Details" loading={loading} icon="pi pi-save" severity='success' onClick={updateCoreDetailsHandler} style={{width: "48%", margin: "5px"}}/>
+                <Button label="Delete account" icon="pi pi-trash" severity='danger' onClick={() => setPopupVisible(true)} style={{width: "48%", margin: "5px"}}/>
+            </Dialog>
 
+            <Dialog
+                visible={popupVisible}
+                onHide={() => {setPopupVisible(false)}}
+                header="Delete Account"
+                closeIcon="pi pi-times"
+            >
+                <p>Are you sure you want to delete this account?</p>
+                <Button label="Yes" onClick={() => {RemoveAccount(userData?.snowflake, selectedCategory); setResultPopupVisible(true), setPopupVisible(false)}} severity='danger' style={{margin: "5px"}}/>
+                <Button label="No" onClick={() => setPopupVisible(false)} style={{margin: "5px"}}/>
+            </Dialog>
 
+            <Dialog
+                visible={resultPopupVisible}
+                onHide={() => {setResultPopupVisible(false); setVisible(false)}}
+                header="Delete Account"
+                closeIcon="pi pi-times">
+                <p>The account {result} deleted.</p>
             </Dialog>
         </BlockUI>
         </div>)
