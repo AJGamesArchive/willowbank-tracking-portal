@@ -23,7 +23,7 @@ import SignOutOption from '../../../components/Admin/AdminPortal/AdminMenuSignOu
 import { CoreStaffAccountDetails } from '../../../types/Global/UserAccountDetails';
 
 // React function to render the Admin Portal page for desktop devices
-const AdminPortalMobile: React.FC = () => {
+const AdminCreateMenuDesktop: React.FC = () => {
   // Setting up global params on this page
   const params = useParams<GlobalParams>();
 
@@ -88,7 +88,7 @@ const AdminPortalMobile: React.FC = () => {
               <MenuOption 
                 imageSRC={`/assets/admin-portal-images/student.png`}
                 imageAltText='Student image'
-                destinationPage={`/AddStudent/${params.snowflake}/${params.token}/${params.name}`}
+                destinationPage={`/adminportal/createastudent/${params.snowflake}/${params.token}/${params.name}`}
                 title='Create student'
               />
             </li>
@@ -96,8 +96,16 @@ const AdminPortalMobile: React.FC = () => {
               <MenuOption 
                 imageSRC={`/assets/admin-portal-images/teacher.png`}
                 imageAltText='Teacher image'
-                destinationPage={`/adminportal/createaccount/teacher/${params.snowflake}/${params.token}/${params.name}`}
+                destinationPage={`/adminportal/createastaff/${params.snowflake}/${params.token}/${params.name}/teachers`}
                 title='Create teacher'
+              />
+            </li>
+            <li className="listItem">
+              <MenuOption 
+                imageSRC={`/assets/admin-portal-images/teacher.png`}
+                imageAltText='Admin image'
+                destinationPage={`/adminportal/createastaff/${params.snowflake}/${params.token}/${params.name}/admins`}
+                title='Create admin'
               />
             </li>
             <li className="listItem">
@@ -117,4 +125,4 @@ const AdminPortalMobile: React.FC = () => {
   };
 };
 
-export default AdminPortalMobile;
+export default AdminCreateMenuDesktop;

@@ -24,8 +24,6 @@ import Banner from '../../../components/Admin/AdminPortal/Banner';
 
 // React function to render the Account Manager page for desktop devices
 const AdminAccMangDesktop: React.FC = () => {
-  const [selectedUsername, setSelectedUsername] = useState<any>(); 
-  const [selectedCategory, setSelectedCategory] = useState<string>("");
 
   // Setting up global params on this page
   const params = useParams<GlobalParams>();
@@ -56,20 +54,9 @@ const AdminAccMangDesktop: React.FC = () => {
           />
 
           <AccountListBox 
-            selectedUsername={selectedUsername}
-            setSelectedUsername={setSelectedUsername}
-            selectedCategory={selectedCategory}
-            setSelectedCategory={setSelectedCategory}
             setReload={setReload}
             reload={reload}
             // 
-          />
-          <AccountManageBoxs
-            selectedUsername={selectedUsername}
-            setSelectedUsername={setSelectedUsername}
-            selectedCategory={selectedCategory}
-            setSelectedCategory={setSelectedCategory}
-            callback={setReload}
           />
         </div>
 

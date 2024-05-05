@@ -41,7 +41,7 @@ const StaffCreationForm: React.FC<StaffAccountCreationProps> = ({accountType}) =
   const [schoolCodes, setSchoolCodes] = useState<string[]>([]);
   const [schoolNames, setSchoolNames] = useState<string[]>([]);
   const [firstName, setFirstName] = useState<string>("");
-  const [surname, setSurname] = useState<any>(null);
+  const [surname, setSurname] = useState<string>("");
   const [username, setUsername] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [confirmPassword, setConfirmPassword] = useState<string>("");
@@ -60,8 +60,8 @@ const StaffCreationForm: React.FC<StaffAccountCreationProps> = ({accountType}) =
   const [passwordStyle, setPasswordStyle] = useState<string>("");
   const [confirmPasswordStyle, setConfirmPasswordStyle] = useState<string>("");
 
-  const [personPossession] = useState<string>(accountType === 'admin' ? `the admin's` : `the teacher's`)
-  const [personPOV] = useState<string>(accountType === 'admin' ? `the admin's` : `the teacher's`)
+  const [personPossession] = useState<string>(accountType === 'admins' ? `the admin's` : `the teacher's`)
+  const [personPOV] = useState<string>(accountType === 'admins' ? `the admin's` : `the teacher's`)
   
   // Variable to store password generated message
   const msg = useRef<Messages>(null);

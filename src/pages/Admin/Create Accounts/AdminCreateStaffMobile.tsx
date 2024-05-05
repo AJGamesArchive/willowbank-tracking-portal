@@ -5,11 +5,10 @@ import { confirmLogin } from "../../../functions/Global/ConfirmLogin";
 import { retrieveStaffData } from "../../../functions/Teacher/RetrieveStaffData";
 import { GlobalParams } from "../../../interfaces/GlobalParams";
 import { CoreStaffAccountDetails } from "../../../types/Global/UserAccountDetails";
-import StaffCreationForm from "../../../components/Login/StaffCreateAccount";
 import { ProgressSpinner } from "primereact/progressspinner";
 
 
-const AdminCreateTeacherDesktop: React.FC = () => {
+const AdminCreateStaffMobile: React.FC = () => {
     // Setting up global params on this page
     const params = useParams<GlobalParams>();
   
@@ -58,9 +57,9 @@ const AdminCreateTeacherDesktop: React.FC = () => {
         console.log("test")
         return ( 
             <>
-                <StaffCreationForm accountType={'teacher'}/>
+                <h1>Mobile UI Code</h1>
             </>
-        )
+        );
     } else {
         return (
           <>
@@ -69,4 +68,4 @@ const AdminCreateTeacherDesktop: React.FC = () => {
         );
       };
 }
-export default AdminCreateTeacherDesktop
+export default AdminCreateStaffMobile;

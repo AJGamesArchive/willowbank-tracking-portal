@@ -14,16 +14,11 @@ import '../../Shared CSS files/PortalDesktop.css'
 import { confirmLogin } from '../../../functions/Global/ConfirmLogin';
 import { retrieveStaffData } from '../../../functions/Teacher/RetrieveStaffData';
 
-// Importing UI components
-import Banner from "../../../components/Admin/AdminPortal/Banner";
-import MenuOption from '../../../components/Admin/AdminPortal/AdminMenuOption';
-import SignOutOption from '../../../components/Admin/AdminPortal/AdminMenuSignOutOption';
-
 // Import types
 import { CoreStaffAccountDetails } from '../../../types/Global/UserAccountDetails';
 
 // React function to render the Admin Portal page for desktop devices
-const AdminPortalDesktop: React.FC = () => {
+const AdminCreateMenuMobile: React.FC = () => {
   // Setting up global params on this page
   const params = useParams<GlobalParams>();
 
@@ -63,7 +58,6 @@ const AdminPortalDesktop: React.FC = () => {
       return;
     };
     confirmLoginHandler();
-    
   }, []); // Emptying process array to ensure handler only runs on initial render
 
 
@@ -72,39 +66,7 @@ const AdminPortalDesktop: React.FC = () => {
     return (
       <div>
         <Toast ref={toast}/>
-        <Banner
-          backgroundimage='/assets/admin-portal-images/banner.png' 
-          text={`Account Creation`} 
-        />
-
-        <div>
-          <div className="subheading">
-          <h3>Please select from the following options.</h3>
-          </div>
-          <br />
-          
-          <ul className="list">
-            <li className="listItem">
-              <MenuOption 
-                imageSRC={`/assets/admin-portal-images/student.png`}
-                imageAltText='Student image'
-                destinationPage={`/AddStudent/${params.snowflake}/${params.token}/${params.name}`}
-                title='Create student'
-              />
-            </li>
-            <li className="listItem">
-              <MenuOption 
-                imageSRC={`/assets/admin-portal-images/teacher.png`}
-                imageAltText='Teacher image'
-                destinationPage={`/adminportal/createaccount/teacher/${params.snowflake}/${params.token}/${params.name}`}
-                title='Create teacher'
-              />
-            </li>
-            <li className="listItem">
-              <SignOutOption />
-            </li>
-          </ul>
-        </div>
+        <h1>Mobile UI COde</h1>
       </div>
     );
   } else {
@@ -117,4 +79,4 @@ const AdminPortalDesktop: React.FC = () => {
   };
 };
 
-export default AdminPortalDesktop;
+export default AdminCreateMenuMobile;
