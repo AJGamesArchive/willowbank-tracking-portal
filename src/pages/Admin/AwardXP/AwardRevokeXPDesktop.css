@@ -1,0 +1,33 @@
+.award-xp-grid-container {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* Force 3 columns */
+    gap: 20px;
+    min-width: fit-content;
+}
+
+.award-xp-grid-item {
+    margin: 5px;
+    padding: 5px;
+    border: 1px solid #2f333b;
+    min-width: fit-content;
+}
+
+.award-xp-grid-item.p-card {
+    background-color: #2f333b !important;
+}
+
+.award-button {
+    margin: 5px
+}
+
+.leftContent {
+    text-align: left;
+}
+
+.centerContent {
+    text-align: center;
+}
+
+.rightContent {
+    text-align: right;
+}

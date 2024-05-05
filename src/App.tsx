@@ -18,6 +18,8 @@ import LoginMobile from './pages/Login/LoginMobile';
 // Student Portal
 import StudentDesktop from './pages/Student/HomeDesktop';
 import StudentMobile from './pages/Student/HomeMobile';
+import ViewBadgesDesktop from './pages/Student/ViewBadges/ViewAllBadgesDesktop';
+import ViewBadgesMobile from './pages/Student/ViewBadges/ViewAllBadgesMobile';
 
 // Admin Portal
 import AdminPortalDesktop from './pages/Admin/Portal/AdminPortalDesktop';
@@ -25,14 +27,17 @@ import AdminPortalMobile from './pages/Admin/Portal/AdminPortalMobile';
 import AdminResetDesktop from './pages/Admin/ResetPasswords/AdminResetDesktop';
 import AdminResetMobile from './pages/Admin/ResetPasswords/AdminResetMobile';
 import AdminAccountManageDesktop from './pages/Admin/Manage Accounts/AdminAccManageDesktop';
-import AdminAccManageMobile from './pages/Admin/Manage Accounts/AdminAccManageMobile';
 import ManageProgramsDesktop from './pages/Admin/Manage Programs/ManageProgramsDesktop';
 import ManageProgramsMobile from './pages/Admin/Manage Programs/ManageProgramsMobile';
+import ManageSchoolsDesktop from './pages/Admin/Manage Schools/ManageSchoolsDesktop';
+import AdminCreateMenuDesktop from './pages/Admin/Create Accounts/AdminCreateMenuDesktop';
+import AdminCreateMenuMobile from './pages/Admin/Create Accounts/AdminCreateMenuMobile';
 import AdminCreateStudentDesktop from './pages/Admin/Create Accounts/AdminCreateStudentDesktop';
 import AdminCreateStudentMobile from './pages/Admin/Create Accounts/AdminCreateStudentMobile';
-import AdminCreateStudentOptionsDesktop from './pages/Admin/Create Accounts/AdminCreateMenu';
-import ManageSchoolsDesktop from './pages/Admin/Manage Schools/ManageSchoolsDesktop';
-import AdminCreateTeacherDesktop from './pages/Admin/Create Accounts/AdminCreateTeacherDesktop';
+import AdminCreateStaffDesktop from './pages/Admin/Create Accounts/AdminCreateStaffDesktop';
+import AdminCreateStaffMobile from './pages/Admin/Create Accounts/AdminCreateStaffMobile';
+import AwardRevokeXPDesktop from './pages/Admin/AwardXP/AwardRevokeXPDesktop';
+import AwardRevokeXPMobile from './pages/Admin/AwardXP/AwardRevokeXPMobile';
 
 // Teacher Portal
 import TeacherPortalDesktop from './pages/Teacher/TeacherPortalDesktop';
@@ -54,8 +59,11 @@ const App: React.FC = () => {
         <Route path="/adminportal/resetpassword/:snowflake/:token/:name" Component={AdminResetMobile}/>
         <Route path="/adminportal/manageprograms/:snowflake/:token/:name" Component={ManageProgramsMobile}/>
         <Route path="/teacherportal/:snowflake/:token/:name" Component={TeacherPortalMobile} />
-        <Route path="/AccManagement/:snowflake/:token/:name" Component={AdminAccManageMobile} />
-        <Route path="/AddStudent/:snowflake/:token/:name" Component={AdminCreateStudentMobile}/>
+        <Route path="/student/viewbadges/:snowflake/:token/:name" Component={ViewBadgesMobile}/>
+        <Route path="/adminportal/createaccountmenu/:snowflake/:token/:name" Component={AdminCreateMenuMobile}/>
+        <Route path="/adminportal/createastudent/:snowflake/:token/:name" Component={AdminCreateStudentMobile}/>
+        <Route path="/adminportal/createastaff/:snowflake/:token/:name/:accountType" Component={AdminCreateStaffMobile}/>
+        <Route path="/adminportal/manageprogress/:snowflake/:token/:name" Component={AwardRevokeXPMobile} />
       </Routes>
     );
   } else if (windowSize.width >= 768 && windowSize.width <= 1024) {
@@ -71,9 +79,11 @@ const App: React.FC = () => {
         <Route path="/adminportal/manageprograms/:snowflake/:token/:name" Component={ManageProgramsDesktop}/>
         <Route path="/teacherportal/:snowflake/:token/:name" Component={TeacherPortalDesktop} />
         <Route path="/AccManagement/:snowflake/:token/:name" Component={AdminAccountManageDesktop} />
-        <Route path="/AddStudent/:snowflake/:token/:name" Component={AdminCreateStudentDesktop}/>
-        <Route path="/adminportal/createaccount/:snowflake/:token/:name" Component={AdminCreateStudentOptionsDesktop}/>
-        <Route path="/adminportal/createaccount/teacher/:snowflake/:token/:name" Component={AdminCreateTeacherDesktop}/>
+        <Route path="/student/viewbadges/:snowflake/:token/:name" Component={ViewBadgesDesktop}/>
+        <Route path="/adminportal/createaccountmenu/:snowflake/:token/:name" Component={AdminCreateMenuDesktop}/>
+        <Route path="/adminportal/createastudent/:snowflake/:token/:name" Component={AdminCreateStudentDesktop}/>
+        <Route path="/adminportal/createastaff/:snowflake/:token/:name/:accountType" Component={AdminCreateStaffDesktop}/>
+        <Route path="/adminportal/manageprogress/:snowflake/:token/:name" Component={AwardRevokeXPDesktop} />
       </Routes>
     );
   } else {
@@ -88,10 +98,12 @@ const App: React.FC = () => {
         <Route path="/adminportal/manageprograms/:snowflake/:token/:name" Component={ManageProgramsDesktop}/>
         <Route path="/teacherportal/:snowflake/:token/:name" Component={TeacherPortalDesktop} />
         <Route path="/AccManagement/:snowflake/:token/:name" Component={AdminAccountManageDesktop} />
-        <Route path="/AddStudent/:snowflake/:token/:name" Component={AdminCreateStudentDesktop}/>
-        <Route path="/adminportal/createaccount/:snowflake/:token/:name" Component={AdminCreateStudentOptionsDesktop}/>
         <Route path="/adminportal/manageschools/:snowflake/:token/:name" Component={ManageSchoolsDesktop}/>
-        <Route path="/adminportal/createaccount/teacher/:snowflake/:token/:name" Component={AdminCreateTeacherDesktop}/>
+        <Route path="/student/viewbadges/:snowflake/:token/:name" Component={ViewBadgesDesktop}/>
+        <Route path="/adminportal/createaccountmenu/:snowflake/:token/:name" Component={AdminCreateMenuDesktop}/>
+        <Route path="/adminportal/createastudent/:snowflake/:token/:name" Component={AdminCreateStudentDesktop}/>
+        <Route path="/adminportal/createastaff/:snowflake/:token/:name/:accountType" Component={AdminCreateStaffDesktop}/>
+        <Route path="/adminportal/manageprogress/:snowflake/:token/:name" Component={AwardRevokeXPDesktop} />
       </Routes>
     );
   };

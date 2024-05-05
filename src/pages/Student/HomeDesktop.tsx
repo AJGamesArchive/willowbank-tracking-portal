@@ -1,10 +1,10 @@
 // Import core UI components
 import React from 'react';
 import { useState, useEffect, useRef } from 'react';
-import { Button } from 'primereact/button';
 import { ProgressSpinner } from 'primereact/progressspinner';
 import { Toast } from 'primereact/toast';
 import { BlockUI } from 'primereact/blockui';
+import { Divider } from 'primereact/divider';
 
 // Import global parameters
 import { GlobalParams } from '../../interfaces/GlobalParams';
@@ -21,6 +21,9 @@ import StudentProgram from '../../components/StudentHome/StudentPrograms';
 import StudentActivitiesDialogue from '../../components/StudentHome/StudentActivities';
 import { Carousel, CarouselResponsiveOption } from 'primereact/carousel';
 import EditAccountDetails from '../../components/Global/EditAccountDetails';
+import SignOutOption from '../../components/Admin/AdminPortal/AdminMenuSignOutOption';
+import ModifyOption from '../../components/Admin/AdminPortal/AdminMenuOptionChangeDetails';
+import MenuOption from '../../components/Admin/AdminPortal/AdminMenuOption';
 
 // Import functions
 import { confirmLogin } from '../../functions/Global/ConfirmLogin';
@@ -38,9 +41,7 @@ import { CoreStudentAccountDetails } from '../../types/Global/UserAccountDetails
 import { ProgramData } from '../../types/Admin/ProgramData';
 import { AssessedActivities } from '../../types/Student/AssessedActivities';
 import { Activity } from '../../types/Global/Activity';
-import SignOutOption from '../../components/Admin/AdminPortal/AdminMenuSignOutOption';
-import ModifyOption from '../../components/Admin/AdminPortal/AdminMenuOptionChangeDetails';
-import { Divider } from 'primereact/divider';
+import { BadgeData } from '../../types/Global/Badges';
 
 // React function to render the Student Portal page for desktop devices
 const HomeDesktop: React.FC = () => {
@@ -51,6 +52,7 @@ const HomeDesktop: React.FC = () => {
   const [coreProgramData, setCoreProgramData] = useState<ProgramData[]>([]);
   const [programActivities, setProgramActivities] = useState<AssessedActivities[]>([]);
   const [coreStudentData, setCoreStudentData] = useState<CoreStudentAccountDetails>();
+  const [recentBadges, setRecentBadges] = useState<BadgeData[]>([]);
   const [progress, setProgress] = useState<XPStudentAccountDetails[]>([]);
   const [selectedProgram, setSelectProgram] = useState<string>("");
   const [selectedProgramName, setSelectedProgramName] = useState<string>("");
@@ -161,9 +163,26 @@ const HomeDesktop: React.FC = () => {
         if(assignedProgramIDs.includes(p.snowflake)) filteredProgramData.push(p);
       });
     };
+    let retrieveRecentBadges: BadgeData[] = [];
+    const totalBadges: number = (typeof studentData !== "string") ? studentData.badges.length - 1 : -1;
+    for(let i = (typeof studentData !== "string") ? (studentData.badges.length - 1) : -1; i > totalBadges - 10; i--) {
+      if(i === -1) break;
+      retrieveRecentBadges.push((typeof studentData !== "string") ? studentData.badges[i] : {
+        snowflake: '',
+        shape: 'Square',
+        colour: 'ffffff',
+        textColour: 'Black',
+        level: 0,
+        awardedProgram: '',
+        programSnowflake: '',
+        awardedFor: '',
+        dateAwarded: 'DD/MM/YYYY-HH/MM'
+      });
+    };
     setCoreProgramData((typeof programData !== "string") ? filteredProgramData : coreProgramData);
     setProgress((typeof programProgress !== "string") ? programProgress : progress);
     setCoreStudentData((typeof studentData !== "string") ? studentData : coreStudentData);
+    setRecentBadges(retrieveRecentBadges);
     return;
   };
 
@@ -207,7 +226,7 @@ const HomeDesktop: React.FC = () => {
   useEffect(() => {
     async function confirmLoginHandler() {
       const confirmed: boolean = await confirmLogin("students", params.snowflake, params.token);
-      if(!confirmed) {window.location.href = `/home`;}
+      if(!confirmed) {window.location.href = `/home`; return;}
       await retrieveStudentDataHandler();
       setIsLoggedIn(true);
       return;
@@ -275,19 +294,31 @@ const HomeDesktop: React.FC = () => {
     const [description, colour, snowflake, textColour] = getDescription(program.programName);
     if(!description && !colour && !snowflake && !textColour) locked = true;
     return (
-        <React.Fragment>
-          <StudentProgram
-            programSnowflake={snowflake}
-            image='/assets/placeholder.png'
-            title={program.programName}
-            description={description}
-            colour={colour}
-            textColour={textColour}
-            progress={program}
-            fetchAndFilterActivities={fetchAndFilterActivities}
-            lockButton={blockUI}
-            locked={locked}
-          />
+      <React.Fragment>
+        <StudentProgram
+          programSnowflake={snowflake}
+          image='/assets/placeholder.png'
+          title={program.programName}
+          description={description}
+          colour={colour}
+          textColour={textColour}
+          progress={program}
+          fetchAndFilterActivities={fetchAndFilterActivities}
+          lockButton={blockUI}
+          locked={locked}
+        />
+      </React.Fragment>
+    );
+  };
+
+  // Function to define the recent badges card template
+  const recentBadgesCardTemplate = (badge: BadgeData) => {
+    return (
+      <React.Fragment>
+        <Badge
+          badge={badge}
+          id={0}
+        />
       </React.Fragment>
     );
   };
@@ -330,6 +361,25 @@ const HomeDesktop: React.FC = () => {
             setDetailConfirmation={setDetailConfirmation}
           />
           <Divider />
+          <h1>Most Recent Badges</h1>
+          <div className='program-progress-carousel'>
+            <Carousel 
+              value={recentBadges}  
+              responsiveOptions={responsiveOptions} 
+              itemTemplate={recentBadgesCardTemplate} 
+              nextIcon='pi pi-angle-right'
+              prevIcon='pi pi-angle-left'
+            />
+          </div>
+          <Divider />
+          <li className="listItem">
+            <MenuOption 
+                title={"View All Badges"}
+                destinationPage={`/student/viewbadges/${params.snowflake}/${params.token}/${params.name}`}
+                imageSRC='/assets/student-portal-images/badge.png'
+                imageAltText='badges-banner'
+            />
+          </li>
           <li className="listItem">
               <div onClick={() => setVisibleSettings(true)}>
                 <ModifyOption

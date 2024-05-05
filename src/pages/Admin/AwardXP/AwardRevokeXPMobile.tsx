@@ -1,36 +1,25 @@
 // Import core functions
-import React from 'react';
 import { useState, useEffect } from 'react';
 import { Button } from 'primereact/button';
 import { ProgressSpinner } from 'primereact/progressspinner';
-
-// Importing UI components
-import AccountListBox from '../../../components/Admin/AccountManage/AccountMangLists';
-import AccountManageBoxs from '../../../components/Admin/AccountManage/AccountMangBoxs';
 
 // Import global parameters
 import { GlobalParams } from '../../../interfaces/GlobalParams';
 import { useParams } from 'react-router';
 
 // Import CSS
-import './AdminAccManageDesktop.css'
-import './AdminAccManageGlobal.css'
-import '../../Shared CSS files/PortalDesktop.css'
+import './AwardRevokeXPMobile.css'
 
 // Import functions
 import { confirmLogin } from '../../../functions/Global/ConfirmLogin';
-import { Divider } from 'primereact/divider';
-import Banner from '../../../components/Admin/AdminPortal/Banner';
 
-// React function to render the Account Manager page for desktop devices
-const AdminAccMangDesktop: React.FC = () => {
-
+// React function to render the award/revoke xp page for mobile devices
+const AwardRevokeXPMobile: React.FC = () => {
   // Setting up global params on this page
   const params = useParams<GlobalParams>();
 
   // Variable to force confirmation of the account login state
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
-  const [reload, setReload] = useState<boolean>(true);
 
   // Event handler to perform action upon initial render
   useEffect(() => {
@@ -47,25 +36,13 @@ const AdminAccMangDesktop: React.FC = () => {
   if (isLoggedIn) {
     return (
       <>
-        <div>
-          <Banner 
-            backgroundimage='/assets/admin-portal-images/banner.png'
-            text='Manage Accounts'
-          />
-
-          <AccountListBox 
-            setReload={setReload}
-            reload={reload}
-            // 
-          />
-        </div>
-
-        <Divider />
-        
-
-        <Button label="[DEV] Back" icon="pi pi-arrow-left" onClick={() => {
-          window.location.href = `/home` //! DEV button to return to login page - remove later
-        }} severity="help"/>
+        <h1>Mobile UI Code</h1>
+        <h2>{params.name}</h2>
+        <h2>{params.snowflake}</h2>
+        <h2>{params.token}</h2>
+        <Button label="Sign-Out" icon="pi pi-sign-out" onClick={() => {
+          window.location.href = `/home`
+        }} severity="danger"/>
       </>
     );
   } else {
@@ -77,4 +54,4 @@ const AdminAccMangDesktop: React.FC = () => {
   };
 };
 
-export default AdminAccMangDesktop;
+export default AwardRevokeXPMobile;

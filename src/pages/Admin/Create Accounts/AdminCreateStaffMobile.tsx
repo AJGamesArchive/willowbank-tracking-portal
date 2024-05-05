@@ -2,15 +2,13 @@ import { Toast } from "primereact/toast";
 import { useState, useRef, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { confirmLogin } from "../../../functions/Global/ConfirmLogin";
-import { createStaffAccount } from "../../../functions/Login/CreateStaffAccount";
 import { retrieveStaffData } from "../../../functions/Teacher/RetrieveStaffData";
 import { GlobalParams } from "../../../interfaces/GlobalParams";
 import { CoreStaffAccountDetails } from "../../../types/Global/UserAccountDetails";
-import StaffCreationForm from "../../../components/Login/StaffCreateAccount";
 import { ProgressSpinner } from "primereact/progressspinner";
 
 
-const AdminCreateTeacherDesktop: React.FC = () => {
+const AdminCreateStaffMobile: React.FC = () => {
     // Setting up global params on this page
     const params = useParams<GlobalParams>();
   
@@ -44,7 +42,7 @@ const AdminCreateTeacherDesktop: React.FC = () => {
     useEffect(() => {
       async function confirmLoginHandler() {
         const confirmed: boolean = await confirmLogin("admins", params.snowflake, params.token);
-        if (!confirmed) { window.location.href = `/home`; }
+        if (!confirmed) { window.location.href = `/home`; return;}
         await retrieveStaffDataHandler();
         setIsLoggedIn(true); 
         return;
@@ -59,9 +57,9 @@ const AdminCreateTeacherDesktop: React.FC = () => {
         console.log("test")
         return ( 
             <>
-                <StaffCreationForm accountType={'teacher'}/>
+                <h1>Mobile UI Code</h1>
             </>
-        )
+        );
     } else {
         return (
           <>
@@ -70,4 +68,4 @@ const AdminCreateTeacherDesktop: React.FC = () => {
         );
       };
 }
-export default AdminCreateTeacherDesktop
+export default AdminCreateStaffMobile;
