@@ -172,6 +172,13 @@ const AdminPortalDesktop: React.FC = () => {
             </li>
             <li className='listItem'>
             <MenuOption 
+              imageSRC={`JESS PLEASE INSERT IMAGE!!! THANKX`}
+              imageAltText='Award-xp-image.404'
+              destinationPage={`/adminportal/manageprogress/${params.snowflake}/${params.token}/${params.name}`}
+              title="Award / Revoke XP" />
+            </li>
+            <li className='listItem'>
+            <MenuOption 
               imageSRC={`/assets/admin-portal-images/School.png`}
               imageAltText='School image'
               destinationPage={`/adminportal/manageschools/${params.snowflake}/${params.token}/${params.name}`}

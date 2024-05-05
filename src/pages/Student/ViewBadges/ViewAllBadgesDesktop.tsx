@@ -2,10 +2,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { ProgressSpinner } from 'primereact/progressspinner';
 import { Toast } from 'primereact/toast';
-import { CustomRenderProps, MeterGroup } from 'primereact/metergroup';
 import { Divider } from 'primereact/divider';
-import { Button } from 'primereact/button';
-import { Card } from 'primereact/card';
 
 // Import UI components
 import Badge from '../../../components/StudentHome/Badge';
