@@ -6,7 +6,7 @@ import { CoreStudentAccountDetails } from "../../types/Global/UserAccountDetails
 
 // ETHAN COMMENT YOUR FUNCTION
 export async function getStudentAccountInfo(): Promise<CoreStudentAccountDetails[] | string> {
-  //sets arrays to store student , teacher and admin data
+  //sets arrays to store student data
   let studentData: CoreStudentAccountDetails[] = [];
 
   //creates queries for searching database
@@ -19,7 +19,8 @@ export async function getStudentAccountInfo(): Promise<CoreStudentAccountDetails
   try {
       docS = await getDocs(qS);
     } catch (e) {
-      return Promise.resolve("Error");
+      console.log(e);
+      return Promise.resolve("");
     };
 
  // saves data for student 
@@ -28,7 +29,7 @@ export async function getStudentAccountInfo(): Promise<CoreStudentAccountDetails
     const sData: CoreStudentAccountDetails = {
       snowflake: docData.snowflake,
       username: docData.username,
-      firstName: docData.firstname,
+      firstName: docData.firstName,
       surnameInitial: docData.surnameInitial,
       password: docData.password,
       school: docData.school,
