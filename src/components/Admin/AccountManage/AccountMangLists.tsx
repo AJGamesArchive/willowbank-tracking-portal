@@ -68,17 +68,17 @@ interface AccountListBoxProps {
                 console.error('Error fetching usernames:', error);
             }
 
-            if (reload) {
-                await fetchData();
-                setReload(false);
-            }
         };
+
+        if (reload) {
+            fetchData();
+            setReload(false);
+        }
 
     }, [reload]);
 
     
     return (
-        
         <div> {/* Wrap everything in a div */}
             <>
                 <div className="listBoxContainer">
