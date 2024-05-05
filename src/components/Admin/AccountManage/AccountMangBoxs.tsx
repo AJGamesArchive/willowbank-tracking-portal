@@ -275,7 +275,8 @@ const AccountManageBoxs: React.FC<AccountListBoxProps> = ({selectedUser, selecte
                     <label>Password</label>
                     <InputText
                     id='edit-account-password'
-                    onChange={(e) => setPassword(e.target.value)}
+                    placeholder='Password Hidden Enter input to change password'
+                    onChange={(e) => setPassword(e.target.value.toUpperCase())}
                     autoFocus
                     />
                 </div>
