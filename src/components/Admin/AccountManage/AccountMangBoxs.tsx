@@ -1,8 +1,6 @@
 // Import core functions
-
 import { isUniqueUsernameName } from '../../../functions/Validation/IsUniqueUsername';
 import { updateCoreAccountDetails } from '../../../functions/Global/UpdateCoreAccountDetails';
-// --import { useState } from 'react';
 import React, { useEffect, useState, useRef } from 'react';
 import { InputText } from 'primereact/inputtext';
 import { getUserData } from '../../../functions/Admin/accountInformation';
@@ -23,15 +21,22 @@ import './AccountMangBoxs.css';
 import { removeAccount } from '../../../functions/Admin/removeAccount';
 
 interface AccountListBoxProps {
-    selectedUsername: CoreStudentAccountDetails | CoreStaffAccountDetails;
-    setSelectedUsername: (value: string) => void;
+    selectedUser: CoreStudentAccountDetails | CoreStaffAccountDetails;
     selectedCategory: string;
-    setSelectedCategory: (value: string) => void;
     callback: (value : boolean) => void;
 }
-    //creates usestates for the selected users information
-    const AccountManageBoxs: React.FC<AccountListBoxProps> = ({selectedUsername, setSelectedUsername,selectedCategory,setSelectedCategory, callback}) => {
-    const [userData, setUserData] = useState<UserData>();
+    // Creates usestates for the selected users information
+const AccountManageBoxs: React.FC<AccountListBoxProps> = ({selectedUser, selectedCategory, callback}) => {
+    const [userData, setUserData] = useState<UserData>({
+        username: '',
+        firstName: '',
+        surnameInitial: '',
+        surname: '',
+        school:'',
+        schools: [],
+        password: '',
+        snowflake: '',
+    });
 
     // Variables to control toast messages
     const toast = useRef<Toast>(null);
@@ -39,97 +44,101 @@ interface AccountListBoxProps {
     // State variables to store editable account details
     const [username, setUsername] = useState<string>("");
     const [firstName, setFirstName] = useState<string>("");
-    const [surnameInitial, setSurnameInitial] = useState<any>("");
+    const [surnameInitial, setSurnameInitial] = useState<string>("");
     const [password, setPassword] = useState<string>("");
-    var [school, setNewSchool] = useState<string[]>([]);
+    var [school, setSchool] = useState<string[]>([]);
 
     // State variable to control the submitted state of the form
     const [submitted, setSubmitted] = useState<boolean>(false);
     const [loading, setLoading] = useState<boolean>(false);
-    const [Visible, setVisible] = useState<boolean>(true)
+    const [Visible, setVisible] = useState<boolean>(false)
     const [popupVisible, setPopupVisible] = useState<boolean>(false);
     const [resultPopupVisible, setResultPopupVisible] = useState<boolean>(false);
-    const [result, setResult] = useState<string>("")
+    const [result, setResult] = useState<string>("");
 
     // Define unexpected error message
     const unexpected = () => {
         toast.current?.show({
-          severity: `error`,
-          summary: `Unexpected Error`,
-          detail: `An unexpected error occurred while trying to update account details. Please try again.`,
-          closeIcon: 'pi pi-times',
-          life: 7000,
+            severity: `error`,
+            summary: `Unexpected Error`,
+            detail: `An unexpected error occurred while trying to update account details. Please try again.`,
+            closeIcon: 'pi pi-times',
+            life: 7000,
         });
-      };
-
+    };
 
     async function updateCoreDetailsHandler(): Promise<void> {
+        // Handle and validate differing data depending on mode
+        GetUserDetails(selectedUser.snowflake, selectedCategory);
+        let success: boolean = false;
+        // Set loading states
+        setSubmitted(true);
+        setLoading(true);
 
-    // Handle and validate differing data depending on mode
-    let success: boolean = false;
-    // Set loading states
-    setSubmitted(true);
-    setLoading(true);
+        if (!username || !firstName || !surnameInitial) {
+            toast.current?.show({
+                severity: `error`,
+                summary: `Unexpected Error`,
+                detail: `An unexpected error occurred while trying to update account details. Please try again.`,
+                closeIcon: 'pi pi-times',
+                life: 7000,
+            });
+        }
 
-        if (!username || !firstName || !surnameInitial || !password )
-            {
-                toast.current?.show({
-                    severity: `error`,
-                    summary: `Unexpected Error`,
-                    detail: `An unexpected error occurred while trying to update account details. Please try again.`,
-                    closeIcon: 'pi pi-times',
-                    life: 7000,
-                  });
-            }
-        if (username !== userData?.username)
-            {
-                const isUnique = await isUniqueUsernameName(username);
-                if(typeof isUnique === "string") {
-                    unexpected();
-                    setLoading(false); return;
-                };
-                if(!isUnique) {
-                    toast.current?.show({
-                    severity: `warn`,
-                    summary: `Invalid Username`,
-                    detail: `The username you entered is not unique. Please enter a unique username.`,
-                    closeIcon: 'pi pi-times',
-                    life: 7000,
-                    });
-                    setLoading(false); return;
-                }
-            }
-        if (surnameInitial.length !== 1 && selectedCategory === 'students' )
-            {
-                toast.current?.show({
-                    severity: `warn`,
-                    summary: `Invalid surnameInitial`,
-                    detail: `You must only enter the first letter of your last name.`,
-                    closeIcon: 'pi pi-times',
-                    life: 7000,
-                    });
-                    setLoading(false); return;
-            }
-            success = await updateCoreAccountDetails(selectedCategory,String(userData?.snowflake),firstName, surnameInitial, username, password,school);
-            // Ensure process completed successfully
-            if(!success) {
+        if (username !== userData?.username) {
+            const isUnique = await isUniqueUsernameName(username);
+
+            if(typeof isUnique === "string") {
                 unexpected();
                 setLoading(false); return;
             };
-            setLoading(false); return;
+
+            if(!isUnique) {
+                toast.current?.show({
+                severity: `warn`,
+                summary: `Invalid Username`,
+                detail: `The username you entered is not unique. Please enter a unique username.`,
+                closeIcon: 'pi pi-times',
+                life: 7000,
+                });
+                setLoading(false); return;
+            }
         }
-        
+
+        if (surnameInitial.length !== 1 && selectedCategory === 'students' ) {
+            toast.current?.show({
+                severity: `warn`,
+                summary: `Invalid surnameInitial`,
+                detail: `You must only enter the first letter of your last name.`,
+                closeIcon: 'pi pi-times',
+                life: 7000,
+            });
+
+            setLoading(false); 
+            return;
+        }
+
+        success = await updateCoreAccountDetails(selectedCategory, userData.snowflake, firstName, surnameInitial, username, password, school);
+        // Ensure process completed successfully
+        if(!success) {
+            unexpected();
+            setLoading(false); 
+            return;
+        };
+        setLoading(false); 
+        setVisible(false)
+        return;
+    }
 
     const onDialogueHide = () => {
         setVisible(false);
         setSubmitted(false);
         setLoading(false);
         setPassword("");
-      };
+    };
 
     async function RemoveAccount (snowflake : string, accountType : string) {
-        if (await removeAccount(snowflake, accountType))
-        {
+        if (await removeAccount(snowflake, accountType)) {
             setResult("was");
             callback(true);
         }
@@ -139,47 +148,44 @@ interface AccountListBoxProps {
         }
         setResultPopupVisible(true);
     }
-    
+
+    async function GetUserDetails (snowflake : string, category : string) {
+        const thisUser = await getUserData(snowflake, category)
+        if (typeof thisUser === "string") {
+            console.error('Error fetching user data:' + thisUser);
+            // Output problem to user
+            return;
+        }
+        setUserData(thisUser)
+        setVisible(true);
+        setFirstName(String(thisUser.firstName))
+        setUsername(String(thisUser.username))
+        setSchool(school)
+
+        if(selectedCategory === "students") {
+            setSchool([thisUser.school]);
+            setSurnameInitial(String(thisUser.surnameInitial))
+        } else {
+            console.log('data:' , thisUser.school);
+            setSchool(thisUser.schools);
+            console.log('schools:', school)
+            setSurnameInitial(String(thisUser.surname))
+        }
+    }
+
     //use effects runs when component is called
     useEffect(() => {
-        if (selectedUsername && selectedCategory) {
-            getUserData(selectedUsername.snowflake, selectedCategory)
-                .then((data) => {
-                    if(typeof data !== "string") {
-                        setUserData(data);
-                        setVisible(true);
-                        setFirstName(String(data?.firstName))
-                        setUsername(String(data?.username))
-                        if(selectedCategory === "students") {
-                            school = [data.school];
-                            setSurnameInitial(String(data?.surnameInitial))
-                        } else {
-                            console.log('data:' , data.school);
-                            school = data.schools;
-                            console.log('schools:', school)
-                            setSurnameInitial(String(data?.surname))
-                        }
-                        setNewSchool(school)
-                        setPassword(String(data?.password))
-                    }
-                })
-                .catch((error) => {
-                    console.error('Error fetching user data:', error);
-                });
-            } else {
-                // Clear userData when selectedUsername is null
-                setUserData(null as unknown as UserData | undefined);
-            }
-    },[selectedUsername, selectedCategory]);
+        GetUserDetails(selectedUser.snowflake, selectedCategory)
+    },[selectedUser, selectedCategory]);
     
-      const checkNewSchool = (e : any) => {
+    const checkNewSchool = (e : any) => {
         const regex = /^\d{2}-\d{2}-\d{2}$/;
         if (regex.test(e) === true) {
             const newSchool = [...school, e];
-        setNewSchool(newSchool);
-        console.log('checknewschool',newSchool)
-  }
-      };
+            setSchool(newSchool);
+            console.log('checknewschool',newSchool)
+        }
+    };
 
     return (
         (userData && <div>
@@ -195,24 +201,20 @@ interface AccountListBoxProps {
                 header={`Edit Account Details:`} 
                 modal 
                 onHide={onDialogueHide}
-                className="p-fluid" 
-            >
-                 <div>
-                    <label>
-                        Username
-                    </label>
+                className="p-fluid">
+
+                <div>
+                    <label>Username</label>
                     <InputText
                     id='edit-account-username'
                     value={username}
-                    onChange={(e) => setUsername(e.target.value.toUpperCase())}
+                    onChange={(e) => setUsername(e.target.value)}
                     autoFocus 
                     />
                 </div>   
 
-               <div>
-                    <label>
-                        First Name
-                    </label>
+                <div>
+                    <label>First Name</label>
                     <InputText
                     id='edit-account-firstName'
                     value={firstName}
@@ -222,11 +224,8 @@ interface AccountListBoxProps {
                 </div>
 
                 <div>
-                    <label>
-                        Last Name 
-                    </label>
+                    <label>Last Name</label>
                     {selectedCategory === 'students' ? (
-
                         <InputText
                         id='edit-account-lastName'
                         value={surnameInitial}
@@ -234,7 +233,6 @@ interface AccountListBoxProps {
                         autoFocus
                         />
                     ) : (
-
                         <InputText
                         id='edit-account-lastName'
                         value={surnameInitial}
@@ -245,46 +243,39 @@ interface AccountListBoxProps {
                 </div>
 
                 <div>
-                    <label>
-                        School
-                    </label>
+                    <label>School</label>
                     {selectedCategory === 'students' ? (
                         <InputMask
                             id='edit-account-school'
                             value={school[0]}
                             mask="99-99-99"
-                            slotChar='00-00-00'
                             onChange={(e: InputMaskChangeEvent) => {
                             school[0] = (e.target.value) ? e.target.value : '';
-                            setNewSchool(school);
+                            setSchool(school);
                         }}
                     />
                     ) : (
-                           <Chips
-                           value={school}
-                           placeholder='Format: 00-00-00'
-                           onRemove={(e) => {
-                            let index: number = -1;
-                            for(let i = 0; i < school.length; i++) {
-                                if(school[i] === e.value) index = i;
-                            };
-                            school.splice(index, 1);
-                            setNewSchool(school)
-                           }}
-                           onAdd={(e) => checkNewSchool(e.value)}
-                           
-                           />
+                            <Chips
+                                value={school}
+                                placeholder='Format: 00-00-00'
+                                onRemove={(e) => {
+                                let index: number = -1;
+                                for(let i = 0; i < school.length; i++) {
+                                    if(school[i] === e.value) index = i;
+                                };
+                                school.splice(index, 1);
+                                setSchool(school);
+                            }}
+                            onAdd={(e) => checkNewSchool(e.value)}
+                            />
                         )}
                 </div>
 
                 <div>
-                    <label>
-                        Password
-                    </label>
+                    <label>Password</label>
                     <InputText
                     id='edit-account-password'
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value.toUpperCase())}
+                    onChange={(e) => setPassword(e.target.value)}
                     autoFocus
                     />
                 </div>
@@ -296,10 +287,9 @@ interface AccountListBoxProps {
                 visible={popupVisible}
                 onHide={() => {setPopupVisible(false)}}
                 header="Delete Account"
-                closeIcon="pi pi-times"
-            >
+                closeIcon="pi pi-times">
                 <p>Are you sure you want to delete this account?</p>
-                <Button label="Yes" onClick={() => {RemoveAccount(userData?.snowflake, selectedCategory); setResultPopupVisible(true), setPopupVisible(false)}} severity='danger' style={{margin: "5px"}}/>
+                <Button label="Yes" onClick={() => {RemoveAccount(userData.snowflake, selectedCategory); setResultPopupVisible(true), setPopupVisible(false)}} severity='danger' style={{margin: "5px"}}/>
                 <Button label="No" onClick={() => setPopupVisible(false)} style={{margin: "5px"}}/>
             </Dialog>
 
