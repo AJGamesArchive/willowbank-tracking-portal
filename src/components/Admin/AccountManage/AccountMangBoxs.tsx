@@ -266,7 +266,7 @@ interface AccountListBoxProps {
                     </label>
                     <InputText
                     id='edit-account-password'
-                    value={password}
+                    placeholder='Password Hidden Enter input to change password'
                     onChange={(e) => setPassword(e.target.value.toUpperCase())}
                     autoFocus
                     />
