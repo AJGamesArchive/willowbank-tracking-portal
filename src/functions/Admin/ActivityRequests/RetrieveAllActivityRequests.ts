@@ -1,5 +1,5 @@
 import { db } from "../../../database/Initalise";
-import { getDoc, doc } from "firebase/firestore";
+import { doc, runTransaction } from "firebase/firestore";
 import { ActivityRequests } from "../../../types/Global/ActivityCompletionRequests";
 
 /**
@@ -12,9 +12,13 @@ export async function retrieveActivityRequests(): Promise<ActivityRequests[] | s
   let document;
   let requests: ActivityRequests[] = [];
   try {
-    document = await getDoc(docRef);
-    if(!document.exists()) return Promise.resolve("Error");
-    requests = document.data().requests;
+    const success: string | null = await runTransaction(db, async (transaction): Promise<string | null> => {
+      document = await transaction.get(docRef);
+      if(!document.exists()) return Promise.resolve("Error");
+      requests = document.data().requests;
+      return null;
+    });
+    if(typeof success === "string") return Promise.resolve("Error");
   } catch (e) {
     console.log(e);
     return Promise.resolve("Error");

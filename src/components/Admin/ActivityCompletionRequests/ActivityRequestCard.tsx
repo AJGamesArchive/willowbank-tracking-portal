@@ -15,6 +15,7 @@ import './ActivityRequestCard.css'
 
 // Import functions
 import { processActivityRequests } from '../../../functions/Admin/ActivityRequests/ProcessRequest';
+import { awardXP } from '../../../functions/Admin/ActivityRequests/AwardXP';
 
 export type Actioned = {
   activityId: number;
@@ -41,34 +42,40 @@ const ActivityRequestCard: React.FC<ActivityRequestCardProps> = ({request, mapId
   // Variables to control toast messages
   const toast = useRef<Toast>(null);
 
-  // Async function to handel approving activity completion requests
-  //TODO Make this function
-  async function approveRequestHandler(): Promise<void> {
+  // Async function to handel processing activity completion requests
+  async function processRequestHandler(approved: boolean): Promise<void> {
     setLoading(true);
-
-    toast.current?.show({
-      severity: 'info',
-      summary: 'Feature Not Implemented',
-      detail: `Sorry but this feature has not been implemented yet. Please come back later.`,
-      closeIcon: 'pi pi-times',
-      life: 7000,
-    });
-
-    setLoading(false);
-  };
-
-  // Async function to handel declining activity completion requests
-  async function declineRequestHandler(): Promise<void> {
-    setLoading(true);
-    const success: boolean = await processActivityRequests(request);
+    const success: boolean = await processActivityRequests(request, approved);
+    //TODO Maybe update these error/confirmation messages so they are passed back to the request dialogue and shown there
+    //TODO This should stop hem from sometimes? disappearing when the request is removed from the request list
     if(success) {
-      toast.current?.show({
-        severity: 'success',
-        summary: 'Activity Request Declined',
-        detail: `The activity completion request has been declined successfully.`,
-        closeIcon: 'pi pi-times',
-        life: 7000,
-      });
+      if(approved) {
+        toast.current?.show({
+          severity: 'success',
+          summary: 'Activity Request Approved',
+          detail: `The activity completion request has been approved successfully. ${request.xpValue}xp has been awarded to ${request.studentName}.`,
+          closeIcon: 'pi pi-times',
+          life: 7000,
+        });
+        const awardedXP: boolean = await awardXP(request);
+        if(!awardedXP) {
+          toast.current?.show({
+            severity: 'warn',
+            summary: 'Failed To Award XP',
+            detail: `An unexpected error occurred while trying to award the activities XP amount (${request.xpValue}) to ${request.studentName}. No XP has been awarded. You will need to manually award ${request.xpValue} to ${request.studentName}.`,
+            closeIcon: 'pi pi-times',
+            sticky: true,
+          });
+        };
+      } else {
+        toast.current?.show({
+          severity: 'success',
+          summary: 'Activity Request Declined',
+          detail: `The activity completion request has been declined successfully.`,
+          closeIcon: 'pi pi-times',
+          life: 7000,
+        });
+      };
       onActioned({
         activityId: request.activityID,
         studentSnowflake: request.studentSnowflake,
@@ -85,6 +92,7 @@ const ActivityRequestCard: React.FC<ActivityRequestCardProps> = ({request, mapId
     };
     setLoading(false);
     setConfirmDecline(false);
+    setConfirmApproval(false);
     return;
   };
   
@@ -99,7 +107,7 @@ const ActivityRequestCard: React.FC<ActivityRequestCardProps> = ({request, mapId
   const confirmApprovalFooter = (
     <React.Fragment>
       <Button label="Cancel" icon="pi pi-times" severity='secondary' onClick={() => setConfirmApproval(false)} />
-      <Button label="Approve" loading={loading} icon="pi pi-check" severity="success" onClick={approveRequestHandler} />
+      <Button label="Approve" loading={loading} icon="pi pi-check" severity="success" onClick={() => processRequestHandler(true)} />
     </React.Fragment>
   );
 
@@ -107,7 +115,7 @@ const ActivityRequestCard: React.FC<ActivityRequestCardProps> = ({request, mapId
   const confirmDeclineFooter = (
     <React.Fragment>
       <Button label="Cancel" icon="pi pi-times" severity='secondary' onClick={() => setConfirmDecline(false)} />
-      <Button label="Decline" loading={loading} icon="pi pi-exclamation-triangle" severity="danger" onClick={declineRequestHandler} />
+      <Button label="Decline" loading={loading} icon="pi pi-exclamation-triangle" severity="danger" onClick={() => processRequestHandler(false)} />
     </React.Fragment>
   );
 

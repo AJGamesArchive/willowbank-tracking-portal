@@ -122,7 +122,6 @@ const ActivityCompletionRequestDialogue: React.FC<ActivityCompletionRequestDialo
 
   // useEffect hook to handel setting up the initial request filter and filtering options
   useEffect(() => {
-    // debugger
     if(visible) {
       setRequests(baseRequests);
       setFilteredRequests(baseRequests);
@@ -173,10 +172,8 @@ const ActivityCompletionRequestDialogue: React.FC<ActivityCompletionRequestDialo
   const header = (
     <React.Fragment>
       <header>Review Activity Completion Requests:</header>
-      <div>
-        <small style={{color: '#7c7d7e'}}>{`Showing ${filteredRequests.length} out of ${requests.length} requests.`}</small>
-        <br/>
-        <small style={{color: '#7c7d7e'}}>Filtering:</small>
+      <div style={{paddingTop: '2px'}}>
+        <small>Filtering:</small>
       </div>
       <div className="p-inputgroup flex-1">
         <Dropdown 
@@ -215,6 +212,7 @@ const ActivityCompletionRequestDialogue: React.FC<ActivityCompletionRequestDialo
           placeholder="Select a Program" className="w-full md:w-14rem" 
         />}
       </div>
+      <small>{`Showing ${filteredRequests.length} out of ${requests.length} requests.`}</small>
     </React.Fragment>
   );
 

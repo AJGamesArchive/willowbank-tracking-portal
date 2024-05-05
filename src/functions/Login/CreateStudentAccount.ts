@@ -1,6 +1,6 @@
 // Importing the database
 import { db } from "../../database/Initalise"
-import { getDoc, doc, DocumentData, setDoc, updateDoc, query, collection, getDocs } from "firebase/firestore";
+import { getDoc, doc, DocumentData, query, collection, getDocs, runTransaction } from "firebase/firestore";
 import { CoreStudentAccountDetails } from "../../types/Global/UserAccountDetails";
 import { XPStudentAccountDetails } from "../../types/Global/UserAccountDetails";
 
@@ -43,12 +43,6 @@ export async function createStudentAccount(schoolCode: string, schoolName: strin
     };
     let schoolStudents: string[] = docData.students;
     schoolStudents.push(accountSnowflake);
-    await updateDoc(doc(db, "schools", schoolCode), {
-      students: schoolStudents,
-    });
-
-    // Create student account document
-    await setDoc(doc(db, "students", accountSnowflake), coreDetails);
 
     // Retrieve all program data
     const programQuery = query(collection(db, "programs"));
@@ -59,20 +53,31 @@ export async function createStudentAccount(schoolCode: string, schoolName: strin
       programData.push(docData);
     });
 
-    // Assign all programs to the new student
-    for(let i = 0; i < programData.length; i++) {
-      const xpDetails: XPStudentAccountDetails = {
-        programName: programData[i].name,
-        dateStarted: dateTimeReadable(),
-        currentLevel: 1,
-        previousTargetXP: 0,
-        currentXP: 0,
-        targetXP: 100,
-        completedActivities: [],
-        pendingActivities: [],
+    // Transaction for writing to DB
+    await runTransaction(db, async (transaction): Promise<void> => {
+      // Assign the new student to a school in the DB
+      await transaction.update(doc(db, "schools", schoolCode), {
+        students: schoolStudents,
+      });
+
+      // Create student account document
+      await transaction.set(doc(db, "students", accountSnowflake), coreDetails);
+
+      // Assign all programs to the new student
+      for(let i = 0; i < programData.length; i++) {
+        const xpDetails: XPStudentAccountDetails = {
+          programName: programData[i].name,
+          dateStarted: dateTimeReadable(),
+          currentLevel: 1,
+          previousTargetXP: 0,
+          currentXP: 0,
+          targetXP: 100,
+          completedActivities: [],
+          pendingActivities: [],
+        };
+        await transaction.set(doc(db, "students", accountSnowflake, "programs", programData[i].snowflake), xpDetails);
       };
-      await setDoc(doc(db, "students", accountSnowflake, "programs", programData[i].snowflake), xpDetails);
-    };
+    });
   } catch (e) {
     return Promise.resolve(false);
   };

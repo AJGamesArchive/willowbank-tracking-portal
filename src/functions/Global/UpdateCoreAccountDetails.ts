@@ -1,5 +1,5 @@
 import { db } from "../../database/Initalise";
-import { doc, updateDoc } from "firebase/firestore";
+import { doc, runTransaction } from "firebase/firestore";
 
 /**
  * async function to take in core account details and update the given details in the DB
@@ -14,7 +14,6 @@ import { doc, updateDoc } from "firebase/firestore";
  */
 export async function updateCoreAccountDetails(accountType: string, snowflake: string, firstName: string = "", surnameInitial: string = "", username: string = "", password: string = "",school: string[] = []): Promise<boolean> {
   // Ensure at least 1 core detail needs updating
-  debugger
   if(!firstName && !surnameInitial && !username && !password) return Promise.resolve(false);
   // Collect all core details and put them into an object
   let details: any = {};
@@ -25,17 +24,17 @@ export async function updateCoreAccountDetails(accountType: string, snowflake: s
     {
       if(school.length !== 0) details.school = school[0]
       if(surnameInitial) details.surnameInitial = surnameInitial;
-      if(surnameInitial) details.surnameInitial = surnameInitial;
     }
   else 
     {
     if(school.length !== 0) details.schools = school
     if (surnameInitial) details.surname = surnameInitial;
-    console.log(details.schools);
     }
   // Update the DB
   try {
-    await updateDoc(doc(db, accountType, snowflake), details);
+    await runTransaction(db, async (transaction): Promise<void> => {
+      await transaction.update(doc(db, accountType, snowflake), details);
+    });
   } catch (e) {
     console.log(e);
     return Promise.resolve(false);
