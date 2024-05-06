@@ -226,6 +226,7 @@ const ViewBadgesDesktop: React.FC = () => {
         <Toast ref={toast}/>
         <h1>Here's all your awarded badges {params.name}!</h1>
         <Divider/>
+        <h2>Badge Filter Options:</h2>
         <div className='badge-filter-bar'>
           <Dropdown 
             value={selectedFilter}
