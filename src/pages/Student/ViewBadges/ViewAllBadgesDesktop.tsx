@@ -265,6 +265,7 @@ const ViewBadgesDesktop: React.FC = () => {
             </div>
           ))}
         </div>
+        {filteredBadges.length === 0 && <h3><em>You do not currently have any badges.</em></h3>}
       </>
     );
   } else {

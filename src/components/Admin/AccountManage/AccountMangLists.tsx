@@ -17,7 +17,7 @@ interface AccountListBoxProps {
     setReload : (value : boolean) => void;
 }
 
-    const AccountListBox: React.FC<AccountListBoxProps> = ({reload, setReload}) => {
+const AccountListBox: React.FC<AccountListBoxProps> = ({reload, setReload}) => {
     //declaring state variables, ready to store teachers, students and admins and selected user
     const [students, setStudents] = useState<CoreStudentAccountDetails[]>([]);
     const [teachers, setTeachers] = useState<CoreStaffAccountDetails[]>([]);
@@ -62,7 +62,7 @@ interface AccountListBoxProps {
                 const adminData:  CoreStaffAccountDetails[]  | string = await getstaffAccountInfo("A")
 
                 if(typeof studentData === "string" || typeof teacherData === "string" || typeof adminData === "string") {
-                    // Return some error here
+                    //TODO Return some error here
                     return;
                 };
 

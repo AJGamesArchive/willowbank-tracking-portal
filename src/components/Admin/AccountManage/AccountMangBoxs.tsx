@@ -163,12 +163,10 @@ const AccountManageBoxs: React.FC<AccountListBoxProps> = ({selectedUser, selecte
             setSchool([thisUser.school]);
             setSurnameInitial(String(thisUser.surnameInitial))
         } else {
-            console.log('data:' , thisUser.school);
             setSchool(thisUser.schools);
-            console.log('schools:', school)
             setSurnameInitial(String(thisUser.surname))
-        }
-    }
+        };
+    };
 
     //use effects runs when component is called
     useEffect(() => {
@@ -180,8 +178,7 @@ const AccountManageBoxs: React.FC<AccountListBoxProps> = ({selectedUser, selecte
         if (regex.test(e) === true) {
             const newSchool = [...school, e];
             setSchool(newSchool);
-            console.log('checknewschool',newSchool)
-        }
+        };
     };
 
     return (
