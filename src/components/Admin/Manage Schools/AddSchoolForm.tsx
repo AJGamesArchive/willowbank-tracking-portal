@@ -16,17 +16,11 @@ import './AddSchoolForm.css';
 
 //Import Functions
 import { CheckSchoolBase } from '../../../functions/Admin/ManageSchools/CheckSchoolBase';
+import { createSchool } from '../../../functions/Admin/ManageSchools/CreateSchool';
 
 //Import Types
 import { SchoolCreationStatus } from '../../../types/Schools/SchoolCreationStatus';
-
-
-//Create any interfaces needed
-interface SchoolTime {
-    day: string;
-    startTime: string; 
-    endTime: string;
-}
+import { SchoolTimeSlot } from '../../../types/Schools/SchoolTimeSlot';
 
 //React function to render the add school form
 const AddSchoolForm: React.FC = () => {
@@ -42,11 +36,11 @@ const AddSchoolForm: React.FC = () => {
     const [schoolDay, setSchoolDay] = useState<string>(daysOfWeek[0]);
     const [schoolTimeTo, setSchoolTimeTo] = useState<Date>(new Date(new Date().setHours(17,0,0,0)));
     const [schoolTimeFrom, setSchoolTimeFrom] = useState<Date>(new Date(new Date().setHours(9,0,0,0)));
-    const [slotSelection, setSlotSelection] = useState<SchoolTime[]>([]);
-    const [schoolTimes, setSchoolTimes] = useState<SchoolTime[]>([]);
+    const [slotSelection, setSlotSelection] = useState<SchoolTimeSlot[]>([]);
+    const [schoolTimes, setSchoolTimes] = useState<SchoolTimeSlot[]>([]);
 
     const addNewTimeSlot = (schoolDay: string, schoolTimeFrom: Date, schoolTimeTo: Date) => {
-        const newSlot: SchoolTime = {
+        const newSlot: SchoolTimeSlot = {
             day: schoolDay,
             startTime: format(schoolTimeFrom, "kk:mm"),
             endTime: format(schoolTimeTo, "kk:mm"),
@@ -127,10 +121,27 @@ const AddSchoolForm: React.FC = () => {
 
         if(!results.success){
             addSchoolError(results.errorMessage.severity, results.errorMessage.header, results.errorMessage.message);
+            return
         }
-        
-    }
 
+        const creationResults: boolean = await createSchool(schoolCode, schoolName, schoolEmail, schoolPhone, schoolTimes);
+        if (!creationResults) {
+            addSchoolError("error", "Something Went Wrong", "An unexpected error occurred and the account was not able to be created. Please try again.");
+            return;
+        };
+    
+        // Output confirmation message
+        const schoolCreatedConfirm = () => {
+          toast.current?.show({
+            severity: `success`,
+            summary: `School Creation Successful`,
+            detail: `The account '${schoolName}' was created successfully.`,
+            closeIcon: 'pi pi-times',
+            life: 7000,
+          });
+        };
+        schoolCreatedConfirm();
+    }
 
     //Variables to control toast messages
     const toast = useRef<Toast>(null);

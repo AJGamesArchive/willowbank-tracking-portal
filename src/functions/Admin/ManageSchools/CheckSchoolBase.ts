@@ -48,75 +48,101 @@ export async function CheckSchoolBase(code: string, name: string, email: string,
         return Promise.resolve(schoolCodeFound);
     };
 
-    for (let i = 0; i < schoolCodes.length; i++) {
+    if (schoolCodes.length > 0) {
 
-        // Retrieve the name of the school that matches the given school code
-        const docRef = doc(db, "schools", schoolCodes[i]);
-        let docSchool;
-        try {
-            docSchool = await getDoc(docRef);
-        } catch (e) {
-            const error: SchoolCreationStatus = {
-                success: false,
-                errored: true,
-                errorMessage: {
-                    severity: 'danger',
-                    header: 'Unexpected Error Occurred',
-                    message: `There was an error in retrieving where to store your school. Please try again.`
-                  }
+        for (let i = 0; i < schoolCodes.length; i++) {
+
+            // Retrieve the name of the school that matches the given school code
+            const docRef = doc(db, "schools", schoolCodes[i]);
+            let docSchool;
+            try {
+                docSchool = await getDoc(docRef);
+            } catch (e) {
+                const error: SchoolCreationStatus = {
+                    success: false,
+                    errored: true,
+                    errorMessage: {
+                        severity: 'danger',
+                        header: 'Unexpected Error Occurred',
+                        message: `There was an error in retrieving where to store your school. Please try again.`
+                    }
+                };
+                return Promise.resolve(error);
             };
-            return Promise.resolve(error);
+    
+            if (docSchool.exists()) {
+                const docData: DocumentData = docSchool.data();
+                const schoolName: string = docData.name;
+                const schoolEmail: string = docData.email;
+                const schoolPhone: string = docData.phone;
+                console.log(schoolName);
+
+                if (name.toUpperCase() === schoolName.toUpperCase()) {
+                    
+                    const nameDuplicate: SchoolCreationStatus = {
+                        success: false,
+                        errored: false,
+                        errorMessage: {
+                            severity: 'danger',
+                            header: 'School Name Already Exists',
+                            message: `There is a school on the site with the same name. Please enter another name or change the name of existing one.`
+                        }
+                    };
+                    return Promise.resolve(nameDuplicate);
+                }
+
+                if (email.toUpperCase() === schoolEmail.toUpperCase()) {
+                    
+                    const emailDuplicate: SchoolCreationStatus = {
+                        success: false,
+                        errored: false,
+                        errorMessage: {
+                            severity: 'danger',
+                            header: 'School Email Already Exists',
+                            message: `There is a school on the site with the same email. Please enter another email or change the email of existing one.`
+                        }
+                    };
+                    return Promise.resolve(emailDuplicate);
+                }
+
+                if (phone === schoolPhone) {
+                    
+                    const phoneDuplicate: SchoolCreationStatus = {
+                        success: false,
+                        errored: false,
+                        errorMessage: {
+                            severity: 'danger',
+                            header: 'School Phone Number Already Exists',
+                            message: `There is a school on the site with the same phone number. Please enter another phone number or change the phone number of existing one.`
+                        }
+                    };
+                    return Promise.resolve(phoneDuplicate);
+                }
+            };
+        }
+
+        const checkSuccess: SchoolCreationStatus = {
+            success: true,
+            errored: false,
+            errorMessage: {
+                severity: 'success',
+                header: 'Check Successful',
+                message: `Checks completed`
+            }
         };
- 
-        if (docSchool.exists()) {
-            const docData: DocumentData = docSchool.data();
-            const schoolName: string = docData.name;
-            const schoolEmail: string = docData.email;
-            const schoolPhone: string = docData.phone;
-            console.log(schoolName);
-
-            if (name.toUpperCase() === schoolName.toUpperCase()) {
-                
-                const nameDuplicate: SchoolCreationStatus = {
-                    success: false,
-                    errored: false,
-                    errorMessage: {
-                        severity: 'danger',
-                        header: 'School Name Already Exists',
-                        message: `There is a school on the site with the same name. Please enter another name or change the name of existing one.`
-                      }
-                };
-                return Promise.resolve(nameDuplicate);
-            }
-
-            if (email.toUpperCase() === schoolEmail.toUpperCase()) {
-                
-                const emailDuplicate: SchoolCreationStatus = {
-                    success: false,
-                    errored: false,
-                    errorMessage: {
-                        severity: 'danger',
-                        header: 'School Email Already Exists',
-                        message: `There is a school on the site with the same email. Please enter another email or change the email of existing one.`
-                      }
-                };
-                return Promise.resolve(emailDuplicate);
-            }
-
-            if (phone === schoolPhone) {
-                
-                const phoneDuplicate: SchoolCreationStatus = {
-                    success: false,
-                    errored: false,
-                    errorMessage: {
-                        severity: 'danger',
-                        header: 'School Phone Number Already Exists',
-                        message: `There is a school on the site with the same phone number. Please enter another phone number or change the phone number of existing one.`
-                      }
-                };
-                return Promise.resolve(phoneDuplicate);
+        return Promise.resolve(checkSuccess);
+    }
+    else {
+        const checkSuccess: SchoolCreationStatus = {
+            success: true,
+            errored: false,
+            errorMessage: {
+                severity: 'success',
+                header: 'Check Successful',
+                message: `Checks completed`
             }
         };
+        return Promise.resolve(checkSuccess);
     }
 
     // Return an unexpected error for when the school exists but the document does not exist?
