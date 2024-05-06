@@ -9,6 +9,7 @@ import { generateToken } from "../Global/GenerateToken";
 import { snowflake } from "../../classes/Snowflake";
 
 export async function createStaffAccount (accountType : string, schoolCode : string[], schoolName : string[], firstName : string, surname : string, username : string, password : string) : Promise<boolean> {
+    debugger
     // Generate account token and snowflake
     const token : string = generateToken();
     const accountSnowflake : string = snowflake.generate();
@@ -53,9 +54,9 @@ export async function createStaffAccount (accountType : string, schoolCode : str
                 if (accountType === 'teachers')
                 {
                     // Add teacher's snowflake to school
-                    let schoolTeach : string[] = docData.teacher
+                    let schoolTeach : string[] = docData.teachers
                     schoolTeach.push(accountSnowflake);
-                    await transaction.update(doc(db, "teachers", schoolCode[i]), {
+                    await transaction.update(doc(db, "schools", schoolCode[i]), {
                         teachers : schoolTeach,
                     })
                 }
@@ -65,7 +66,7 @@ export async function createStaffAccount (accountType : string, schoolCode : str
                     // Add admin's snowflake to school
                     let schoolAdmins : string[] = docData.admins
                     schoolAdmins.push(accountSnowflake);
-                    await transaction.update(doc(db, "admins", schoolCode[i]), {
+                    await transaction.update(doc(db, "schools", schoolCode[i]), {
                         admins : schoolAdmins,
                     });                
                 }

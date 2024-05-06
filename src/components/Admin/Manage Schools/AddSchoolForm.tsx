@@ -1,33 +1,26 @@
 // Import core functions
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef } from 'react';
 import { Card } from 'primereact/card';
 import { Button } from 'primereact/button';
 import { InputText } from 'primereact/inputtext';
 import { InputMask, InputMaskChangeEvent } from 'primereact/inputmask';
 import { Toast } from 'primereact/toast';
-import { BlockUI } from 'primereact/blockui';
-import { confirmDialog } from 'primereact/confirmdialog';
-import { Messages } from 'primereact/messages';
 import { Calendar } from 'primereact/calendar';
-import { Nullable } from "primereact/ts-helpers";
 import { Dropdown } from 'primereact/dropdown';
-import { Inplace, InplaceDisplay, InplaceContent } from 'primereact/inplace';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import { format } from 'date-fns';
 
-
 //Import CSS
 import './AddSchoolForm.css';
-import { mask } from 'primereact/utils';
-import { getValue } from 'firebase/remote-config';
 
-//Create any interfaces needed
-interface SchoolTime {
-    day: string;
-    startTime: string; // assuming start time as a simple hour for now
-    endTime: string; // assuming end time as a simple hour
-}
+//Import Functions
+import { CheckSchoolBase } from '../../../functions/Admin/ManageSchools/CheckSchoolBase';
+import { createSchool } from '../../../functions/Admin/ManageSchools/CreateSchool';
+
+//Import Types
+import { SchoolCreationStatus } from '../../../types/Schools/SchoolCreationStatus';
+import { SchoolTimeSlot } from '../../../types/Schools/SchoolTimeSlot';
 
 //React function to render the add school form
 const AddSchoolForm: React.FC = () => {
@@ -43,30 +36,26 @@ const AddSchoolForm: React.FC = () => {
     const [schoolDay, setSchoolDay] = useState<string>(daysOfWeek[0]);
     const [schoolTimeTo, setSchoolTimeTo] = useState<Date>(new Date(new Date().setHours(17,0,0,0)));
     const [schoolTimeFrom, setSchoolTimeFrom] = useState<Date>(new Date(new Date().setHours(9,0,0,0)));
-
-    const [schoolTimes, setSchoolTimes] = useState<SchoolTime[]>([
-            {
-                day: "Monday",
-                startTime: format(new Date(new Date().setHours(9, 0, 0, 0)), "kk:mm"),
-                endTime: format(new Date(new Date().setHours(17, 0, 0, 0)), "kk:mm")
-            }
-        ]
-    )  ;
+    const [slotSelection, setSlotSelection] = useState<SchoolTimeSlot[]>([]);
+    const [schoolTimes, setSchoolTimes] = useState<SchoolTimeSlot[]>([]);
 
     const addNewTimeSlot = (schoolDay: string, schoolTimeFrom: Date, schoolTimeTo: Date) => {
-        const newSlot: SchoolTime = {
+        const newSlot: SchoolTimeSlot = {
             day: schoolDay,
             startTime: format(schoolTimeFrom, "kk:mm"),
-            endTime: format(schoolTimeTo, "kk:mm")
-        };
+            endTime: format(schoolTimeTo, "kk:mm"),
+       };
         setSchoolTimes(prevSchoolTimes => [...prevSchoolTimes, newSlot]);
     };
 
-    //Variables to control toast messages
-    const toast = useRef<Toast>(null);
+    const deleteSelectedSlots = () => {
+        setSchoolTimes(prevSchoolTimes => 
+            prevSchoolTimes.filter(slot => !slotSelection.includes(slot))
+        );
+        setSlotSelection([]);
+    };
 
-    function addSchoolError(type: any, title: string, message: string): void 
-    {
+    const addSchoolError = (type: any, title: string, message: string): void => {
         toast.current?.show({
             severity: type,
             summary: `${title}`,
@@ -75,6 +64,89 @@ const AddSchoolForm: React.FC = () => {
             life: 7000,
         });
     }
+
+    const slotChecking = (): Boolean =>   {
+
+        let timeSlotExists: boolean = false;
+
+        if (schoolTimeFrom >= schoolTimeTo){
+            addSchoolError("error", "Time Imbalance", "Please set a time after your start time");
+            return false;
+        }
+
+        schoolTimes.forEach(slot => {
+            
+            if (slot.day == schoolDay && slot.startTime == format(schoolTimeFrom,"kk:mm") && slot.endTime == format(schoolTimeTo,"kk:mm")) {
+                timeSlotExists = true;
+            }      
+        })
+
+        if(timeSlotExists) {
+            addSchoolError("error", "Duplicate Timeslot", "The timeslot you've entered has already been added to the list.");
+            return false
+        }
+
+        return true;
+    }
+
+    async function schoolCreationHandler() {
+
+        if (schoolName === "") {
+            addSchoolError("error", "Empty School Name", "The school name box is empty, please enter one before creation.");
+            return;
+        }
+        if (schoolCode === null) {
+            addSchoolError("error", "Empty School Code", "The school code box is empty, please enter one before creation.");
+            return;
+        }
+        if (schoolEmail === "") {
+            addSchoolError("error", "Empty School Email", "The school phone box is empty, please enter one before creation.");
+            return;
+        }
+        if (schoolPhone === "") {
+            addSchoolError("error", "Empty School Phone", "The school phone box is empty, please enter one before creation.");
+            return;
+        }
+        if (schoolTimes.length === 0) {
+            addSchoolError("error", "Empty Timeslot List", "The school timeslot list is empty, please enter one before creation.");
+            return;
+        }
+
+        // Attempt to retrieve the name of the school that matches the given ID
+        const results: SchoolCreationStatus = await CheckSchoolBase(schoolCode, schoolName, schoolEmail, schoolPhone);
+
+        if(results.errored){
+
+        }
+
+        if(!results.success){
+            addSchoolError(results.errorMessage.severity, results.errorMessage.header, results.errorMessage.message);
+            return
+        }
+
+        const creationResults: boolean = await createSchool(schoolCode, schoolName, schoolEmail, schoolPhone, schoolTimes);
+        if (!creationResults) {
+            addSchoolError("error", "Something Went Wrong", "An unexpected error occurred and the account was not able to be created. Please try again.");
+            return;
+        };
+    
+        // Output confirmation message
+        const schoolCreatedConfirm = () => {
+          toast.current?.show({
+            severity: `success`,
+            summary: `School Creation Successful`,
+            detail: `The account '${schoolName}' was created successfully.`,
+            closeIcon: 'pi pi-times',
+            life: 7000,
+          });
+        };
+        schoolCreatedConfirm();
+    }
+
+    //Variables to control toast messages
+    const toast = useRef<Toast>(null);
+
+
 
     function updateClosingTimes(indexOfDay: number, newTime: Date): Date {
 
@@ -92,6 +164,8 @@ const AddSchoolForm: React.FC = () => {
 
         return newTimeChange;
     }
+
+
     
 
     // Return JSX
@@ -105,7 +179,7 @@ const AddSchoolForm: React.FC = () => {
                         <InputText
                             id="set_school_name"
                             value={schoolName}
-                            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSchoolName(e.target.value.toUpperCase())}
+                            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSchoolName(e.target.value)}
                             required
                         />
                         <label htmlFor="set_school_name">School Name</label> 
@@ -138,7 +212,7 @@ const AddSchoolForm: React.FC = () => {
                         <InputText
                             id="set_school_email"
                             value={schoolEmail}
-                            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSchoolEmail(e.target.value.toUpperCase())}
+                            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSchoolEmail(e.target.value)}
                             required
                             keyfilter="email"
                         />
@@ -154,7 +228,7 @@ const AddSchoolForm: React.FC = () => {
                         <InputText
                             id="set_school_phone"
                             value={schoolPhone}
-                            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSchoolPhone(e.target.value.toUpperCase())}
+                            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSchoolPhone(e.target.value)}
                             required
                         />
                         <label htmlFor="set_school_phone">School Phone</label> 
@@ -180,6 +254,9 @@ const AddSchoolForm: React.FC = () => {
                                         if (newTime.getHours() < 9) {
                                             newTime.setHours(9)
                                         }
+                                        else if (newTime.getHours() > 16) {
+                                            newTime.setHours(16)
+                                        }
                                         setSchoolTimeFrom(newTime);
                                     }
                                 }
@@ -199,6 +276,9 @@ const AddSchoolForm: React.FC = () => {
                                         if (newTime.getHours() > 17) {
                                             newTime.setHours(17)
                                         }
+                                        else if (newTime.getHours() < 10) {
+                                            newTime.setHours(10)
+                                        }
 
                                         newTime = updateClosingTimes(daysOfWeek.indexOf(schoolDay), newTime);
                                         setSchoolTimeTo(newTime); 
@@ -208,15 +288,16 @@ const AddSchoolForm: React.FC = () => {
                         />
                         <Button className="school_creation_time_components" label="Add Timing" 
                             onClick={() => { 
-
-                                    if (schoolTimeFrom >= schoolTimeTo)
-                                    {
-                                        addSchoolError("error", "Time Imbalance", "Please set a time after your start time");
-                                        return
+                                    if (slotChecking() == true) {
+                                        addNewTimeSlot(schoolDay, schoolTimeFrom, schoolTimeTo);
                                     }
-
-                                    addNewTimeSlot(schoolDay, schoolTimeFrom, schoolTimeTo);
-                                    
+                                }
+                            }
+                            severity="secondary"
+                        />
+                        <Button className="school_creation_time_components" label="Delete Selection" 
+                            onClick={() => { 
+                                    deleteSelectedSlots();
                                 }
                             }
                             severity="secondary"
@@ -229,21 +310,29 @@ const AddSchoolForm: React.FC = () => {
 
                 <div className="school_creation_form_field">
                     <span>
-                        <Inplace>
-                            <InplaceDisplay>
-                                View Data
-                            </InplaceDisplay>
-                            <InplaceContent>
-                                <DataTable value={schoolTimes} tableStyle={{ minWidth: '50rem' }}>
-                                    <Column field="day" header="Day"></Column>
-                                    <Column field="startTime" header="Start Time"></Column>
-                                    <Column field="endTime" header="End Time"></Column>
-                                </DataTable>
-                            </InplaceContent>
-                        </Inplace>
+                        <DataTable value={schoolTimes} 
+                            selection={slotSelection} 
+                            selectionMode="multiple" 
+                            tableStyle={{ minWidth: '50rem' }}
+                            onSelectionChange={(e) => {setSlotSelection(e.value);}}>
+                            <Column field="day" header="Day"></Column>
+                            <Column field="startTime" header="Start Time"></Column>
+                            <Column field="endTime" header="End Time"></Column>
+                        </DataTable>
                     </span>
                 </div>
                 
+                <div className="school_creation_form_field">
+                    <span>
+                        <Button className="school_creation_form_field" label="Create School" 
+                            
+                            severity="secondary"
+                            onClick={() => {
+                                schoolCreationHandler();
+                            }}
+                        />
+                    </span>
+                </div>
             </Card>
         </>
     );

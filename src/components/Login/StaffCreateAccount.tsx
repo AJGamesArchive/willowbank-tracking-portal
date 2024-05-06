@@ -243,6 +243,7 @@ const StaffCreationForm: React.FC<StaffAccountCreationProps> = ({accountType}) =
 
   // Async function to handle searching for a school based on a given school code
   async function schoolSearchHandler(code : string): Promise<void> {
+    debugger
     // Attempt to retrieve the name of the school that matches the given ID
     const results: SchoolSearch = await schoolSearcher(code);
     if (results.errored) {
@@ -256,7 +257,6 @@ const StaffCreationForm: React.FC<StaffAccountCreationProps> = ({accountType}) =
         });
       };
       errorDialogue();
-      setSchoolCodes([]);
       return;
     };
 
@@ -264,6 +264,7 @@ const StaffCreationForm: React.FC<StaffAccountCreationProps> = ({accountType}) =
     let updatedSchoolNames = [...schoolNames]; // Create a copy of the current state
     updatedSchoolNames.push(results.schoolName); // Add the new school name
     setSchoolNames(updatedSchoolNames); // Update the state with the new array
+    setSchoolCodes([code])
 
     const confirmationDialogue = () => {
       toast.current?.show({
