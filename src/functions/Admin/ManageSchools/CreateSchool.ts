@@ -1,7 +1,7 @@
 // Importing the database
 import { db } from "../../../database/Initalise";
 import { doc, runTransaction } from "firebase/firestore";
-import { CoreSchoolDetails } from "../../../types/Schools/SchoolAccountDetails";
+import { CoreSchoolDetails } from "../../../types/Schools/CoreSchoolDetails";
 
 // Import functions
 import { snowflake } from "../../../classes/Snowflake";

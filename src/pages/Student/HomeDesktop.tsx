@@ -24,6 +24,7 @@ import EditAccountDetails from '../../components/Global/EditAccountDetails';
 import SignOutOption from '../../components/Admin/AdminPortal/AdminMenuSignOutOption';
 import ModifyOption from '../../components/Admin/AdminPortal/AdminMenuOptionChangeDetails';
 import MenuOption from '../../components/Admin/AdminPortal/AdminMenuOption';
+import DisplaySchoolData from '../../components/StudentHome/DisplaySchoolData';
 
 // Import functions
 import { confirmLogin } from '../../functions/Global/ConfirmLogin';
@@ -34,6 +35,7 @@ import { retrieveStudentData } from '../../functions/Student/RetrieveStudentData
 import { retrieveAllActivities } from '../../functions/Admin/ManagePrograms/RetrieveActivityData';
 import { createActivityCompleteRequest } from '../../functions/Student/CreateActivityCompleteRequest';
 import { getSchoolName } from '../../functions/Student/GetSchoolName';
+import { RetrieveSchoolData } from '../../functions/Global/RetrieveSchoolData';
 
 // Importing types
 import { XPStudentAccountDetails } from '../../types/Global/UserAccountDetails';
@@ -42,6 +44,7 @@ import { ProgramData } from '../../types/Admin/ProgramData';
 import { AssessedActivities } from '../../types/Student/AssessedActivities';
 import { Activity } from '../../types/Global/Activity';
 import { BadgeData } from '../../types/Global/Badges';
+import { CoreSchoolDetails } from '../../types/Schools/CoreSchoolDetails';
 
 // React function to render the Student Portal page for desktop devices
 const HomeDesktop: React.FC = () => {
@@ -52,6 +55,7 @@ const HomeDesktop: React.FC = () => {
   const [coreProgramData, setCoreProgramData] = useState<ProgramData[]>([]);
   const [programActivities, setProgramActivities] = useState<AssessedActivities[]>([]);
   const [coreStudentData, setCoreStudentData] = useState<CoreStudentAccountDetails>();
+  const [coreSchoolData, setCoreSchoolData] = useState<CoreSchoolDetails>();
   const [recentBadges, setRecentBadges] = useState<BadgeData[]>([]);
   const [progress, setProgress] = useState<XPStudentAccountDetails[]>([]);
   const [selectedProgram, setSelectProgram] = useState<string>("");
@@ -148,6 +152,7 @@ const HomeDesktop: React.FC = () => {
     const programData = await retrieveProgramData();
     const programProgress = await retrieveXPData((params.snowflake? params.snowflake : ''));
     const studentData = await retrieveStudentData((params.snowflake? params.snowflake : ''));
+
     if(typeof assignedProgramIDs === "string" || typeof programData === "string" || typeof programProgress === "string" || typeof studentData === "string") {
       toast.current?.show({
         severity: 'warn',
@@ -157,6 +162,20 @@ const HomeDesktop: React.FC = () => {
         life: 7000,
       });
     };
+
+    const schoolData = await RetrieveSchoolData((typeof studentData !== "string" ? studentData.school : ''));
+
+    if(typeof schoolData === "string") {
+      toast.current?.show({
+        severity: 'warn',
+        summary: 'Missing Data',
+        detail: `Some or all data required for this page could not be loaded. As a result, some components may not display properly and some actions will be incompletable. Refresh the page to try again.`,
+        closeIcon: 'pi pi-times',
+        life: 7000,
+      });
+    }
+
+
     let filteredProgramData: ProgramData[] = [];
     if(typeof programData !== "string" && typeof assignedProgramIDs !== "string") {
       programData.forEach((p) => {
@@ -182,8 +201,8 @@ const HomeDesktop: React.FC = () => {
     setCoreProgramData((typeof programData !== "string") ? filteredProgramData : coreProgramData);
     setProgress((typeof programProgress !== "string") ? programProgress : progress);
     setCoreStudentData((typeof studentData !== "string") ? studentData : coreStudentData);
+    setCoreSchoolData((typeof schoolData !== "string") ? schoolData : coreSchoolData );
     setRecentBadges(retrieveRecentBadges);
-    return;
   };
 
   // Async function to handel creating activity complete requests
@@ -323,6 +342,7 @@ const HomeDesktop: React.FC = () => {
     );
   };
 
+
   // Return JSX based on login state
   if (isLoggedIn) {
     return (
@@ -371,6 +391,11 @@ const HomeDesktop: React.FC = () => {
               prevIcon='pi pi-angle-left'
             />
           </div>
+          <Divider />
+            <DisplaySchoolData
+              schoolName={coreSchoolData?.name ? coreSchoolData.name : " "}
+              timetable={coreSchoolData?.times ? coreSchoolData.times : []}
+            />
           <Divider />
           <li className="listItem">
             <MenuOption 
