@@ -20,9 +20,9 @@ function printCountdown() {
   const minutes = Math.floor(timeDifference / (1000 * 60));
   var hours = Math.floor(minutes / 60);
   const days = Math.floor(hours / 24);
-  hours += (days * 24) - 24;
+  hours += (days * 24);
 
-  if(hours < 24) {
+  if(hours < 5) {
     console.error(`${hours} hours, ${minutes % 60} minutes remaining until deadline`);
   } else if(minutes % 60 === 0) {
     console.error(`${hours} hours, ${minutes % 60} minutes remaining until deadline`);

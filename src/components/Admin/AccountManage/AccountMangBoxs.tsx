@@ -49,7 +49,6 @@ const AccountManageBoxs: React.FC<AccountListBoxProps> = ({selectedUser, selecte
     var [school, setSchool] = useState<string[]>([]);
 
     // State variable to control the submitted state of the form
-    const [submitted, setSubmitted] = useState<boolean>(false);
     const [loading, setLoading] = useState<boolean>(false);
     const [Visible, setVisible] = useState<boolean>(false)
     const [popupVisible, setPopupVisible] = useState<boolean>(false);
@@ -72,7 +71,6 @@ const AccountManageBoxs: React.FC<AccountListBoxProps> = ({selectedUser, selecte
         GetUserDetails(selectedUser.snowflake, selectedCategory);
         let success: boolean = false;
         // Set loading states
-        setSubmitted(true);
         setLoading(true);
 
         if (!username || !firstName || !surnameInitial) {
@@ -132,7 +130,6 @@ const AccountManageBoxs: React.FC<AccountListBoxProps> = ({selectedUser, selecte
 
     const onDialogueHide = () => {
         setVisible(false);
-        setSubmitted(false);
         setLoading(false);
         setPassword("");
     };

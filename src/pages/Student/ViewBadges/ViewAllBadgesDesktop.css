@@ -12,3 +12,10 @@
     border: 1px solid #2f333b;
     min-width: fit-content;
 }
+
+.badge-filter-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}

@@ -59,7 +59,7 @@ const App: React.FC = () => {
         <Route path="/adminportal/resetpassword/:snowflake/:token/:name" Component={AdminResetMobile}/>
         <Route path="/adminportal/manageprograms/:snowflake/:token/:name" Component={ManageProgramsMobile}/>
         <Route path="/teacherportal/:snowflake/:token/:name" Component={TeacherPortalMobile} />
-        <Route path="/student/viewbadges/:snowflake/:token/:name" Component={ViewBadgesMobile}/>
+        <Route path="/student/viewbadges/:snowflake/:token/:name/:mode/:filter" Component={ViewBadgesMobile}/>
         <Route path="/adminportal/createaccountmenu/:snowflake/:token/:name" Component={AdminCreateMenuMobile}/>
         <Route path="/adminportal/createastudent/:snowflake/:token/:name" Component={AdminCreateStudentMobile}/>
         <Route path="/adminportal/createastaff/:snowflake/:token/:name/:accountType" Component={AdminCreateStaffMobile}/>
@@ -79,7 +79,7 @@ const App: React.FC = () => {
         <Route path="/adminportal/manageprograms/:snowflake/:token/:name" Component={ManageProgramsDesktop}/>
         <Route path="/teacherportal/:snowflake/:token/:name" Component={TeacherPortalDesktop} />
         <Route path="/AccManagement/:snowflake/:token/:name" Component={AdminAccountManageDesktop} />
-        <Route path="/student/viewbadges/:snowflake/:token/:name" Component={ViewBadgesDesktop}/>
+        <Route path="/student/viewbadges/:snowflake/:token/:name/:mode/:filter" Component={ViewBadgesDesktop}/>
         <Route path="/adminportal/createaccountmenu/:snowflake/:token/:name" Component={AdminCreateMenuDesktop}/>
         <Route path="/adminportal/createastudent/:snowflake/:token/:name" Component={AdminCreateStudentDesktop}/>
         <Route path="/adminportal/createastaff/:snowflake/:token/:name/:accountType" Component={AdminCreateStaffDesktop}/>
@@ -99,7 +99,7 @@ const App: React.FC = () => {
         <Route path="/teacherportal/:snowflake/:token/:name" Component={TeacherPortalDesktop} />
         <Route path="/AccManagement/:snowflake/:token/:name" Component={AdminAccountManageDesktop} />
         <Route path="/adminportal/manageschools/:snowflake/:token/:name" Component={ManageSchoolsDesktop}/>
-        <Route path="/student/viewbadges/:snowflake/:token/:name" Component={ViewBadgesDesktop}/>
+        <Route path="/student/viewbadges/:snowflake/:token/:name/:mode/:filter" Component={ViewBadgesDesktop}/>
         <Route path="/adminportal/createaccountmenu/:snowflake/:token/:name" Component={AdminCreateMenuDesktop}/>
         <Route path="/adminportal/createastudent/:snowflake/:token/:name" Component={AdminCreateStudentDesktop}/>
         <Route path="/adminportal/createastaff/:snowflake/:token/:name/:accountType" Component={AdminCreateStaffDesktop}/>

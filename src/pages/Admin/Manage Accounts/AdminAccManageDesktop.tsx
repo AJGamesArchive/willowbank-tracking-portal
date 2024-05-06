@@ -6,7 +6,6 @@ import { ProgressSpinner } from 'primereact/progressspinner';
 
 // Importing UI components
 import AccountListBox from '../../../components/Admin/AccountManage/AccountMangLists';
-import AccountManageBoxs from '../../../components/Admin/AccountManage/AccountMangBoxs';
 
 // Import global parameters
 import { GlobalParams } from '../../../interfaces/GlobalParams';

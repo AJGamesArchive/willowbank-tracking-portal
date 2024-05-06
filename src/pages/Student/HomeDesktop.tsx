@@ -325,6 +325,7 @@ const HomeDesktop: React.FC = () => {
           fetchAndFilterActivities={fetchAndFilterActivities}
           lockButton={blockUI}
           locked={locked}
+          badgeFilterPath={`/student/viewbadges/${params.snowflake}/${params.token}/${params.name}/p/${program.programName.replace(/ /g, '-')}`}
         />
       </React.Fragment>
     );
@@ -400,7 +401,7 @@ const HomeDesktop: React.FC = () => {
           <li className="listItem">
             <MenuOption 
                 title={"View All Badges"}
-                destinationPage={`/student/viewbadges/${params.snowflake}/${params.token}/${params.name}`}
+                destinationPage={`/student/viewbadges/${params.snowflake}/${params.token}/${params.name}/a/n`}
                 imageSRC='/assets/student-portal-images/badge.png'
                 imageAltText='badges-banner'
             />
