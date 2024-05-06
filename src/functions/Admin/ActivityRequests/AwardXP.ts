@@ -107,7 +107,7 @@ export async function awardXP(request: ActivityRequests): Promise<boolean> {
 };
 
 // Function to calculate your next target XP based on your current XP
-function calculateTargetXP(currentXP: number): number {
+export function calculateTargetXP(currentXP: number): number {
   if(currentXP < 100) return 100;
   if(currentXP < 200) return 200;
   if(currentXP < 300) return 300;
@@ -125,7 +125,7 @@ function calculateTargetXP(currentXP: number): number {
 };
 
 // Function to calculate your level based of your current XP
-function calculateLevel(currentXP: number): number {
+export function calculateLevel(currentXP: number): number {
   if(currentXP < 600) {
     return 1 + Math.floor(currentXP / 100);
   };

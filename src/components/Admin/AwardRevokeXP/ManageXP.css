@@ -1,0 +1,21 @@
+.leftContent {
+    text-align: left;
+}
+
+.leftContent-w {
+    text-align: left;
+    color:rgb(247, 230, 77);
+}
+
+.leftContent-wl {
+    text-align: left;
+    color:khaki;
+}
+
+.centerContent {
+    text-align: center;
+}
+
+.rightContent {
+    text-align: right;
+}

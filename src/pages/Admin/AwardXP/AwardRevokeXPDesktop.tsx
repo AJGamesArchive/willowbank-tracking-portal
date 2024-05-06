@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from 'react';
 import { Button } from 'primereact/button';
 import { Card } from 'primereact/card';
 import { ProgressSpinner } from 'primereact/progressspinner';
-import { Toast } from 'primereact/toast';
+import { Toast, ToastMessage } from 'primereact/toast';
 import { Divider } from 'primereact/divider';
 
 // Import global parameters
@@ -16,10 +16,23 @@ import './AwardRevokeXPDesktop.css'
 
 // Import types
 import { CoreStudentAccountDetails } from '../../../types/Global/UserAccountDetails';
+import { SchoolSearch } from '../../../types/Login/SchoolSearch';
+import { ProgramData } from '../../../types/Admin/ProgramData';
 
 // Import functions
 import { confirmLogin } from '../../../functions/Global/ConfirmLogin';
 import { getStudentAccountInfo } from '../../../functions/Admin/getstudentAccountInfo';
+import { schoolSearcher } from '../../../functions/Login/SchoolSearcher';
+import { retrieveProgramData } from '../../../functions/Admin/ManagePrograms/RetrieveProgramData';
+
+// Import UI Components
+import ManageXP from '../../../components/Admin/AwardRevokeXP/ManageXP';
+
+// Type declaration for school mappings
+type SchoolMapping = {
+  code: string;
+  name: string;
+};
 
 // React function to render the award/revoke xp page for mobile devices
 const AwardRevokeXPDesktop: React.FC = () => {
@@ -31,12 +44,28 @@ const AwardRevokeXPDesktop: React.FC = () => {
 
   // State variable to store all student data
   const [studentData, setStudentData] = useState<CoreStudentAccountDetails[]>([]);
+  const [schoolMappings, setSchoolMappings] = useState<SchoolMapping[]>([]);
+  const [programs, setPrograms] = useState<ProgramData[]>([]);
+
+  // State variable to control the visibility and data set of the manage XP dialogue box
+  const [visibleDialogue, setVisibleDialogue] = useState<boolean>(false);
+  const [selectedStudent, setSelectedStudent] = useState<CoreStudentAccountDetails>({
+    snowflake: '',
+    username: '',
+    firstName: '',
+    surnameInitial: '',
+    password: '',
+    school: '',
+    token: '',
+    badges: [],
+  });
 
   // Variables to control toast messages
   const toast = useRef<Toast>(null);
 
   // Async function t retrieve all student data from the DB
   async function retrieveAllStudents(): Promise<void> {
+    // Retrieve all student data
     const baseStudentData: CoreStudentAccountDetails[] | string = await getStudentAccountInfo();
     if(typeof baseStudentData === "string") {
       toast.current?.show({
@@ -49,6 +78,35 @@ const AwardRevokeXPDesktop: React.FC = () => {
       return;
     };
     setStudentData(baseStudentData);
+    // Map school names to school codes
+    let baseSchoolMappings: SchoolMapping[] = [];
+    for(let i = 0; i < baseStudentData.length; i++) {
+      let added: boolean = false;
+      for(let j = 0; j < baseSchoolMappings.length; j++) {
+        if(baseStudentData[i].school === baseSchoolMappings[j].code) added = true;
+      };
+      if(!added) {
+        const result: SchoolSearch = await schoolSearcher(baseStudentData[i].school);
+        baseSchoolMappings.push({
+          code: baseStudentData[i].school,
+          name: (!result.errored) ? result.schoolName : '[Cannot Find School]',
+        });
+      };
+    };
+    setSchoolMappings(baseSchoolMappings);
+    // Retrieve all Program data
+    const baseProgramData = await retrieveProgramData();
+    if(typeof baseProgramData === "string") {
+      toast.current?.show({
+        severity: 'warn',
+        summary: 'Missing Data',
+        detail: `Some or all data required for this page could not be loaded. As a result, some components may not display properly and some actions will be incompletable. Refresh the page to try again.`,
+        closeIcon: 'pi pi-times',
+        life: 7000,
+      });
+      return;
+    };
+    setPrograms(baseProgramData);
     return;
   };
 
@@ -71,23 +129,27 @@ const AwardRevokeXPDesktop: React.FC = () => {
     </div>
   );
 
-  // Defining the student card footer
-  const cardFooter = (
-    <React.Fragment>
-      <Button className="award-button" label="Revoke XP" icon="pi pi-list" severity="danger" onClick={() => {}} />
-      <Button className="award-button" label="Award XP" icon="pi pi-book" severity="success" onClick={() => {}} />
-    </React.Fragment>
-  );
-
   // Function to create the student card content
   const cardContent = (student: CoreStudentAccountDetails, index: number) => {
-    // Functions to retrieve extra data
+    // Defining the student card footer
+    const cardFooter = (
+      <React.Fragment>
+        <Button className="award-button" label="Manage XP" icon="pi pi-pencil" severity="info" onClick={() => {
+          setSelectedStudent(student);
+          setVisibleDialogue(true);
+        }} />
+      </React.Fragment>
+    );
 
+    // Functions to retrieve extra data
+    let schoolName: string = '[Cannot Find School]';
+    for(let i = 0; i < schoolMappings.length; i++) {
+      if(student.school === schoolMappings[i].code) schoolName = schoolMappings[i].name;
+    };
     // Returning ard content JSX
     return (
       <Card header={cardHeader} footer={cardFooter} key={index} className='award-xp-grid-item'>
         <div className='content'>
-
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '7px' }}>
             <div className="leftContent"><b>{}</b></div>
             <div className="centerContent"><h2>{`${student.username}`}</h2></div>
@@ -115,6 +177,11 @@ const AwardRevokeXPDesktop: React.FC = () => {
           </div>
 
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '7px' }}>
+            <div className="leftContent"><b>{`School Name:`}</b></div>
+            <div className="rightContent">{String(schoolName)}</div>
+          </div>
+
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '7px' }}>
             <div className="leftContent"><b>{`First Name:`}</b></div>
             <div className="rightContent">{student.firstName}</div>
           </div>
@@ -122,15 +189,6 @@ const AwardRevokeXPDesktop: React.FC = () => {
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '7px' }}>
             <div className="leftContent"><b>{`Surname Initial:`}</b></div>
             <div className="rightContent">{student.surnameInitial}</div>
-          </div>
-
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '7px' }}>
-            <div className="leftContent"><b>{`Token:`}</b></div>
-            <div className="rightContent">{``}</div>
-          </div>
-
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '7px' }}>
-            <div className="leftContent">{student.token}</div>
           </div>
         </div>
       </Card>
@@ -147,6 +205,16 @@ const AwardRevokeXPDesktop: React.FC = () => {
         <div className="award-xp-grid-container">
           {studentData.map((student, index) => cardContent(student, index))}
         </div>
+        <ManageXP
+          visible={visibleDialogue}
+          setVisible={setVisibleDialogue}
+          student={selectedStudent}
+          programs={programs}
+          toastCallBack={async (message: ToastMessage) => {
+            toast?.current?.show(message);
+            return;
+          }}
+        />
       </>
     );
   } else {
