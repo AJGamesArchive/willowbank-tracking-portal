@@ -50,6 +50,7 @@ const TeacherPortalDesktop: React.FC = () => {
   // Variables to control toast messages
   const toast = useRef<Toast>(null);
   
+  // Display the users name in a normal casing format
   const name : string = String(params.name?.charAt(0).toUpperCase()) + String(params.name?.substring(1).toLowerCase());
 
   // Async function to retrieve all staff data required for the portal
@@ -113,7 +114,8 @@ const TeacherPortalDesktop: React.FC = () => {
         <Toast ref={toast}/>
         <Banner 
           backgroundimage='/assets/teacher-portal-images/teacher-banner.png' 
-          text={`Welcome ${name}`}/>
+          text={`Welcome ${name}`}
+        />
 
           <h3>Please find your timetables per school below.</h3>
           {teacherTimetables.map((timetable, index) => (

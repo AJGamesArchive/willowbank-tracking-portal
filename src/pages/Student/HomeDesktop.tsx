@@ -25,6 +25,7 @@ import SignOutOption from '../../components/Admin/AdminPortal/AdminMenuSignOutOp
 import ModifyOption from '../../components/Admin/AdminPortal/AdminMenuOptionChangeDetails';
 import MenuOption from '../../components/Admin/AdminPortal/AdminMenuOption';
 import DisplaySchoolData from '../../components/StudentHome/StudentSchoolData';
+import Banner from '../../components/Admin/AdminPortal/Banner';
 
 // Import functions
 import { confirmLogin } from '../../functions/Global/ConfirmLogin';
@@ -77,7 +78,7 @@ const HomeDesktop: React.FC = () => {
   // Variables to control toast messages
   const toast = useRef<Toast>(null);
 
-  // Get name
+  // Display the users name in a normal casing format
   const name : string = String(params.name?.charAt(0).toUpperCase()) + String(params.name?.substring(1).toLowerCase());
 
   // Async function to retrieve all activities for a given program and mark complete activities as completed when the activity dialogue box is called
@@ -343,14 +344,16 @@ const HomeDesktop: React.FC = () => {
     );
   };
 
-
   // Return JSX based on login state
   if (isLoggedIn) {
     return (
       <>
         <BlockUI blocked={blockUI}>
           <Toast ref={toast}/>
-          <h1>Welcome {name}</h1>
+          <Banner 
+            backgroundimage='/assets/teacher-portal-images/teacher-banner.png' 
+            text={`Welcome ${name}`}
+          />
           <div className='program-progress-carousel'>
             <Carousel 
               value={progress}  

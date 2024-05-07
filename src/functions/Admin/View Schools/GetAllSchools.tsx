@@ -19,8 +19,6 @@ export async function getAllSchools(): Promise<AllSchoolDetails[] | string> {
     try {
         if (schoolIDs.length > 0) {
             for (let i = 0; i < schoolIDs.length; i++) {
-                console.log(i);
-                console.log(schoolIDs);
                 let code = schoolIDs[i];
     
                 // Retrieve the name of the school that matches the given school code
@@ -45,9 +43,7 @@ export async function getAllSchools(): Promise<AllSchoolDetails[] | string> {
                         schoolTeachers: docData.teachers,
                         schoolAdmins: docData.admins,
                     };
-
                     schoolDetails.push(schoolDataMapping);
-
                 };
             };
             return Promise.resolve(schoolDetails);

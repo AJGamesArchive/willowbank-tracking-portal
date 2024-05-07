@@ -172,7 +172,7 @@ const AdminPortalDesktop: React.FC = () => {
             </li>
             <li className='listItem'>
             <MenuOption 
-              imageSRC={`JESS PLEASE INSERT IMAGE!!! THANKX`}
+              imageSRC={`/assets/admin-portal-images/award-xp.png`}
               imageAltText='Award-xp-image.404'
               destinationPage={`/adminportal/manageprogress/${params.snowflake}/${params.token}/${params.name}`}
               title="Award / Revoke XP" />
@@ -186,7 +186,7 @@ const AdminPortalDesktop: React.FC = () => {
             </li>
             <li className='listItem'>
             <MenuOption 
-              imageSRC={`/assets/admin-portal-images/School.png`}
+              imageSRC={`/assets/teacher-portal-images/by-school.png`}
               imageAltText='School image'
               destinationPage={`/adminportal/viewtimetables/${params.snowflake}/${params.token}/${params.name}`}
               title="View Timetables" />

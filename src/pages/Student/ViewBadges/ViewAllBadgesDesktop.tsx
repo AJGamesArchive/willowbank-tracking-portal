@@ -7,6 +7,7 @@ import { Dropdown, DropdownChangeEvent } from 'primereact/dropdown';
 
 // Import UI components
 import Badge from '../../../components/StudentHome/Badge';
+import Banner from '../../../components/Admin/AdminPortal/Banner';
 
 // Import global parameters
 import { GlobalParams } from '../../../interfaces/GlobalParams';
@@ -70,6 +71,9 @@ const ViewBadgesDesktop: React.FC = () => {
 
   // Variables to control toast messages
   const toast = useRef<Toast>(null);
+
+  // Display the users name in a normal casing format
+  const name : string = String(params.name?.charAt(0).toUpperCase()) + String(params.name?.substring(1).toLowerCase());
 
   // Function to setup the initial badge card renders
   function setupInitialRender(studentData: CoreStudentAccountDetails, programData: ProgramData[]): void {
@@ -224,7 +228,10 @@ const ViewBadgesDesktop: React.FC = () => {
     return (
       <>
         <Toast ref={toast}/>
-        <h1>Here's all your awarded badges {params.name}!</h1>
+        <Banner 
+          backgroundimage='/assets/teacher-portal-images/teacher-banner.png' 
+          text={`${name}'s awarded badges!`}
+        />
         <Divider/>
         <h2>Badge Filter Options:</h2>
         <div className='badge-filter-bar'>

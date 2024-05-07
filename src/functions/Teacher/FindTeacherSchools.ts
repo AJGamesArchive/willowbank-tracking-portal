@@ -21,8 +21,6 @@ export async function FindTeacherSchools(snowflake: string): Promise<TeacherTime
     try {
         if (schoolIDs.length > 0) {
             for (let i = 0; i < schoolIDs.length; i++) {
-                console.log(i);
-                console.log(schoolIDs);
                 let code = schoolIDs[i];
     
                 // Retrieve the name of the school that matches the given school code
@@ -50,8 +48,6 @@ export async function FindTeacherSchools(snowflake: string): Promise<TeacherTime
     
                     for (let j = 0; j < schoolDataMapping.teachers.length; j++) {
                         if (schoolDataMapping.teachers[j] === snowflake) {
-                            console.log(schoolDataMapping.teachers[j]);
-                            console.log(snowflake);
                             teacherTimeTables.push({
                                 schoolName: schoolDataMapping.name,
                                 timetables: docData.times,
