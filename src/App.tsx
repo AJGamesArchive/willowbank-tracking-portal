@@ -38,6 +38,7 @@ import AdminCreateStaffDesktop from './pages/Admin/Create Accounts/AdminCreateSt
 import AdminCreateStaffMobile from './pages/Admin/Create Accounts/AdminCreateStaffMobile';
 import AwardRevokeXPDesktop from './pages/Admin/AwardXP/AwardRevokeXPDesktop';
 import AwardRevokeXPMobile from './pages/Admin/AwardXP/AwardRevokeXPMobile';
+import ViewTimetablesDesktop from './pages/Admin/View Timetables/ViewTimetablesDesktop';
 
 // Teacher Portal
 import TeacherPortalDesktop from './pages/Teacher/TeacherPortalDesktop';
@@ -64,6 +65,7 @@ const App: React.FC = () => {
         <Route path="/adminportal/createastudent/:snowflake/:token/:name" Component={AdminCreateStudentMobile}/>
         <Route path="/adminportal/createastaff/:snowflake/:token/:name/:accountType" Component={AdminCreateStaffMobile}/>
         <Route path="/adminportal/manageprogress/:snowflake/:token/:name" Component={AwardRevokeXPMobile} />
+        <Route path="/adminportal/viewtimetables/:snowflake/:token/:name" Component={ViewTimetablesDesktop}/>
       </Routes>
     );
   } else if (windowSize.width >= 768 && windowSize.width <= 1024) {
@@ -84,6 +86,7 @@ const App: React.FC = () => {
         <Route path="/adminportal/createastudent/:snowflake/:token/:name" Component={AdminCreateStudentDesktop}/>
         <Route path="/adminportal/createastaff/:snowflake/:token/:name/:accountType" Component={AdminCreateStaffDesktop}/>
         <Route path="/adminportal/manageprogress/:snowflake/:token/:name" Component={AwardRevokeXPDesktop} />
+        <Route path="/adminportal/viewtimetables/:snowflake/:token/:name" Component={ViewTimetablesDesktop}/>
       </Routes>
     );
   } else {
@@ -99,6 +102,7 @@ const App: React.FC = () => {
         <Route path="/teacherportal/:snowflake/:token/:name" Component={TeacherPortalDesktop} />
         <Route path="/AccManagement/:snowflake/:token/:name" Component={AdminAccountManageDesktop} />
         <Route path="/adminportal/manageschools/:snowflake/:token/:name" Component={ManageSchoolsDesktop}/>
+        <Route path="/adminportal/viewtimetables/:snowflake/:token/:name" Component={ViewTimetablesDesktop}/>
         <Route path="/student/viewbadges/:snowflake/:token/:name/:mode/:filter" Component={ViewBadgesDesktop}/>
         <Route path="/adminportal/createaccountmenu/:snowflake/:token/:name" Component={AdminCreateMenuDesktop}/>
         <Route path="/adminportal/createastudent/:snowflake/:token/:name" Component={AdminCreateStudentDesktop}/>

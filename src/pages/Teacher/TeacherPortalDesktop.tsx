@@ -13,16 +13,20 @@ import '../Shared CSS files/PortalDesktop.css'
 // Import functions
 import { confirmLogin } from '../../functions/Global/ConfirmLogin';
 import { retrieveStaffData } from '../../functions/Teacher/RetrieveStaffData';
+import { FindTeacherSchools } from '../../functions/Teacher/FindTeacherSchools';
 
 // Importing UI components
 import Banner from '../../components/Admin/AdminPortal/Banner';
 import MenuOption from '../../components/Admin/AdminPortal/AdminMenuOption';
 import SignOutOption from '../../components/Admin/AdminPortal/AdminMenuSignOutOption';
 import EditAccountDetails from '../../components/Global/EditAccountDetails';
+import TeacherSchoolData from '../../components/Teacher/TeacherSchoolData';
 
 // Import types
 import { CoreStaffAccountDetails } from '../../types/Global/UserAccountDetails';
 import ModifyOption from '../../components/Admin/AdminPortal/AdminMenuOptionChangeDetails';
+import { TeacherTimes } from '../../types/Teacher/TeacherTimes';
+
 
 // React function to render the Teacher Portal page for desktop devices
 const TeacherPortalDesktop: React.FC = () => {
@@ -40,6 +44,8 @@ const TeacherPortalDesktop: React.FC = () => {
 
   // State variable to control the visibility of the edit account details dialogue box
   const [visibleEditDetails, setVisibleEditDetails] = useState<boolean>(false);
+
+  const[teacherTimetables, setTeacherTimetables ] = useState<TeacherTimes[]>([]);
 
   // Variables to control toast messages
   const toast = useRef<Toast>(null);
@@ -59,6 +65,19 @@ const TeacherPortalDesktop: React.FC = () => {
       });
     };
     setCoreStaffData((typeof staffData !== "string") ? staffData : coreStaffData);
+    
+    const teacherData : string | TeacherTimes[]= await FindTeacherSchools((params.snowflake) ? params.snowflake : '');
+    if(typeof teacherData === "string") {
+      toast.current?.show({
+        severity: 'warn',
+        summary: 'Missing Data',
+        detail: `Some or all data required for this page could not be loaded. As a result, some components may not display properly and some actions will be incompletable. Refresh the page to try again.`,
+        closeIcon: 'pi pi-times',
+        life: 7000,
+      });
+    }
+
+    setTeacherTimetables((typeof teacherData !== "string") ? teacherData : teacherTimetables);
     return;
   };
 
@@ -66,7 +85,7 @@ const TeacherPortalDesktop: React.FC = () => {
   useEffect(() => {
     async function confirmLoginHandler() {
       const confirmed: boolean = await confirmLogin("teachers", params.snowflake, params.token);
-      if (!confirmed) { window.location.href = `/home`; }
+      if (!confirmed) { window.location.href = `/home`; return; }
       await retrieveStaffDataHandler();
       setIsLoggedIn(true);
       return;
@@ -95,11 +114,21 @@ const TeacherPortalDesktop: React.FC = () => {
         <Banner 
           backgroundimage='/assets/teacher-portal-images/teacher-banner.png' 
           text={`Welcome ${name}`}/>
-        
+
+          <h3>Please find your timetables per school below.</h3>
+          {teacherTimetables.map((timetable, index) => (
+            <div>
+              <TeacherSchoolData
+                schoolName={timetable.schoolName}
+                timetable={timetable.timetables}
+                index={index}
+              />
+            </div>
+          ))}
           <div>
             <div className="subheading">
             <h3>Please select from the following options.</h3>
-            </div>
+          </div>
             
             <br />
           <ul className="list">

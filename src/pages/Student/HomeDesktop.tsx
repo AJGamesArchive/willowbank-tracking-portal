@@ -24,7 +24,7 @@ import EditAccountDetails from '../../components/Global/EditAccountDetails';
 import SignOutOption from '../../components/Admin/AdminPortal/AdminMenuSignOutOption';
 import ModifyOption from '../../components/Admin/AdminPortal/AdminMenuOptionChangeDetails';
 import MenuOption from '../../components/Admin/AdminPortal/AdminMenuOption';
-import DisplaySchoolData from '../../components/StudentHome/DisplaySchoolData';
+import DisplaySchoolData from '../../components/StudentHome/StudentSchoolData';
 
 // Import functions
 import { confirmLogin } from '../../functions/Global/ConfirmLogin';

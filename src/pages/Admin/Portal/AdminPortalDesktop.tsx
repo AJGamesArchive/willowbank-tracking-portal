@@ -184,6 +184,13 @@ const AdminPortalDesktop: React.FC = () => {
               destinationPage={`/adminportal/manageschools/${params.snowflake}/${params.token}/${params.name}`}
               title="School management" />
             </li>
+            <li className='listItem'>
+            <MenuOption 
+              imageSRC={`/assets/admin-portal-images/School.png`}
+              imageAltText='School image'
+              destinationPage={`/adminportal/viewtimetables/${params.snowflake}/${params.token}/${params.name}`}
+              title="View Timetables" />
+            </li>
             <li className="listItem">
               <BlockUI blocked={blockButtons}>
                 <div onClick={() => retrieveActivityRequestsHandler()}>
