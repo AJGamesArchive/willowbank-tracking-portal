@@ -3,21 +3,22 @@ import { DataTable } from 'primereact/datatable';
 import { Column } from "primereact/column";
 
 //Import CSS
-import './DisplaySchoolData.css';
+import './TeacherSchoolData.css';
 
 //Import Types
 import { SchoolTimeSlot } from "../../types/Schools/SchoolTimeSlot";
 
-interface StudentTimetable {
-    schoolName: string,
-    timetable: SchoolTimeSlot[]
+interface TeacherTimetable {
+    schoolName: string;
+    timetable: SchoolTimeSlot[];
+    index: number;
 }
 
 //React function to render the add school form
-const DisplaySchoolData: React.FC<StudentTimetable> = ({schoolName , timetable}) => {
+const TeacherSchoolData: React.FC<TeacherTimetable> = ({schoolName , timetable, index}) => {
 
     const schoolSection = (
-        <div>
+        <div key={index}>
             <h1>Timetable for {schoolName}</h1>
             <DataTable 
                 value={timetable}
@@ -29,9 +30,7 @@ const DisplaySchoolData: React.FC<StudentTimetable> = ({schoolName , timetable})
         </div>
     );
 
-    return (
-        schoolSection
-    )
+    return schoolSection;
 }
 
-export default DisplaySchoolData;
+export default TeacherSchoolData;
