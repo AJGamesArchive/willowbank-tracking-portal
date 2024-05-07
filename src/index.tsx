@@ -22,7 +22,9 @@ function printCountdown() {
   const days = Math.floor(hours / 24);
   hours += (days * 24);
 
-  if(hours < 5) {
+  if(hours < 0) {
+    console.error(`The deadline has passed. If you have not submitted, you are screwed! Happy coding! :)`);
+  } else if(hours < 5) {
     console.error(`${hours} hours, ${minutes % 60} minutes remaining until deadline`);
   } else if(minutes % 60 === 0) {
     console.error(`${hours} hours, ${minutes % 60} minutes remaining until deadline`);

@@ -91,6 +91,17 @@ const NewProgramForm: React.FC<NewProgramFormProps> = ({visible, setVisible, set
       setBlockUI(false);
       return;
     };
+    if(programName.includes('-')) {
+      toast.current?.show({
+        severity: 'warn',
+        summary: 'Invalid Character(s)',
+        detail: `Program names must not contain any '-'. Please remove these character(s) and try again.`,
+        closeIcon: 'pi pi-times',
+        life: 7000,
+      });
+      setBlockUI(false);
+      return;
+    };
     if(programDescription === "") {
       invalidData("description");
       setBlockUI(false);
