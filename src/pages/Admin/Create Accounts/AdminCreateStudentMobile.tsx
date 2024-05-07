@@ -6,7 +6,6 @@ import { confirmLogin } from '../../../functions/Global/ConfirmLogin';
 // Import global parameters
 import { GlobalParams } from '../../../interfaces/GlobalParams';
 import { useParams } from 'react-router';
-import StudentCreationForm from '../../../components/Login/StudentCreateAccount';
 
 import './AdminCreateStudentMobile.css'
 import './AdminCreateStudentGlobal.css'
@@ -33,13 +32,10 @@ const AdminCreateStudentMobile: React.FC = () => {
     if (isLoggedIn) {
       return (
         <>
-            <StudentCreationForm 
-              accountType={'student'} 
-              visible={true} 
-              setVisible={() => {}} 
-              setOptionMenuVisible={() => {}}
-              userPOV={'admin'}
-            />
+          <h1>Mobile UI Code</h1>
+          <h2>{params.name}</h2>
+          <h2>{params.snowflake}</h2>
+          <h2>{params.token}</h2>
         </>
       );
     } else {

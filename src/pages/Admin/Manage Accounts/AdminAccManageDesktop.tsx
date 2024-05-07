@@ -1,9 +1,7 @@
 // Import core functions
 import React from 'react';
 import { useState, useEffect, useRef } from 'react';
-import { Button } from 'primereact/button';
 import { ProgressSpinner } from 'primereact/progressspinner';
-import { Divider } from 'primereact/divider';
 import { Toast } from 'primereact/toast';
 
 // Importing UI components
@@ -112,13 +110,6 @@ const AdminAccMangDesktop: React.FC = () => {
             // 
           />
         </div>
-
-        <Divider />
-        
-
-        <Button label="[DEV] Back" icon="pi pi-arrow-left" onClick={() => {
-          window.location.href = `/home` //! DEV button to return to login page - remove later
-        }} severity="help"/>
       </>
     );
   } else {

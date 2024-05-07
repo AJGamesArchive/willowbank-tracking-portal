@@ -34,15 +34,13 @@ const StudentActivitiesDialogue: React.FC<StudentActivitiesDialogueProps> = ({ti
       <span className="font-bold white-space-nowrap">
         {` ${title}`}
       </span>
+      <p>View all the activities for {programName} and submit any completed activities for admin approval. Once submitted, if approved by an admin, you'll gain the stated XP for this program.</p>
+      <div style={{ textAlign: 'right' }}>
+        <Button outlined icon="pi pi-list" severity='info' onClick={() => setLayout("list")} />
+        <Button outlined icon="pi pi-table" severity='help' onClick={() => setLayout("grid")} />
+      </div>
     </div>
   );
-
-  // Defining template for the dialogue footer //! Remove later if is still not in use
-  // const dialogueFooter = (
-  //   <div>
-  //     <Button label="[Button Label]" icon="pi pi-check" severity='secondary' onClick={() => {}} autoFocus />
-  //   </div>
-  // );
 
   //? Data View Templates
   // State variable to control the layout of the data view
@@ -100,13 +98,6 @@ const StudentActivitiesDialogue: React.FC<StudentActivitiesDialogueProps> = ({ti
   const cardHeader = (
     <img alt="activity-image" src='/assets/placeholdersmall.png' style={{ width: '100%', height: 'auto' }}/>
   );
-  
-  // Defining activity card footer template //! Remove later if still not in use
-  // const cardFooter = (
-  //   <>
-  //     <Button outlined severity="success" icon="pi pi-send" />
-  //   </>
-  // );
 
   const listItem = (activity: Activity, completed: boolean, pending: boolean, completionDate: string, index: number) => {
     return (
@@ -132,8 +123,6 @@ const StudentActivitiesDialogue: React.FC<StudentActivitiesDialogueProps> = ({ti
       </div>
     );
   };
-  
-  //TODO Update both gridItem and listItem components to display activities differently if there completed
 
   const gridItem = (activity: Activity, completed: boolean, pending: boolean, completionDate: string, index: number) => {
     return (
@@ -175,21 +164,6 @@ const StudentActivitiesDialogue: React.FC<StudentActivitiesDialogueProps> = ({ti
   const listTemplate = () => {
     return <div className={(layout === "grid" ? "student-activity-grid-container" : "student-activity-list-col")}>{activities.map((activity, index) => itemTemplate(activity.activity, activity.completed, activity.pending, activity.date, layout, index))}</div>;
   };
-  
-  const dataViewHeader = () => {
-    return (
-      // <div className="flex justify-content-end">
-      //   <DataViewLayoutOptions 
-      //     layout={(layout === "grid") ? 'grid' : 'list'}
-      //     onChange={(e) => setLayout(e.value)}
-      //   />
-      // </div>
-      <div style={{ textAlign: 'right' }}>
-        <Button outlined icon="pi pi-list" severity='info' onClick={() => setLayout("list")} />
-        <Button outlined icon="pi pi-table" severity='help' onClick={() => setLayout("grid")} />
-      </div>
-    );
-  };
 
   // Return core JXS
   return (
@@ -204,9 +178,8 @@ const StudentActivitiesDialogue: React.FC<StudentActivitiesDialogueProps> = ({ti
       style={{ minWidth: '52rem', padding: '5px'}} 
       breakpoints={{'960px': '75vw', '641px': '90vw'}} 
     >
-      <p>View all the activities for {programName} and submit any completed activities for admin approval. Once submitted, if approved by an admin, you'll gain the stated XP for this program.</p>
       <div className="">
-        <DataView value={[1]} itemTemplate={listTemplate} layout={(layout === "grid") ? 'grid' : 'list'} header={dataViewHeader()} />
+        <DataView value={[1]} itemTemplate={listTemplate} layout={(layout === "grid") ? 'grid' : 'list'} />
       </div>
     </Dialog>
   );

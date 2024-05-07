@@ -6,10 +6,8 @@
 }
 
 .student-activity-grid-item {
-    background-color: #85d2f9;
     margin: 5px;
     padding: 5px;
-    border: 1px solid #85d2f9;
     min-width: fit-content;
 }
 

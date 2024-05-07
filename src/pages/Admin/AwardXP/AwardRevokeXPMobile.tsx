@@ -1,6 +1,5 @@
 // Import core functions
 import { useState, useEffect } from 'react';
-import { Button } from 'primereact/button';
 import { ProgressSpinner } from 'primereact/progressspinner';
 
 // Import global parameters
@@ -40,9 +39,6 @@ const AwardRevokeXPMobile: React.FC = () => {
         <h2>{params.name}</h2>
         <h2>{params.snowflake}</h2>
         <h2>{params.token}</h2>
-        <Button label="Sign-Out" icon="pi pi-sign-out" onClick={() => {
-          window.location.href = `/home`
-        }} severity="danger"/>
       </>
     );
   } else {

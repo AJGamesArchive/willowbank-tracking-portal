@@ -1,6 +1,5 @@
 // Import core functions
 import { useState, useEffect } from 'react';
-import { Button } from 'primereact/button';
 import { ProgressSpinner } from 'primereact/progressspinner';
 
 // Import global parameters
@@ -36,13 +35,9 @@ const AdminPortalMobile: React.FC = () => {
     return (
       <>
         <h1>Mobile UI Code</h1>
-        <h1>Admin Portal</h1>
         <h2>{params.name}</h2>
         <h2>{params.snowflake}</h2>
         <h2>{params.token}</h2>
-        <Button label="Sign-Out" icon="pi pi-sign-out" onClick={() => {
-          window.location.href = `/home`
-        }} severity="danger"/>
       </>
     );
   } else {

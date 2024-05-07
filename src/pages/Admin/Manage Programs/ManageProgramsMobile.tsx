@@ -1,6 +1,5 @@
 // Import core functions
 import { useState, useEffect } from 'react';
-import { Button } from 'primereact/button';
 import { ProgressSpinner } from 'primereact/progressspinner';
 
 // Import global parameters
@@ -13,7 +12,6 @@ import './ManageProgramsGlobal.css'
 
 // Import functions
 import { confirmLogin } from '../../../functions/Global/ConfirmLogin';
-import { Divider } from 'primereact/divider';
 
 // React function to render the Admin Portal page for desktop devices
 const ManageProgramsMobile: React.FC = () => {
@@ -38,13 +36,10 @@ const ManageProgramsMobile: React.FC = () => {
   if (isLoggedIn) {
     return (
       <>
-        <h1>Welcome {params.name}</h1>
-        <h1>{params.snowflake}</h1>
-        <h1>{params.token}</h1>
-        <Divider />
-        <Button label="[DEV] Back" icon="pi pi-arrow-left" onClick={() => {
-          window.location.href = `/home` //! DEV button to return to login page - remove later
-        }} severity="help"/>
+        <h1>Mobile UI Code</h1>
+        <h2>{params.name}</h2>
+        <h2>{params.snowflake}</h2>
+        <h2>{params.token}</h2>
       </>
     );
   } else {

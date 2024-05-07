@@ -414,7 +414,7 @@ const StudentCreationForm: React.FC<StudentAccountCreationProps> = ({accountType
           <Button label='Search' icon="pi pi-search" loading={loadingSchoolSearch} onClick={() => {
             setSchoolCodeStyle("");
             schoolSearchHandler();
-          }} />
+          }} raised/>
         </span>
       </div>
       <small id="school-code-help" className='creation-form-help-text'>
@@ -439,7 +439,7 @@ const StudentCreationForm: React.FC<StudentAccountCreationProps> = ({accountType
               setSchoolNameStyle("");
               setSchoolCode(null);
               setSchoolCodeStyle("");
-            }} severity="secondary"/>
+            }} raised severity="secondary"/>
           </span>
         </div>
         <small id="school-name-help" className='creation-form-help-text'>
@@ -457,6 +457,7 @@ const StudentCreationForm: React.FC<StudentAccountCreationProps> = ({accountType
               required
               className={firstNameStyle}
               aria-describedby='first-name-help'
+              keyfilter="alpha"
             />
             <label htmlFor="first-name">First Name</label>
           </span>
@@ -476,6 +477,7 @@ const StudentCreationForm: React.FC<StudentAccountCreationProps> = ({accountType
               mask="a"
               className={surnameStyle}
               aria-describedby='surname-help'
+              keyfilter="alpha"
             />
             <label htmlFor="surname-initial">Surname Initial</label>
           </span>
@@ -502,7 +504,7 @@ const StudentCreationForm: React.FC<StudentAccountCreationProps> = ({accountType
               setFirstNameStyle("");
               setSurnameStyle("");
               usernameGenerationHandler();
-            }}/>
+            }} raised/>
           </span>
         </div>
         <small id="username-help" className='creation-form-help-text'>
@@ -534,7 +536,7 @@ const StudentCreationForm: React.FC<StudentAccountCreationProps> = ({accountType
               setFirstNameStyle("");
               setSurnameStyle("");
               passwordGenerationHandler();
-            }} />
+            }} raised/>
           </span>
         </div>
         <small id="password-help" className='creation-form-help-text'>
@@ -570,7 +572,7 @@ const StudentCreationForm: React.FC<StudentAccountCreationProps> = ({accountType
           <Button label="Create" icon="pi pi-check" loading={loadingCreation} onClick={() => {
             clearHighlighting();
             creationHandler();
-          }} />
+          }} raised/>
         </div>
         <div className="student-creation-form-button">
           <Button label="Clear" icon="pi pi-exclamation-triangle" loading={loadingClear} onClick={() => {

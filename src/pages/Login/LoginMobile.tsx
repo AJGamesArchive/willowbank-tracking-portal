@@ -1,6 +1,3 @@
-// Import core functions
-// --import { useState } from 'react';
-
 // Import CSS
 import './LoginMobile.css';
 import './LoginGlobal.css';
@@ -10,6 +7,7 @@ const LoginMobile: React.FC = () => {
   return (
     <>
       <h1>Mobile UI Code</h1>
+      <h1>Login Form</h1>
     </>
   );
 };

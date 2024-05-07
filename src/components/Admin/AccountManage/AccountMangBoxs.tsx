@@ -65,7 +65,7 @@ const AccountManageBoxs: React.FC<AccountListBoxProps> = ({visible, setVisible, 
     // Set loading states
     setLoading(true);
 
-    if (!username || !firstName || !surnameInitial) {
+    if (!username || !firstName || !surnameInitial || school.length === 0) {
       toast.current?.show({
         severity: `warn`,
         summary: `Missing Data`,
@@ -73,6 +73,7 @@ const AccountManageBoxs: React.FC<AccountListBoxProps> = ({visible, setVisible, 
         closeIcon: 'pi pi-times',
         life: 7000,
       });
+      setLoading(false);
       return;
     };
 
@@ -222,6 +223,7 @@ const AccountManageBoxs: React.FC<AccountListBoxProps> = ({visible, setVisible, 
               value={firstName}
               onChange={(e) => setFirstName(e.target.value.toUpperCase())}
               autoFocus
+              keyfilter="alpha"
             />
           </div>
 
@@ -233,6 +235,7 @@ const AccountManageBoxs: React.FC<AccountListBoxProps> = ({visible, setVisible, 
               value={surnameInitial}
               onChange={(e) => setSurnameInitial(e.target.value.toUpperCase())}
               autoFocus
+              keyfilter="alpha"
               />
             ) : (
               <InputText
@@ -240,6 +243,7 @@ const AccountManageBoxs: React.FC<AccountListBoxProps> = ({visible, setVisible, 
               value={surnameInitial}
               onChange={(e) => setSurnameInitial(e.target.value.toUpperCase())}
               autoFocus
+              keyfilter="alpha"
               />
             )}
           </div>

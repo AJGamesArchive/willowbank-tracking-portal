@@ -6,6 +6,8 @@ import '../../pages/Login/LoginGlobal.css'
 import { PanelMenu } from 'primereact/panelmenu';
 import { MenuItem } from 'primereact/menuitem';
 
+import { build } from '../../data/BuildNumber';
+
 // Interfacing forcing certain props on the Login Options Menu component
 interface LoginOptionsMenuProps {
   setLoginType: (value: string) => void;
@@ -92,7 +94,7 @@ const LoginOptionsMenu: React.FC<LoginOptionsMenuProps> = ({setLoginType, visibl
       </div>
       <div className='login-footer'>
         <p>
-          <i className='pi pi-book'/> Willowbank Education Tracking Portal
+          <i className='pi pi-book'/> Willowbank Education Tracking Portal - Build {build}
         </p>
       </div>
     </div>

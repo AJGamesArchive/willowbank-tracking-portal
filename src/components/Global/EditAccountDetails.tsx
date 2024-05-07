@@ -374,6 +374,7 @@ const EditAccountDetails: React.FC<EditAccountDetailsProps> = ({accountType, sno
                 required 
                 autoFocus 
                 className={classNames({ 'p-invalid': submitted && !firstName })} 
+                keyfilter="alpha"
               />
               {submitted && !firstName && <small className="p-error">First name must be filled in.</small>}
             </div>
@@ -388,6 +389,7 @@ const EditAccountDetails: React.FC<EditAccountDetailsProps> = ({accountType, sno
                 onChange={(e: InputMaskChangeEvent) => setSurnameInitial(e.target.value?.toUpperCase())}
                 mask="a"
                 className={classNames({ 'p-invalid': submitted && !surnameInitial })} 
+                keyfilter="alpha"
               />
               {submitted && !surnameInitial && <small className="p-error">Surname initial must be filled in.</small>}
             </div>}
@@ -401,6 +403,7 @@ const EditAccountDetails: React.FC<EditAccountDetailsProps> = ({accountType, sno
                 value={surnameInitial}
                 onChange={(e) => setSurnameInitial(e.target.value?.toUpperCase())}
                 className={classNames({ 'p-invalid': submitted && !surnameInitial })} 
+                keyfilter="alpha"
               />
               {submitted && !surnameInitial && <small className="p-error">Surname initial must be filled in.</small>}
             </div>}

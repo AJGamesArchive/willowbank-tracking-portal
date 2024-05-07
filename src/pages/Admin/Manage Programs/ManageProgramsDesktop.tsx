@@ -1,6 +1,5 @@
 // Import core functions
 import { useState, useEffect } from 'react';
-import { Button } from 'primereact/button';
 import { ProgressSpinner } from 'primereact/progressspinner';
 
 // Import global parameters
@@ -13,7 +12,6 @@ import './ManageProgramsGlobal.css'
 
 // Import functions
 import { confirmLogin } from '../../../functions/Global/ConfirmLogin';
-import { Divider } from 'primereact/divider';
 
 // Import components
 import ViewProgress from '../../../components/Admin/Manage Programs/ViewPrograms';
@@ -103,14 +101,7 @@ const ManageProgramsDesktop: React.FC = () => {
           setProgramsVisible={setVisiblePrograms}
         />
         <div className='manage-programs-buttons'>
-          <Button label="Back to Portal" icon="pi pi-arrow-left" onClick={() => {
-            window.location.href = `/adminportal/${params.snowflake}/${params.token}/${params.name}`;
-          }} raised severity="warning"/>
         </div>
-        <Divider />
-        <Button label="[DEV] Back" icon="pi pi-arrow-left" onClick={() => {
-          window.location.href = `/home` //! DEV button to return to login page - remove later
-        }} severity="help"/>
       </>
     );
   } else {

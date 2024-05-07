@@ -1,6 +1,5 @@
 // Import core functions
 import { useState, useEffect } from 'react';
-import { Button } from 'primereact/button';
 import { ProgressSpinner } from 'primereact/progressspinner';
 
 // Import global parameters
@@ -10,11 +9,13 @@ import { useParams } from 'react-router';
 // Import CSS
 import './AdminResetDesktop.css'
 import './AdminResetGlobal.css'
+
 // Import functions
 import { confirmLogin } from '../../../functions/Global/ConfirmLogin.ts';
 
 // Import UI components
 import ResetList from '../../../components/Admin/ResetPasswordList.tsx';
+import Banner from '../../../components/Admin/AdminPortal/Banner.tsx';
 
 // React function to render the Admin Portal page for desktop devices
 const AdminResetDesktop: React.FC = () => {
@@ -39,14 +40,13 @@ const AdminResetDesktop: React.FC = () => {
   if (isLoggedIn) {
     return (
       <>
-        <h1>Reset student's password</h1>
+        <Banner
+          backgroundimage='/assets/admin-portal-images/banner.png' 
+          text={`Password Reset Requests`} 
+        />
         <p>Please approve or ignore the following password reset requests.</p>
         <br />
         <ResetList/>
-        <br />
-        <Button label="[DEV] Back" icon="pi pi-arrow-left" onClick={() => {
-          window.location.href = `/home` //! DEV button to return to login page - remove later
-        }} severity="help"/>
       </>
     );
   } else {

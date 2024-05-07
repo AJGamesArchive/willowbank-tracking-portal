@@ -54,10 +54,12 @@ const AdminCreateStaffMobile: React.FC = () => {
   
     if (isLoggedIn)
     {
-        console.log("test")
         return ( 
             <>
-                <h1>Mobile UI Code</h1>
+              <h1>Mobile UI Code</h1>
+              <h2>{params.name}</h2>
+              <h2>{params.snowflake}</h2>
+              <h2>{params.token}</h2>
             </>
         );
     } else {

@@ -66,7 +66,10 @@ const AdminCreateMenuMobile: React.FC = () => {
     return (
       <div>
         <Toast ref={toast}/>
-        <h1>Mobile UI COde</h1>
+        <h1>Mobile UI Code</h1>
+        <h2>{params.name}</h2>
+        <h2>{params.snowflake}</h2>
+        <h2>{params.token}</h2>
       </div>
     );
   } else {

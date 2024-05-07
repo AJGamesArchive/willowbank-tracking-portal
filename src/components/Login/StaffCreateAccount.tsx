@@ -458,6 +458,7 @@ const StaffCreationForm: React.FC<StaffAccountCreationProps> = ({accountType}) =
               required
               className={firstNameStyle}
               aria-describedby='first-name-prompt'
+              keyfilter="alpha"
             />
             <label htmlFor="first-name-label">First Name</label>
           </span>
@@ -478,6 +479,7 @@ const StaffCreationForm: React.FC<StaffAccountCreationProps> = ({accountType}) =
               required
               className={surnameStyle}
               aria-describedby='surname-prompt'
+              keyfilter="alpha"
             />
             <label htmlFor="surname-initial-label">Surname</label>
           </span>

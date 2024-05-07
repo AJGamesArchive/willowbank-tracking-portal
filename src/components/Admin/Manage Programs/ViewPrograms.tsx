@@ -11,6 +11,7 @@ import './ViewPrograms.css'
 
 // Import components
 import ProgramCard from './ProgramCard';
+import Banner from '../AdminPortal/Banner';
 
 // Import functions
 import { retrieveProgramData } from '../../../functions/Admin/ManagePrograms/RetrieveProgramData';
@@ -214,7 +215,10 @@ const ViewProgress: React.FC<ViewProgressProps> = ({visible, setVisible, setVisi
     <div style={{ display: visible ? 'block' : 'none' }}>
       <Toast ref={toast}/>
 
-      <h1>Program Management</h1>
+      <Banner
+        backgroundimage='/assets/admin-portal-images/banner.png' 
+        text={`Program Management`} 
+      />
 
       <div className='grid-container'>
         {programData.map((item, index) => (

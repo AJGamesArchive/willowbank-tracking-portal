@@ -5,7 +5,6 @@ import { Button } from 'primereact/button';
 import { InputText } from 'primereact/inputtext';
 import { BlockUI } from 'primereact/blockui';
 import { Messages } from 'primereact/messages';
-import { Divider } from 'primereact/divider';
 import { Password } from 'primereact/password';
 
 // Import CSS
@@ -144,40 +143,6 @@ const LoginForm: React.FC<LoginFormProps> = ({accountType, visible, setVisible, 
   // Return JSX
   return (
     <BlockUI blocked={blockForm}>
-      {
-        /*
-          ! --------------------------------------------
-          ! Here for development purposes - remove later
-        */
-      }
-      <div style={{display: visible ? 'block' : 'none'}}>
-        <Button label={`[DEV] ${accountType} Details`} icon="pi pi-exclamation-triangle" onClick={() => {
-          switch (accountType) {
-            case ("Teacher"):
-              console.log("Username: Test Teacher\nPassword: teacher1");
-              setUsername("Test Teacher");
-              setPassword("teacher1");
-              break;
-            case ("Admin"):
-              console.log("Username: Test Admin\nPassword: Admin");
-              setUsername("Test Admin");
-              setPassword("Admin");
-              break;
-            default:
-              console.log("Username: Test School\nPassword: School");
-              setUsername("Test School");
-              setPassword("School");
-              break;
-          };
-        }} raised severity="help"/>
-        <Divider/>
-      </div>
-      {
-        /*
-          ! Here for development purposes - remove later
-          ! --------------------------------------------
-        */
-      }
       <Card title={`${accountType} Login`} subTitle='Enter your credentials:' style={{ display: visible ? 'block' : 'none' }}>
         <div className="p-inputgroup flex-1">
           <span className="p-float-label">

@@ -1,6 +1,5 @@
 // Import core UI components
 import { useState, useEffect } from 'react';
-import { Button } from 'primereact/button';
 import { ProgressSpinner } from 'primereact/progressspinner';
 
 // Import global parameters
@@ -38,9 +37,9 @@ const HomeMobile: React.FC = () => {
     return (
       <>
         <h1>Mobile UI Code</h1>
-        <Button label="Sign-Out" icon="pi pi-sign-out" onClick={() => {
-          window.location.href = `/home`
-        }} severity="danger"/>
+        <h2>{params.name}</h2>
+        <h2>{params.snowflake}</h2>
+        <h2>{params.token}</h2>
       </>
     );
   } else {

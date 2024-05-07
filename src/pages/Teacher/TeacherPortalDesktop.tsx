@@ -26,6 +26,7 @@ import TeacherSchoolData from '../../components/Teacher/TeacherSchoolData';
 import { CoreStaffAccountDetails } from '../../types/Global/UserAccountDetails';
 import ModifyOption from '../../components/Admin/AdminPortal/AdminMenuOptionChangeDetails';
 import { TeacherTimes } from '../../types/Teacher/TeacherTimes';
+import { BlockUI } from 'primereact/blockui';
 
 
 // React function to render the Teacher Portal page for desktop devices
@@ -135,19 +136,23 @@ const TeacherPortalDesktop: React.FC = () => {
             <br />
           <ul className="list">
             <li className="listItem">
-              <MenuOption 
-                imageSRC='/assets/teacher-portal-images/by-program.png'
-                imageAltText='Program image'
-                title='Students by program'
-                destinationPage=''
-              />
+              <BlockUI blocked={true}>
+                <MenuOption 
+                  imageSRC='/assets/teacher-portal-images/by-program.png'
+                  imageAltText='Program image'
+                  title='Students by program'
+                  destinationPage=''
+                />
+              </BlockUI>
             </li>
             <li className="listItem">
-              <MenuOption
-                imageSRC='/assets/teacher-portal-images/by-school.png'
-                imageAltText='School image'
-                title='View students by school'
-                destinationPage='' />
+              <BlockUI blocked={true}>
+                <MenuOption
+                  imageSRC='/assets/teacher-portal-images/by-school.png'
+                  imageAltText='School image'
+                  title='View students by school'
+                  destinationPage='' />
+              </BlockUI>
             </li>
             <li className="listItem">
               <div onClick={() => setVisibleEditDetails(true)}>

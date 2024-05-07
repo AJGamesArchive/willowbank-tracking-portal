@@ -1,6 +1,5 @@
 // Import core functions
 import { useState, useEffect } from 'react';
-import { Button } from 'primereact/button';
 import { ProgressSpinner } from 'primereact/progressspinner';
 
 // Import global parameters
@@ -37,14 +36,10 @@ const AdminResetMobile: React.FC = () => {
   if (isLoggedIn) {
     return (
       <>
-        <h1>Reset student's password</h1>
-        <p>Please approve or decline the following password reset requests.</p>
-        <br />
-        
-        <br />
-        <Button label="[DEV] Back" icon="pi pi-arrow-left" onClick={() => {
-          window.location.href = `/home` //! DEV button to return to login page - remove later
-        }} severity="help"/>
+        <h1>Mobile UI Code</h1>
+        <h2>{params.name}</h2>
+        <h2>{params.snowflake}</h2>
+        <h2>{params.token}</h2>
       </>
     );
   } else {
