@@ -58,7 +58,7 @@ const StudentProgram: React.FC<StudentProgramProps> = ({programSnowflake, title,
   // Defining card footer template
   const cardFooter = (
     <>
-      <Button className="program-button" label="Badges"       icon="pi pi-star" severity="success"    onClick={() => window.location.href = badgeFilterPath}/>
+      <Button className="program-button" label="Badges"       icon="pi pi-star" severity="success"    onClick={() => window.location.href = badgeFilterPath} disabled={locked}/>
       <Button className="program-button" label="Activities"   icon="pi pi-list" severity="info"       onClick={() => fetchAndFilterActivities(programSnowflake, title)} loading={lockButton} disabled={locked}/>
       <Button className="program-button" label="Program Info" icon="pi pi-book" severity="secondary"  onClick={() => {setProgramPopupVisible(true)}} disabled={locked}/>
     </>
