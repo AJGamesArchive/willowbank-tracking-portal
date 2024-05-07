@@ -1,8 +1,6 @@
 // Import core functions
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { ListBox } from 'primereact/listbox';
-import { getStudentAccountInfo } from '../../../functions/Admin/getstudentAccountInfo';
-import { getstaffAccountInfo } from '../../../functions/Admin/getstaffAccountInfo';
 
 // Import types
 import { CoreStaffAccountDetails } from '../../../types/Global/UserAccountDetails';
@@ -10,120 +8,105 @@ import { CoreStudentAccountDetails } from '../../../types/Global/UserAccountDeta
 
 // Import CSS
 import './AccountMangLists.css';
+
+// Import UI components
 import AccountManageBoxs from './AccountMangBoxs';
 
 interface AccountListBoxProps {
-    reload : boolean
-    setReload : (value : boolean) => void;
-}
+  setReload : (value : boolean) => void;
+  allStudents: CoreStudentAccountDetails[];
+  allTeachers: CoreStaffAccountDetails[];
+  allAdmins: CoreStaffAccountDetails[];
+};
 
-const AccountListBox: React.FC<AccountListBoxProps> = ({reload, setReload}) => {
-    //declaring state variables, ready to store teachers, students and admins and selected user
-    const [students, setStudents] = useState<CoreStudentAccountDetails[]>([]);
-    const [teachers, setTeachers] = useState<CoreStaffAccountDetails[]>([]);
-    const [admins, setAdmins] = useState<CoreStaffAccountDetails[]>([]);
-    const [selectedUser, setSelectedUser] = useState<CoreStudentAccountDetails | CoreStaffAccountDetails>({
-        snowflake: '',
-        username: '',
-        firstName: '',
-        surnameInitial: '',
-        password: '',
-        school: '',
-        token: '',
-        badges: []
-    }); 
-    const [selectedCategory, setSelectedCategory] = useState<string>("");
+const AccountListBox: React.FC<AccountListBoxProps> = ({setReload, allStudents, allTeachers, allAdmins}) => {
+  // State variables to store selected users
+  const [selectedUserStudent, setSelectedUserStudent] = useState<CoreStudentAccountDetails>({
+      snowflake: '',
+      username: '',
+      firstName: '',
+      surnameInitial: '',
+      password: '',
+      school: '',
+      token: '',
+      badges: []
+  });
+  const [selectedUserStaff, setSelectedUserStaff] = useState<CoreStaffAccountDetails>({
+    snowflake: '',
+    username: '',
+    firstName: '',
+    surname: '',
+    password: '',
+    schools: [],
+    token: '',
+  });
 
-    // Function to handle username selection
-    const handleUsernameSelect = (e: any) => {
-        setSelectedUser(e.value); 
-        // Determine the category based on the selected username
-        const isStudent = students.some(student => student.username === selectedUser.username);
-        const isTeacher = teachers.some(teacher => teacher.username === selectedUser.username);
-        const isAdmin = admins.some(admin => admin.username === selectedUser.username);
+  // State variable to store the selected user type
+  const [selectedCategory, setSelectedCategory] = useState<string>("");
 
-        if (isStudent) {
-            setSelectedCategory('students');
-        } else if (isTeacher) {
-            setSelectedCategory('teachers');
-        } else if (isAdmin) {
-            setSelectedCategory('admins');
-        } else {
-            setSelectedCategory(""); // If the category is unknown or not found
-        }
+  // State variable to control the visibility of the edit details dialogue box
+  const [visibleDialogue, setVisibleDialogue] = useState<boolean>(false);
+
+  // Function to handle username selection
+  const handleUsernameSelect = (e: any, accountType: string) => {
+    setSelectedCategory(accountType);
+    switch(accountType) {
+      case "students":
+        setSelectedUserStudent(e.value);
+        break;
+      default:
+        setSelectedUserStaff(e.value);
+        break;
     };
-    //use effects runs when component is called
-    useEffect(() => {
-        const fetchData = async () => { 
-            try {
-                //sets arrays to store student , teacher and admin data
-                const studentData: CoreStudentAccountDetails[] | string = await getStudentAccountInfo()
-                const teacherData: CoreStaffAccountDetails[] | string = await getstaffAccountInfo("T")
-                const adminData:  CoreStaffAccountDetails[]  | string = await getstaffAccountInfo("A")
+    setVisibleDialogue(true);
+    return;
+  };
 
-                if(typeof studentData === "string" || typeof teacherData === "string" || typeof adminData === "string") {
-                    //TODO Return some error here
-                    return;
-                };
-
-                setStudents(studentData);
-                setTeachers(teacherData);
-                setAdmins(adminData);
-
-            } catch (error) {
-                //runs error if a problem arises with fetching usernames
-                console.error('Error fetching usernames:', error);
-            }
-        };
-
-        if (reload) {
-            fetchData();
-            setReload(false);
-        }
-
-    }, [reload]);
-
-        
-        return (
-            <div> {/* Wrap everything in a div */}
-                <>
-                    <div className="listBoxContainer">
-                        <h3>Student Usernames</h3>
-                        <ListBox
-                            filter
-                            options={students}
-                            optionLabel='username'
-                            onChange={handleUsernameSelect}
-                        />
-                    </div>
-
-                    <div className="listBoxContainer">
-                        <h3>Teacher Usernames</h3>
-                        <ListBox
-                            filter
-                            options={teachers}
-                            optionLabel='username'
-                            onChange={handleUsernameSelect}
-                        />
-                    </div>
-
-                    <div className="listBoxContainer">
-                        <h3>Admin Usernames</h3>
-                        <ListBox
-                            filter
-                            options={admins}
-                            optionLabel='username'
-                            onChange={handleUsernameSelect}
-                        />
-                    </div>
-                </>
-                <AccountManageBoxs
-                    selectedUser={selectedUser}
-                    selectedCategory={selectedCategory}
-                    callback={setReload}
-                />
+  // Returning core JSX
+  return (
+    <div>
+      <>
+        <div className="listBoxContainer">
+          <h3>Student Usernames</h3>
+          <ListBox
+            filter
+            options={allStudents}
+            optionLabel='username'
+            onChange={(e: any) => handleUsernameSelect(e, "students")}
+          />
         </div>
-    );
+
+        <div className="listBoxContainer">
+          <h3>Teacher Usernames</h3>
+          <ListBox
+            filter
+            options={allTeachers}
+            optionLabel='username'
+            onChange={(e: any) => handleUsernameSelect(e, "teachers")}
+          />
+        </div>
+
+        <div className="listBoxContainer">
+          <h3>Admin Usernames</h3>
+          <ListBox
+            filter
+            options={allAdmins}
+            optionLabel='username'
+            onChange={(e: any) => handleUsernameSelect(e, "admins")}
+          />
+        </div>
+      </>
+
+      <AccountManageBoxs
+        visible={visibleDialogue}
+        setVisible={setVisibleDialogue}
+        selectedUserStudent={selectedUserStudent}
+        selectedUserStaff={selectedUserStaff}
+        selectedCategory={selectedCategory}
+        callback={setReload}
+      />
+    </div>
+  );
 };
 
 export default AccountListBox;

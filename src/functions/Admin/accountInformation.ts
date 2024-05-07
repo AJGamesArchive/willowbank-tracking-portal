@@ -13,6 +13,7 @@ export interface UserData {
     snowflake: string;
 }
 
+//TODO Maybe remove this function??
 // Function to retrieve user data from the database
 export async function getUserData(snowflake: string, category: string): Promise<UserData | string> {
     try {

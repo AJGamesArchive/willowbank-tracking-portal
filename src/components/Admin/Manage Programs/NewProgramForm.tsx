@@ -264,6 +264,7 @@ const NewProgramForm: React.FC<NewProgramFormProps> = ({visible, setVisible, set
           <div className='p-inputgroup-flex-l'>
             <span className='p-float-label'>
               <Dropdown 
+                  id='program-badge-shape'
                   value={programShape}
                   options={badgeShapes}
                   onChange={(e: DropdownChangeEvent) => setProgramShape(e.value)}
@@ -284,14 +285,15 @@ const NewProgramForm: React.FC<NewProgramFormProps> = ({visible, setVisible, set
           <div className='p-inputgroup-flex-l'>
             <span className='p-float-label'>
               <Dropdown 
-                  value={programTextColor}
-                  options={["Black", "White"]}
-                  onChange={(e: DropdownChangeEvent) => setProgramTextColor(e.value)}
-                  placeholder="Select Badge Text Color"
-                  className={classNames({ 'p-invalid': submitted && !programTextColor })}
-                  style={{ minWidth: '24rem' }}
-                />
-                <label htmlFor="program-badge-text-color">Program Badge Shape</label>
+                id='program-badge-text-color'
+                value={programTextColor}
+                options={["Black", "White"]}
+                onChange={(e: DropdownChangeEvent) => setProgramTextColor(e.value)}
+                placeholder="Select Badge Text Color"
+                className={classNames({ 'p-invalid': submitted && !programTextColor })}
+                style={{ minWidth: '24rem' }}
+              />
+              <label htmlFor="program-badge-text-color">Program Badge Shape</label>
             </span>
             <small id="program-badge-text-color-help" className='add-program-form-help-text'>
               Select the color you want the badge level text to display in.
