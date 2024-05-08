@@ -39,7 +39,7 @@ const ForgotPassword: React.FC<ForgotPasswordFormProps> = ({ accountType, visibl
   // Variable(s) to handle 'More Info' visibility and toggle button styling accordingly'
   const [visibleMoreInfo, setVisibleMoreInfo] = useState<boolean>(false);
   const [moreInfoButton, setMoreInfoButton] = useState<string>("More Info");
-  const [moreInfoButtonColor, setMoreInfoButtonColor] = useState<any>("help");
+  const [moreInfoButtonColor, setMoreInfoButtonColor] = useState<any>("info");
   const [moreInfoButtonIcon, setMoreInfoButtonIcon] = useState<string>("pi pi-question-circle");
 
   // Variables to control toast messages
@@ -153,13 +153,13 @@ const ForgotPassword: React.FC<ForgotPasswordFormProps> = ({ accountType, visibl
 
         <div className="pass-reset-form-button-field">
           <div className="pass-reset-form-button">
-            <Button label="Submit" icon="pi pi-check" loading={loadingSubmit} onClick={passwordResetRequestHandler} raised severity="info"/>
+            <Button label="Submit" icon="pi pi-check" loading={loadingSubmit} onClick={passwordResetRequestHandler} raised/>
           </div>
           <div className="pass-reset-form-button">
             <Button label={moreInfoButton} icon={moreInfoButtonIcon} loading={false} onClick={() => {
               setVisibleMoreInfo((visibleMoreInfo) ? false : true);
               setMoreInfoButton((visibleMoreInfo) ? "More Info" : "Hide Info");
-              setMoreInfoButtonColor((visibleMoreInfo) ? "help" : "secondary");
+              setMoreInfoButtonColor((visibleMoreInfo) ? "info" : "secondary");
               setMoreInfoButtonIcon((visibleMoreInfo) ? "pi pi-question-circle" : "pi pi-angle-up");
             }} raised severity={moreInfoButtonColor}/>
           </div>

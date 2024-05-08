@@ -183,13 +183,13 @@ const LoginForm: React.FC<LoginFormProps> = ({accountType, visible, setVisible, 
             <Button label="Login" icon="pi pi-sign-in" loading={loadingLogin} onClick={() => {
               clearHighlighting();
               loginHandler();
-            }} raised severity="info"/>
+            }} raised/>
           </div>
           <div className="student-login-form-button">
             <Button label="Forgot Password" icon="pi pi-question-circle" onClick={() => {
               setVisible(false);
               setForgotPasswordVisible(true);
-            }} raised severity="help"/>
+            }} raised severity="info"/>
           </div>
           <div className="student-login-form-button">
             <Button label="Back" icon="pi pi-arrow-left" onClick={() => {

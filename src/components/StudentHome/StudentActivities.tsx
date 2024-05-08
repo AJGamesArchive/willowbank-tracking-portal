@@ -102,7 +102,7 @@ const StudentActivitiesDialogue: React.FC<StudentActivitiesDialogueProps> = ({ti
   const listItem = (activity: Activity, completed: boolean, pending: boolean, completionDate: string, index: number) => {
     return (
       <div className="student-activity-grid-item" key={index}>
-        <Card header={cardHeader} title={`Activity ${activity.id}`} role={`Activity ${activity.id} Info Card`}>
+        <Card header={cardHeader} title={`Activity ${activity.id}`} role={`Activity ${activity.id} Info Card`} className='student-activity-card'>
           <div className="header-row">
             <div className="header-item"><Tag value={activity.difficulty} severity={getSeverity(activity.difficulty)}/></div>
             <div className="header-item"><Tag value={getStatusMessage(completed, pending)} severity={getStatusColour(completed, pending)}/></div>

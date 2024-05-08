@@ -277,7 +277,7 @@ const EditAccountDetails: React.FC<EditAccountDetailsProps> = ({accountType, sno
     <React.Fragment>
       <BlockUI blocked={loading}>
         <Button label="Cancel" icon="pi pi-times" onClick={onDialogueHide} severity='secondary' />
-        <Button label="Confirm" loading={loading} icon="pi pi-unlock" severity='info' onClick={() => {
+        <Button label="Confirm" loading={loading} icon="pi pi-unlock" onClick={() => {
           setSubmitted(true);
           if(password !== existingPassword) {
             toast.current?.show({

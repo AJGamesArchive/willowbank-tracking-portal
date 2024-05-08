@@ -18,6 +18,10 @@ import { CoreStudentAccountDetails } from '../../../types/Global/UserAccountDeta
 import './AccountMangBoxs.css';
 import { removeAccount } from '../../../functions/Admin/removeAccount';
 
+// Import global params
+import { GlobalParams } from '../../../interfaces/GlobalParams';
+import { useParams } from 'react-router-dom';
+
 interface AccountListBoxProps {
   visible: boolean;
   setVisible: (value: boolean) => void;
@@ -31,6 +35,12 @@ interface AccountListBoxProps {
 const AccountManageBoxs: React.FC<AccountListBoxProps> = ({visible, setVisible, selectedUserStudent, selectedUserStaff, selectedCategory, callback}) => {
   // Variables to control toast messages
   const toast = useRef<Toast>(null);
+
+  // Setting up global params on this page
+  const params = useParams<GlobalParams>();
+
+  // State variable to disable the delete account button
+  const [disableDelete, setDisableDelete] = useState<boolean>(false);
 
   // State variables to store editable account details
   const [snowflake, setSnowflake] = useState<string>('');
@@ -64,6 +74,7 @@ const AccountManageBoxs: React.FC<AccountListBoxProps> = ({visible, setVisible, 
     let success: boolean = false;
     // Set loading states
     setLoading(true);
+    setDisableDelete(true);
 
     if (!username || !firstName || !surnameInitial || school.length === 0) {
       toast.current?.show({
@@ -74,6 +85,7 @@ const AccountManageBoxs: React.FC<AccountListBoxProps> = ({visible, setVisible, 
         life: 7000,
       });
       setLoading(false);
+      setDisableDelete(false);
       return;
     };
 
@@ -81,6 +93,7 @@ const AccountManageBoxs: React.FC<AccountListBoxProps> = ({visible, setVisible, 
       const isUnique = await isUniqueUsernameName(username);
       if(typeof isUnique === "string") {
         unexpected();
+        setDisableDelete(false);
         setLoading(false); return;
       };
 
@@ -92,6 +105,7 @@ const AccountManageBoxs: React.FC<AccountListBoxProps> = ({visible, setVisible, 
           closeIcon: 'pi pi-times',
           life: 7000,
         });
+        setDisableDelete(false);
         setLoading(false); return;
       };
     };
@@ -106,6 +120,7 @@ const AccountManageBoxs: React.FC<AccountListBoxProps> = ({visible, setVisible, 
       });
 
       setLoading(false); 
+      setDisableDelete(false);
       return;
     };
 
@@ -115,17 +130,26 @@ const AccountManageBoxs: React.FC<AccountListBoxProps> = ({visible, setVisible, 
     if(!success) {
       unexpected();
       setLoading(false); 
+      setDisableDelete(false);
       return;
     };
-    setLoading(false);
-    toast.current?.show({
-      severity: `success`,
-      summary: `Account Updated`,
-      detail: `The account details for ${username} have been updated successfully.`,
-      closeIcon: 'pi pi-times',
-      life: 7000,
-    });
+    // Re-log the account if you've updated the current logged in account details
+    if(snowflake === params.snowflake) {
+      toast.current?.show({
+        severity: `success`,
+        summary: `Account Updated`,
+        detail: `You're account details have been updated successfully. You will now be re-logged, please wait.`,
+        closeIcon: 'pi pi-times',
+        life: 7000,
+      });
+      await new Promise(resolve => setTimeout(resolve, 3000));
+      // Re-log account
+      window.location.href = `/AccManagement/${params.snowflake}/${params.token}/${firstName}`;
+      return;
+    };
     setVisible(false);
+    setLoading(false);
+    setDisableDelete(false);
     callback(true);
     return;
   };
@@ -139,6 +163,17 @@ const AccountManageBoxs: React.FC<AccountListBoxProps> = ({visible, setVisible, 
 
   // Async function to handel prepping account deletion
   async function RemoveAccount (snowflake : string) {
+    if(snowflake === params.snowflake) {
+      toast.current?.show({
+        severity: `warn`,
+        summary: `Account Un-Deletable`,
+        detail: `You are not able to delete you're current Admin account. At least 1 admin account must be present in the system at all times.`,
+        closeIcon: 'pi pi-times',
+        life: 7000,
+      });
+      setResult("was not");
+      return;
+    };
     if (await removeAccount(snowflake, selectedCategory)) {
       setResult("was");
       callback(true);
@@ -147,6 +182,7 @@ const AccountManageBoxs: React.FC<AccountListBoxProps> = ({visible, setVisible, 
       callback(false);
     };
     setResultPopupVisible(true);
+    return;
   };
 
   // Function to map the passed data to input form fields
@@ -203,6 +239,8 @@ const AccountManageBoxs: React.FC<AccountListBoxProps> = ({visible, setVisible, 
           header={`Edit Account Details:`} 
           modal 
           onHide={onDialogueHide}
+          closeOnEscape={(loading) ? false : true}
+          closable={(loading) ? false : true}
           className="p-fluid"
         >
 
@@ -287,7 +325,7 @@ const AccountManageBoxs: React.FC<AccountListBoxProps> = ({visible, setVisible, 
             />
           </div>
           <Button label="Update Details" loading={loading} icon="pi pi-save" severity='success' onClick={updateCoreDetailsHandler} style={{width: "48%", margin: "5px"}}/>
-          <Button label="Delete account" icon="pi pi-trash" severity='danger' onClick={() => setPopupVisible(true)} style={{width: "48%", margin: "5px"}}/>
+          <Button label="Delete account" disabled={disableDelete} icon="pi pi-trash" severity='danger' onClick={() => setPopupVisible(true)} style={{width: "48%", margin: "5px"}}/>
         </Dialog>
 
         <Dialog
@@ -297,7 +335,7 @@ const AccountManageBoxs: React.FC<AccountListBoxProps> = ({visible, setVisible, 
           closeIcon="pi pi-times"
         >
           <p>Are you sure you want to delete this account?</p>
-          <Button label="Yes" onClick={() => {RemoveAccount(snowflake); setResultPopupVisible(true), setPopupVisible(false)}} severity='danger' style={{margin: "5px"}}/>
+          <Button label="Yes" onClick={() => {RemoveAccount(snowflake); setPopupVisible(false);}} severity='danger' style={{margin: "5px"}}/>
           <Button label="No" onClick={() => setPopupVisible(false)} style={{margin: "5px"}}/>
         </Dialog>
 

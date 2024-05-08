@@ -34,7 +34,7 @@ const AdminAccMangDesktop: React.FC = () => {
 
   // Variable to force confirmation of the account login state
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
-  const [reload, setReload] = useState<boolean>(true);
+  const [reload, setReload] = useState<boolean>(false);
 
   // State variables to store all account details
   const [allStudents, setAllStudents] = useState<CoreStudentAccountDetails[]>([]);
@@ -88,6 +88,13 @@ const AdminAccMangDesktop: React.FC = () => {
       setIsLoggedIn(false);
       reloadHandler();
       setReload(false);
+      toast.current?.show({
+        severity: `success`,
+        summary: `Account Updated`,
+        detail: `The account details have been updated successfully.`,
+        closeIcon: 'pi pi-times',
+        life: 7000,
+      });
     };
   }, [reload]); // Trigger each time the reload state is updated
 
