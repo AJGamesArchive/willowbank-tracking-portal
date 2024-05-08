@@ -9,7 +9,6 @@ import { generateToken } from "../Global/GenerateToken";
 import { snowflake } from "../../classes/Snowflake";
 
 export async function createStaffAccount (accountType : string, schoolCode : string[], schoolName : string[], firstName : string, surname : string, username : string, password : string) : Promise<boolean> {
-    debugger
     // Generate account token and snowflake
     const token : string = generateToken();
     const accountSnowflake : string = snowflake.generate();
@@ -33,6 +32,9 @@ export async function createStaffAccount (accountType : string, schoolCode : str
             // expected
 
              // Checking school codes are all correct
+            
+            let schoolData: DocumentData[] = [];
+            
             for (var i = 0; i < schoolCode.length; i++)
             {
                 const schoolDocRef = doc(db, "schools", schoolCode[i]);
@@ -43,10 +45,14 @@ export async function createStaffAccount (accountType : string, schoolCode : str
                     return Promise.resolve(false);
                 };
                 let docData : DocumentData = schoolDoc.data();
+                schoolData.push(docData);
                 
+            };
+
+            for(let i = 0; i < schoolData.length; i++) {
                 // If problem with school name return 
                 //This if statement is check if an existing school name is equal to an array of strings?
-                if (docData.name !== schoolName[i]) {
+                if (schoolData[i].name !== schoolName[i]) {
                     return Promise.resolve(false);
                 };
                 
@@ -54,7 +60,7 @@ export async function createStaffAccount (accountType : string, schoolCode : str
                 if (accountType === 'teachers')
                 {
                     // Add teacher's snowflake to school
-                    let schoolTeach : string[] = docData.teachers
+                    let schoolTeach : string[] = schoolData[i].teachers
                     schoolTeach.push(accountSnowflake);
                     await transaction.update(doc(db, "schools", schoolCode[i]), {
                         teachers : schoolTeach,
@@ -64,7 +70,7 @@ export async function createStaffAccount (accountType : string, schoolCode : str
                 else
                 {
                     // Add admin's snowflake to school
-                    let schoolAdmins : string[] = docData.admins
+                    let schoolAdmins : string[] = schoolData[i].admins
                     schoolAdmins.push(accountSnowflake);
                     await transaction.update(doc(db, "schools", schoolCode[i]), {
                         admins : schoolAdmins,

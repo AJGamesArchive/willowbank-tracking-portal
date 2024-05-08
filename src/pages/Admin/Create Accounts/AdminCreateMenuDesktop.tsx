@@ -17,7 +17,6 @@ import { retrieveStaffData } from '../../../functions/Teacher/RetrieveStaffData'
 // Importing UI components
 import Banner from "../../../components/Admin/AdminPortal/Banner";
 import MenuOption from '../../../components/Admin/AdminPortal/AdminMenuOption';
-import SignOutOption from '../../../components/Admin/AdminPortal/AdminMenuSignOutOption';
 
 // Import types
 import { CoreStaffAccountDetails } from '../../../types/Global/UserAccountDetails';
@@ -109,7 +108,12 @@ const AdminCreateMenuDesktop: React.FC = () => {
               />
             </li>
             <li className="listItem">
-              <SignOutOption />
+              <MenuOption 
+                imageSRC={`/assets/admin-portal-images/Sign-out.png`}
+                imageAltText='Admin image'
+                destinationPage={`/adminportal/${params.snowflake}/${params.token}/${params.name}`}
+                title='Back to portal'
+              />
             </li>
           </ul>
         </div>

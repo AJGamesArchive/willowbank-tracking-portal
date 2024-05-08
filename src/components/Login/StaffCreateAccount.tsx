@@ -126,19 +126,21 @@ const StaffCreationForm: React.FC<StaffAccountCreationProps> = ({accountType}) =
 
     for (var i = 0; i < schoolCodes.length; i++)
     {
-       // Ensure the entered school code is valid
-       const results: SchoolSearch = await schoolSearcher(schoolCodes[i]);
-       if (results.errored) {
-       detailValidationError("error", "Unexpected Error Occurred", "The school code you entered is invalid. Please check your code is correct and try again.");
-       setSchoolCodes([]);
-       unlock(); return;
-       };
+      // Ensure the entered school code is valid
+      const results: SchoolSearch = await schoolSearcher(schoolCodes[i]);
+      if (results.errored) {
+      detailValidationError("error", "Unexpected Error Occurred", "The school code you entered is invalid. Please check your code is correct and try again.");
+      setSchoolCodes([]);
+      unlock(); return;
+      };
     }
 
-    // Ensure a valid school has been detected and assigned
-    if (schoolNames.length === 0) {
-      detailValidationError("warn", "No School Detected", `Ensure you detect your school by searching with a school code before creating ${personPossession} account.`);
-      unlock(); return;
+    if(accountType === "teachers") {
+      // Ensure a valid school has been detected and assigned
+      if (schoolNames.length === 0) {
+        detailValidationError("warn", "No School Detected", `Ensure you detect your school by searching with a school code before creating ${personPossession} account.`);
+        unlock(); return;
+      };
     };
 
     // Ensure a first name has been provided
@@ -234,8 +236,6 @@ const StaffCreationForm: React.FC<StaffAccountCreationProps> = ({accountType}) =
             updatedCodes.splice(i, 1);
             setSchoolCodes(updatedCodes);
             setSchoolNames(updatedSchoolNames);
-            console.log(schoolCodes)
-            console.log(schoolNames)
             return;
           }
       }
@@ -243,7 +243,6 @@ const StaffCreationForm: React.FC<StaffAccountCreationProps> = ({accountType}) =
 
   // Async function to handle searching for a school based on a given school code
   async function schoolSearchHandler(code : string): Promise<void> {
-    debugger
     // Attempt to retrieve the name of the school that matches the given ID
     const results: SchoolSearch = await schoolSearcher(code);
     if (results.errored) {
@@ -264,7 +263,7 @@ const StaffCreationForm: React.FC<StaffAccountCreationProps> = ({accountType}) =
     let updatedSchoolNames = [...schoolNames]; // Create a copy of the current state
     updatedSchoolNames.push(results.schoolName); // Add the new school name
     setSchoolNames(updatedSchoolNames); // Update the state with the new array
-    setSchoolCodes([code])
+    setSchoolCodes([...schoolCodes, code]);
 
     const confirmationDialogue = () => {
       toast.current?.show({
@@ -392,61 +391,59 @@ const StaffCreationForm: React.FC<StaffAccountCreationProps> = ({accountType}) =
     return;
   };
 
-//   const checkNewSchool = (e : any) => {
-//     const regex = /^\d{2}-\d{2}-\d{2}$/;
-//     if (regex.test(e) === true) {
-//         const newSchool = [...schoolCodes, e];
-//         setSchoolCodes(newSchool);
-// }
-//   };
-
   // Return JSX
   return (
     <BlockUI blocked={blockForm}>
     <Toast ref={toast} />
     <Card title={`Create New ${accountType} Account`} subTitle={`Enter ${personPossession} details:`} style={{ display: 'block' }}>
-      <div className="p-inputgroup flex-1">
-        <span className="p-float-label">
-        <Chips
-          value={schoolCodes}
-          placeholder='Format: 00-00-00'
-          onRemove={(e) => {
-          let index: number = -1;
-          for(let i = 0; i < schoolCodes.length; i++) {
-            if(schoolCodes[i] === e.value) 
-              index = i;
-          };
-          schoolCodes.splice(index, 1);
-          setSchoolCodes(schoolCodes)
-          }}
-          onAdd={(e) => schoolSearchHandler(e.value)}
-          aria-describedby='school-code-prompt'
-          />
-        </span>
-      </div>
-      <small id="school-code-prompt" className='creation-form-help-text'>
-        Enter the 6-digit code that {personPossession} school or instructor has provided.
-      </small>
-
-      <div className="account-creation-form-field">
+      {accountType === "teachers" && <div>
         <div className="p-inputgroup flex-1">
           <span className="p-float-label">
-            <ListBox 
-              options={schoolNames} 
-              style={{textAlign:"center", width: "100%"}} 
-              emptyMessage="No schools added"
-              onChange={(e) => removeSchool(e.value)} // function to remove school
-              aria-describedby='school-name-prompt'  />
-              <Button label="Clear" icon="pi pi-times" onClick={() => {
-                setSchoolNames([]);
-                setSchoolCodes([]);
-              }} severity="secondary"/>
-            </span>
+          <Chips
+            value={schoolCodes}
+            placeholder='Format: 00-00-00'
+            onRemove={(e) => {
+            let updatedCodes: string[] = [...schoolCodes];
+            let updatedNames: string[] = [...schoolNames];
+            let index: number = -1;
+            for(let i = 0; i < schoolCodes.length; i++) {
+              if(schoolCodes[i] === e.value) 
+                index = i;
+            };
+            updatedCodes.splice(index, 1);
+            updatedNames.splice(index, 1);
+            setSchoolCodes(updatedCodes);
+            setSchoolNames(updatedNames);
+            }}
+            onAdd={(e) => schoolSearchHandler(e.value)}
+            aria-describedby='school-code-prompt'
+            />
+          </span>
         </div>
-        <small id="school-name-prompt" className='creation-form-help-text'>
-          {personPossession[0].toUpperCase()}{personPossession.substring(1)} schools name will be filled in automatically.
+        <small id="school-code-prompt" className='creation-form-help-text'>
+          Enter the 6-digit code that {personPossession} school or instructor has provided.
         </small>
-      </div>
+
+        <div className="account-creation-form-field">
+          <div className="p-inputgroup flex-1">
+            <span className="p-float-label">
+              <ListBox 
+                options={schoolNames} 
+                style={{textAlign:"center", width: "100%"}} 
+                emptyMessage="No schools added"
+                onChange={(e) => removeSchool(e.value)} // function to remove school
+                aria-describedby='school-name-prompt'  />
+                <Button label="Clear" icon="pi pi-times" onClick={() => {
+                  setSchoolNames([]);
+                  setSchoolCodes([]);
+                }} raised severity="secondary"/>
+              </span>
+          </div>
+          <small id="school-name-prompt" className='creation-form-help-text'>
+            {personPossession[0].toUpperCase()}{personPossession.substring(1)} schools name will be filled in automatically.
+          </small>
+        </div>
+      </div>}
 
       <div className="account-creation-form-field">
         <div className="p-inputgroup flex-1">
@@ -506,7 +503,7 @@ const StaffCreationForm: React.FC<StaffAccountCreationProps> = ({accountType}) =
               setFirstNameStyle("");
               setSurnameStyle("");
               usernameGenerationHandler();
-            }} severity="info"/>
+            }} raised severity="info"/>
           </span>
         </div>
         <small id="username-prompt" className='creation-form-help-text'>
@@ -538,7 +535,7 @@ const StaffCreationForm: React.FC<StaffAccountCreationProps> = ({accountType}) =
               setFirstNameStyle("");
               setSurnameStyle("");
               passwordGenerationHandler();
-            }} severity="info"/>
+            }} raised severity="info"/>
           </span>
         </div>
         <small id="password-prompt" className='creation-form-help-text'>
@@ -585,12 +582,7 @@ const StaffCreationForm: React.FC<StaffAccountCreationProps> = ({accountType}) =
         </div>
         <div className="account-login-form-button">
           <Button label="Back" icon="pi pi-arrow-left" onClick={() => {
-            if (schoolCodes !== null || firstName !== "" || surname !== "" || username !== "" || password !== "" || confirmPassword !== "") {
-              window.location.href = `/adminportal/${params.snowflake}/${params.token}/${params.name}`
-            } else {
-              clearHighlighting();
-              clearForm();
-            };
+            window.location.href = `/adminportal/createaccountmenu/${params.snowflake}/${params.token}/${params.name}`
           }} raised severity="secondary"/>
         </div>
       </div>

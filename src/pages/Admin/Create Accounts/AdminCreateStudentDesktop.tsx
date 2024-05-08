@@ -2,6 +2,7 @@
 import { useState, useEffect } from 'react';
 import { ProgressSpinner } from 'primereact/progressspinner';
 import { confirmLogin } from '../../../functions/Global/ConfirmLogin';
+import { ConfirmDialog } from 'primereact/confirmdialog';
 
 // Import global parameters
 import { GlobalParams } from '../../../interfaces/GlobalParams';
@@ -33,6 +34,7 @@ const AdminCreateStudentDesktop: React.FC = () => {
     if (isLoggedIn) {
       return (
         <>
+            <ConfirmDialog/>
             <StudentCreationForm 
               accountType={'student'} 
               visible={true} 

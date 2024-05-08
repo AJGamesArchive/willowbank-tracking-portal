@@ -16,6 +16,10 @@ import './StudentCreateAccount.css';
 // Importing <Password> UI Props
 import { passwordStrengthMsgs, passwordSuggestionsHeader, passwordSuggestionsFooter } from '../../data/PasswordSuggestions';
 
+// Import global params
+import { GlobalParams } from '../../interfaces/GlobalParams';
+import { useParams } from 'react-router-dom';
+
 // Import functions
 import { createStudentAccount } from '../../functions/Login/CreateStudentAccount';
 import { schoolSearcher } from '../../functions/Login/SchoolSearcher';
@@ -65,8 +69,11 @@ const StudentCreationForm: React.FC<StudentAccountCreationProps> = ({accountType
 
   const [personPossession] = useState<string>(userPOV === 'student' ? 'your' : `the student's`)
   const [personPOV] = useState<string>(userPOV === 'student' ? 'you' : 'the student')
+
   // Variable to store password generated messag`
   const msg = useRef<Messages>(null);
+
+  const params = useParams<GlobalParams>();
 
   // Variable to control blocking certain sections of the UI
   const [blockForm, setBlockForm] = useState<boolean>(false);
@@ -117,6 +124,7 @@ const StudentCreationForm: React.FC<StudentAccountCreationProps> = ({accountType
         clearHighlighting();
         clearForm();
         setOptionMenuVisible(true);
+        if(userPOV === "admin") window.location.href = `/adminportal/createaccountmenu/${params.snowflake}/${params.token}/${params.name}`
       },
       reject: () => {}
     });

@@ -5,6 +5,7 @@ import { GlobalParams } from "../../../interfaces/GlobalParams";
 import { AdminAccountCreation } from "../../../interfaces/AdminAccountCreation";
 import StaffCreationForm from "../../../components/Login/StaffCreateAccount";
 import { ProgressSpinner } from "primereact/progressspinner";
+import { ConfirmDialog } from "primereact/confirmdialog";
 
 const AdminCreateStaffDesktop: React.FC = () => {
     // Setting up global params on this page
@@ -31,6 +32,7 @@ const AdminCreateStaffDesktop: React.FC = () => {
     {
         return ( 
             <>
+                <ConfirmDialog/>
                 <StaffCreationForm accountType={(accountTypeParams.accountType) ? accountTypeParams.accountType : ''}/>
             </>
         )
