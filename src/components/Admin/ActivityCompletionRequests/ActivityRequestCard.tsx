@@ -4,7 +4,7 @@ import { useRef, useState } from 'react';
 import { Divider } from 'primereact/divider';
 import { Button } from 'primereact/button';
 import { Tag } from 'primereact/tag';
-import { Toast } from 'primereact/toast';
+import { Toast, ToastMessage } from 'primereact/toast';
 import { Dialog } from 'primereact/dialog';
 
 // Import types
@@ -28,10 +28,11 @@ interface ActivityRequestCardProps {
   request: ActivityRequests;
   mapId: number;
   onActioned: (id: Actioned) => void;
+  feedbackCallback: (message: ToastMessage) => void;
 };
 
 // React function to render the activity request card for the activity requests dialogue box
-const ActivityRequestCard: React.FC<ActivityRequestCardProps> = ({request, mapId, onActioned}) => {
+const ActivityRequestCard: React.FC<ActivityRequestCardProps> = ({request, mapId, onActioned, feedbackCallback}) => {
   // State variable to control the loading state of varying UI components
   const [loading, setLoading] = useState<boolean>(false);
 
@@ -46,11 +47,9 @@ const ActivityRequestCard: React.FC<ActivityRequestCardProps> = ({request, mapId
   async function processRequestHandler(approved: boolean): Promise<void> {
     setLoading(true);
     const success: boolean = await processActivityRequests(request, approved);
-    //TODO Maybe update these error/confirmation messages so they are passed back to the request dialogue and shown there
-    //TODO This should stop hem from sometimes? disappearing when the request is removed from the request list
     if(success) {
       if(approved) {
-        toast.current?.show({
+        feedbackCallback({
           severity: 'success',
           summary: 'Activity Request Approved',
           detail: `The activity completion request has been approved successfully. ${request.xpValue}xp has been awarded to ${request.studentName}.`,
@@ -59,7 +58,7 @@ const ActivityRequestCard: React.FC<ActivityRequestCardProps> = ({request, mapId
         });
         const awardedXP: boolean = await awardXP(request);
         if(!awardedXP) {
-          toast.current?.show({
+          feedbackCallback({
             severity: 'warn',
             summary: 'Failed To Award XP',
             detail: `An unexpected error occurred while trying to award the activities XP amount (${request.xpValue}) to ${request.studentName}. No XP has been awarded. You will need to manually award ${request.xpValue} to ${request.studentName}.`,
@@ -68,7 +67,7 @@ const ActivityRequestCard: React.FC<ActivityRequestCardProps> = ({request, mapId
           });
         };
       } else {
-        toast.current?.show({
+        feedbackCallback({
           severity: 'success',
           summary: 'Activity Request Declined',
           detail: `The activity completion request has been declined successfully.`,

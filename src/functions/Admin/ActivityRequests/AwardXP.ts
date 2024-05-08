@@ -53,6 +53,9 @@ export async function awardXP(request: ActivityRequests): Promise<boolean> {
         pendingActivities: baseProgress.pendingActivities,
       };
 
+      // Logging starting level before XP gain
+      const startingLevel: number = progress.currentLevel;
+
       // Add awarded XP to current XP
       progress.currentXP += request.xpValue;
 
@@ -65,8 +68,8 @@ export async function awardXP(request: ActivityRequests): Promise<boolean> {
       //* Data processing for level gaining
       // Calculate next level and next target XP
       progress.currentLevel = calculateLevel(progress.currentXP);
-      progress.previousTargetXP = progress.targetXP;
       progress.targetXP = calculateTargetXP(progress.currentXP);
+      progress.previousTargetXP = calculatePreviousXP(progress.targetXP);
 
       // Write updated tracking data to database
       await transaction.update(progressDocRef, progress);
@@ -75,21 +78,24 @@ export async function awardXP(request: ActivityRequests): Promise<boolean> {
       // Retrieve existing badges array
       let badges: BadgeData[] = baseStudent.badges;
 
-      // Create badge object for newly awarded badge
-      const newBadge: BadgeData = {
-        snowflake: snowflake.generate(),
-        shape: baseProgram.badgeShape,
-        colour: baseProgram.colour,
-        textColour: baseProgram.badgeTextColor,
-        level: progress.currentLevel,
-        awardedProgram: baseProgram.name,
-        programSnowflake: baseProgram.snowflake,
-        awardedFor: baseProgram.description,
-        dateAwarded: dateTimeReadable(),
-      };
+      // Create badge objects and award badges for all levels gained
+      for(let i = startingLevel + 1; i <= progress.currentLevel; i++) {
+        // Create new badge object
+        const newBadge: BadgeData = {
+          snowflake: snowflake.generate(),
+          shape: baseProgram.badgeShape,
+          colour: baseProgram.colour,
+          textColour: baseProgram.badgeTextColor,
+          level: i,
+          awardedProgram: baseProgram.name,
+          programSnowflake: baseProgram.snowflake,
+          awardedFor: baseProgram.description,
+          dateAwarded: dateTimeReadable(),
+        };
 
-      // Add new badges to array of badges
-      badges.push(newBadge);
+        // Add new badge to array of badges
+        badges.push(newBadge);
+      };
 
       // Write updated badges array back to DB
       await transaction.update(studentDocRef, {
@@ -133,4 +139,11 @@ export function calculateLevel(currentXP: number): number {
     return 7 + Math.floor((currentXP -= 600) / 200);
   };
   return 14 + Math.floor((currentXP -= 2000) / 500);
+};
+
+// Function to calculate your previous target XP
+export function calculatePreviousXP(targetXP: number): number {
+  if(targetXP <= 600) return targetXP - 100;
+  if(targetXP <= 2000) return targetXP - 200;
+  return targetXP - 500;
 };

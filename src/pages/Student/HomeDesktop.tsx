@@ -386,6 +386,7 @@ const HomeDesktop: React.FC = () => {
           />
           <Divider />
           <h1>Most Recent Badges</h1>
+          {recentBadges.length === 0 && <h3><em>You do not currently have any badges.</em></h3>}
           <div className='program-progress-carousel'>
             <Carousel 
               value={recentBadges}  

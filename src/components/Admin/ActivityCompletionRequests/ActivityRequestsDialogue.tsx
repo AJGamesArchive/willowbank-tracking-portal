@@ -1,7 +1,7 @@
 // Import core functions
 import React, { useEffect } from 'react';
 import { useRef, useState } from 'react';
-import { Toast } from 'primereact/toast';
+import { Toast, ToastMessage } from 'primereact/toast';
 import { Dialog } from 'primereact/dialog';
 import { Dropdown, DropdownChangeEvent } from 'primereact/dropdown';
 
@@ -239,6 +239,7 @@ const ActivityCompletionRequestDialogue: React.FC<ActivityCompletionRequestDialo
             request={request}
             mapId={index}
             onActioned={setActionedID}
+            feedbackCallback={(message: ToastMessage) => toast.current?.show(message)}
           />
         ))}
       </Dialog>

@@ -7,6 +7,7 @@ import { dateTimeReadable } from '../../Global/GenerateTimestamp';
 import { snowflake } from '../../../classes/Snowflake';
 import { ProgramData } from '../../../types/Admin/ProgramData';
 import { calculateTargetXP } from '../ActivityRequests/AwardXP';
+import { calculatePreviousXP } from '../ActivityRequests/AwardXP';
 
 /**
  * Function to update a students current XP value for a given program and award & revoke any levels and badges accordingly
@@ -53,8 +54,8 @@ export async function updateStudentXP(studentSnowflake: string, programSnowflake
 
     // Update students progress to reflect updated XP value
     updatedProgress.currentXP = newXPAmount;
-    updatedProgress.previousTargetXP = 0;
     updatedProgress.targetXP = calculateTargetXP(newXPAmount);
+    updatedProgress.previousTargetXP = calculatePreviousXP(updatedProgress.targetXP);
     updatedProgress.currentLevel = calculateLevel(newXPAmount);
 
     // Add any newly award badges

@@ -5,7 +5,6 @@ import { Button } from 'primereact/button';
 import { Card } from 'primereact/card';
 import { ProgressSpinner } from 'primereact/progressspinner';
 import { Toast, ToastMessage } from 'primereact/toast';
-import { Divider } from 'primereact/divider';
 
 // Import global parameters
 import { GlobalParams } from '../../../interfaces/GlobalParams';
@@ -27,6 +26,7 @@ import { retrieveProgramData } from '../../../functions/Admin/ManagePrograms/Ret
 
 // Import UI Components
 import ManageXP from '../../../components/Admin/AwardRevokeXP/ManageXP';
+import Banner from '../../../components/Admin/AdminPortal/Banner';
 
 // Type declaration for school mappings
 type SchoolMapping = {
@@ -200,8 +200,11 @@ const AwardRevokeXPDesktop: React.FC = () => {
     return (
       <>
         <Toast ref={toast}/>
-        <h1>Select a student to award or revoke XP to from:</h1>
-        <Divider/>
+        <Banner
+          backgroundimage='/assets/admin-portal-images/banner.png' 
+          text={`Manage A Students Program Experience`} 
+        />
+        <h3>Select a student to award or revoke XP to from:</h3>
         <div className="award-xp-grid-container">
           {studentData.map((student, index) => cardContent(student, index))}
         </div>
